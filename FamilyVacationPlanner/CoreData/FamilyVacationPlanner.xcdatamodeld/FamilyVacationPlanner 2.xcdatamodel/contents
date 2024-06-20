@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Location" representedClassName="Location" syncable="YES">
+        <attribute name="dateArrive" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateLeave" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="overNightStop" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="requester" optional="YES" attributeType="String"/>
+        <attribute name="startLocation" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="subtitle" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="trip" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Trip" inverseName="location" inverseEntity="Trip"/>
+    </entity>
+    <entity name="Trip" representedClassName="Trip" syncable="YES">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="oneWay" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="startLocationSet" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="tripName" optional="YES" attributeType="String"/>
+        <relationship name="location" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Location" inverseName="trip" inverseEntity="Location"/>
+    </entity>
+    <configuration name="Cloud" usedWithCloudKit="YES"/>
+</model>

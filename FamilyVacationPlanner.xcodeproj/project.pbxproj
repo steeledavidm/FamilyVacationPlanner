@@ -1,0 +1,515 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		551A58382C2DAAA000E6DA03 /* EditTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551A58372C2DAAA000E6DA03 /* EditTripView.swift */; };
+		553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553588F92C415F540014D48C /* GlobalVariables.swift */; };
+		553588FC2C42AB0C0014D48C /* LocationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553588FB2C42AB0C0014D48C /* LocationType.swift */; };
+		555014752C3C6EDA003DED29 /* MapInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555014742C3C6EDA003DED29 /* MapInfo.swift */; };
+		55559C572C5D7D2F00149F8C /* LocationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55559C562C5D7D2F00149F8C /* LocationsViewModel.swift */; };
+		5558E7952C24867300CE6991 /* FamilyVacationPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */; };
+		5558E7972C24867300CE6991 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7962C24867300CE6991 /* ContentView.swift */; };
+		5558E7992C24867500CE6991 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5558E7982C24867500CE6991 /* Assets.xcassets */; };
+		5558E79C2C24867500CE6991 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5558E79B2C24867500CE6991 /* Preview Assets.xcassets */; };
+		5558E7A32C2486CF00CE6991 /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7A22C2486CF00CE6991 /* SearchModel.swift */; };
+		5558E7A52C248E3200CE6991 /* ClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7A42C248E3200CE6991 /* ClearButton.swift */; };
+		5558E7A92C24918900CE6991 /* AddressResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7A82C24918900CE6991 /* AddressResult.swift */; };
+		5558E7AF2C24968A00CE6991 /* AnnotationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7AE2C24968A00CE6991 /* AnnotationItem.swift */; };
+		5558E7DA2C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7D82C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodeld */; };
+		5558E7DC2C25E02900CE6991 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7DB2C25E02800CE6991 /* DataController.swift */; };
+		5558E7E52C260FB800CE6991 /* SearchDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */; };
+		5558E7E72C260FCE00CE6991 /* AddDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7E62C260FCE00CE6991 /* AddDestinationView.swift */; };
+		5558E7EB2C27132E00CE6991 /* AllDestinationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7EA2C27132E00CE6991 /* AllDestinationsView.swift */; };
+		5558E7ED2C272C8F00CE6991 /* EditDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7EC2C272C8E00CE6991 /* EditDestinationView.swift */; };
+		5558E7F52C28BA4B00CE6991 /* TripSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */; };
+		5558E7F72C28D94D00CE6991 /* TripOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7F62C28D94D00CE6991 /* TripOverviewView.swift */; };
+		55651C7D2C45EFD10042D020 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55651C7C2C45EFD10042D020 /* Segment.swift */; };
+		55651C7F2C46066D0042D020 /* DayLocationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55651C7E2C46066D0042D020 /* DayLocationsView.swift */; };
+		556F58302C7111E600234FED /* BackLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556F582F2C7111E600234FED /* BackLog.swift */; };
+		557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557395452C7A24E70006DEE5 /* LocationManager.swift */; };
+		557395482C7A27D30006DEE5 /* RecentLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557395472C7A27D30006DEE5 /* RecentLocations.swift */; };
+		55B5FC152C4B1AE80087D31B /* DaySegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B5FC142C4B1AE80087D31B /* DaySegments.swift */; };
+		55FD9B3B2C2F30BD000EB3FA /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */; };
+		55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */; };
+		55FD9B3F2C2FD794000EB3FA /* DestinationSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD9B3E2C2FD794000EB3FA /* DestinationSetUpView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		551A58372C2DAAA000E6DA03 /* EditTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTripView.swift; sourceTree = "<group>"; };
+		553588F92C415F540014D48C /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
+		553588FB2C42AB0C0014D48C /* LocationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationType.swift; sourceTree = "<group>"; };
+		5550146B2C34F610003DED29 /* FamilyVacationPlanner 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "FamilyVacationPlanner 2.xcdatamodel"; sourceTree = "<group>"; };
+		555014742C3C6EDA003DED29 /* MapInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapInfo.swift; sourceTree = "<group>"; };
+		55559C562C5D7D2F00149F8C /* LocationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsViewModel.swift; sourceTree = "<group>"; };
+		5558E7912C24867300CE6991 /* FamilyVacationPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FamilyVacationPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyVacationPlannerApp.swift; sourceTree = "<group>"; };
+		5558E7962C24867300CE6991 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5558E7982C24867500CE6991 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5558E79B2C24867500CE6991 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5558E7A22C2486CF00CE6991 /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
+		5558E7A42C248E3200CE6991 /* ClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearButton.swift; sourceTree = "<group>"; };
+		5558E7A82C24918900CE6991 /* AddressResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressResult.swift; sourceTree = "<group>"; };
+		5558E7AE2C24968A00CE6991 /* AnnotationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationItem.swift; sourceTree = "<group>"; };
+		5558E7D92C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FamilyVacationPlanner.xcdatamodel; sourceTree = "<group>"; };
+		5558E7DB2C25E02800CE6991 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		5558E7DE2C25F8EA00CE6991 /* FamilyVacationPlanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FamilyVacationPlanner.entitlements; sourceTree = "<group>"; };
+		5558E7DF2C25FA5100CE6991 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDestinationView.swift; sourceTree = "<group>"; };
+		5558E7E62C260FCE00CE6991 /* AddDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDestinationView.swift; sourceTree = "<group>"; };
+		5558E7EA2C27132E00CE6991 /* AllDestinationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllDestinationsView.swift; sourceTree = "<group>"; };
+		5558E7EC2C272C8E00CE6991 /* EditDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDestinationView.swift; sourceTree = "<group>"; };
+		5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSetUpView.swift; sourceTree = "<group>"; };
+		5558E7F62C28D94D00CE6991 /* TripOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripOverviewView.swift; sourceTree = "<group>"; };
+		55651C7C2C45EFD10042D020 /* Segment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
+		55651C7E2C46066D0042D020 /* DayLocationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayLocationsView.swift; sourceTree = "<group>"; };
+		556F582F2C7111E600234FED /* BackLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackLog.swift; sourceTree = "<group>"; };
+		557395452C7A24E70006DEE5 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		557395472C7A27D30006DEE5 /* RecentLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentLocations.swift; sourceTree = "<group>"; };
+		55B5FC142C4B1AE80087D31B /* DaySegments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaySegments.swift; sourceTree = "<group>"; };
+		55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
+		55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatedMapItem.swift; sourceTree = "<group>"; };
+		55FD9B3E2C2FD794000EB3FA /* DestinationSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationSetUpView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5558E78E2C24867300CE6991 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5558E7882C24867300CE6991 = {
+			isa = PBXGroup;
+			children = (
+				5558E7932C24867300CE6991 /* FamilyVacationPlanner */,
+				5558E7922C24867300CE6991 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5558E7922C24867300CE6991 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5558E7912C24867300CE6991 /* FamilyVacationPlanner.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5558E7932C24867300CE6991 /* FamilyVacationPlanner */ = {
+			isa = PBXGroup;
+			children = (
+				556F582F2C7111E600234FED /* BackLog.swift */,
+				5558E7DF2C25FA5100CE6991 /* Info.plist */,
+				5558E7DE2C25F8EA00CE6991 /* FamilyVacationPlanner.entitlements */,
+				5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */,
+				5573954B2C7A29750006DEE5 /* Models */,
+				5573954A2C7A28FE0006DEE5 /* Views */,
+				553588F92C415F540014D48C /* GlobalVariables.swift */,
+				557395492C7A28AA0006DEE5 /* Structures */,
+				5558E7DD2C25E21200CE6991 /* CoreData */,
+				5558E7982C24867500CE6991 /* Assets.xcassets */,
+				5558E79A2C24867500CE6991 /* Preview Content */,
+			);
+			path = FamilyVacationPlanner;
+			sourceTree = "<group>";
+		};
+		5558E79A2C24867500CE6991 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				5558E79B2C24867500CE6991 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		5558E7DD2C25E21200CE6991 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				5558E7D82C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodeld */,
+				5558E7DB2C25E02800CE6991 /* DataController.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		557395492C7A28AA0006DEE5 /* Structures */ = {
+			isa = PBXGroup;
+			children = (
+				5558E7A82C24918900CE6991 /* AddressResult.swift */,
+				5558E7AE2C24968A00CE6991 /* AnnotationItem.swift */,
+				55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */,
+				55B5FC142C4B1AE80087D31B /* DaySegments.swift */,
+				553588FB2C42AB0C0014D48C /* LocationType.swift */,
+				555014742C3C6EDA003DED29 /* MapInfo.swift */,
+				557395472C7A27D30006DEE5 /* RecentLocations.swift */,
+				55651C7C2C45EFD10042D020 /* Segment.swift */,
+			);
+			path = Structures;
+			sourceTree = "<group>";
+		};
+		5573954A2C7A28FE0006DEE5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5558E7962C24867300CE6991 /* ContentView.swift */,
+				55651C7E2C46066D0042D020 /* DayLocationsView.swift */,
+				5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */,
+				5558E7F62C28D94D00CE6991 /* TripOverviewView.swift */,
+				5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */,
+				5558E7E62C260FCE00CE6991 /* AddDestinationView.swift */,
+				5558E7EC2C272C8E00CE6991 /* EditDestinationView.swift */,
+				55FD9B3E2C2FD794000EB3FA /* DestinationSetUpView.swift */,
+				5558E7A42C248E3200CE6991 /* ClearButton.swift */,
+				5558E7EA2C27132E00CE6991 /* AllDestinationsView.swift */,
+				551A58372C2DAAA000E6DA03 /* EditTripView.swift */,
+				55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5573954B2C7A29750006DEE5 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				557395452C7A24E70006DEE5 /* LocationManager.swift */,
+				5558E7A22C2486CF00CE6991 /* SearchModel.swift */,
+				55559C562C5D7D2F00149F8C /* LocationsViewModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5558E7902C24867300CE6991 /* FamilyVacationPlanner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5558E79F2C24867500CE6991 /* Build configuration list for PBXNativeTarget "FamilyVacationPlanner" */;
+			buildPhases = (
+				5558E78D2C24867300CE6991 /* Sources */,
+				5558E78E2C24867300CE6991 /* Frameworks */,
+				5558E78F2C24867300CE6991 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FamilyVacationPlanner;
+			productName = FamilyVacationPlanner;
+			productReference = 5558E7912C24867300CE6991 /* FamilyVacationPlanner.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5558E7892C24867300CE6991 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					5558E7902C24867300CE6991 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = 5558E78C2C24867300CE6991 /* Build configuration list for PBXProject "FamilyVacationPlanner" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5558E7882C24867300CE6991;
+			productRefGroup = 5558E7922C24867300CE6991 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5558E7902C24867300CE6991 /* FamilyVacationPlanner */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5558E78F2C24867300CE6991 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5558E79C2C24867500CE6991 /* Preview Assets.xcassets in Resources */,
+				5558E7992C24867500CE6991 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5558E78D2C24867300CE6991 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */,
+				55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */,
+				557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */,
+				55651C7F2C46066D0042D020 /* DayLocationsView.swift in Sources */,
+				5558E7E72C260FCE00CE6991 /* AddDestinationView.swift in Sources */,
+				5558E7A32C2486CF00CE6991 /* SearchModel.swift in Sources */,
+				5558E7AF2C24968A00CE6991 /* AnnotationItem.swift in Sources */,
+				55FD9B3B2C2F30BD000EB3FA /* SectionHeaderView.swift in Sources */,
+				55559C572C5D7D2F00149F8C /* LocationsViewModel.swift in Sources */,
+				5558E7A92C24918900CE6991 /* AddressResult.swift in Sources */,
+				55FD9B3F2C2FD794000EB3FA /* DestinationSetUpView.swift in Sources */,
+				5558E7F52C28BA4B00CE6991 /* TripSetUpView.swift in Sources */,
+				5558E7DC2C25E02900CE6991 /* DataController.swift in Sources */,
+				5558E7F72C28D94D00CE6991 /* TripOverviewView.swift in Sources */,
+				5558E7ED2C272C8F00CE6991 /* EditDestinationView.swift in Sources */,
+				5558E7E52C260FB800CE6991 /* SearchDestinationView.swift in Sources */,
+				557395482C7A27D30006DEE5 /* RecentLocations.swift in Sources */,
+				5558E7972C24867300CE6991 /* ContentView.swift in Sources */,
+				5558E7952C24867300CE6991 /* FamilyVacationPlannerApp.swift in Sources */,
+				55B5FC152C4B1AE80087D31B /* DaySegments.swift in Sources */,
+				553588FC2C42AB0C0014D48C /* LocationType.swift in Sources */,
+				55651C7D2C45EFD10042D020 /* Segment.swift in Sources */,
+				556F58302C7111E600234FED /* BackLog.swift in Sources */,
+				551A58382C2DAAA000E6DA03 /* EditTripView.swift in Sources */,
+				5558E7DA2C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodeld in Sources */,
+				5558E7EB2C27132E00CE6991 /* AllDestinationsView.swift in Sources */,
+				5558E7A52C248E3200CE6991 /* ClearButton.swift in Sources */,
+				555014752C3C6EDA003DED29 /* MapInfo.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5558E79D2C24867500CE6991 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5558E79E2C24867500CE6991 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5558E7A02C24867500CE6991 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FamilyVacationPlanner/FamilyVacationPlanner.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"FamilyVacationPlanner/Preview Content\"";
+				DEVELOPMENT_TEAM = G4XZ295YQA;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FamilyVacationPlanner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Family Vacation Planner";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "The app needs access to your location to provide location-based services";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Dave.FamilyVacationPlanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5558E7A12C24867500CE6991 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FamilyVacationPlanner/FamilyVacationPlanner.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"FamilyVacationPlanner/Preview Content\"";
+				DEVELOPMENT_TEAM = G4XZ295YQA;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FamilyVacationPlanner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Family Vacation Planner";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "The app needs access to your location to provide location-based services";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Dave.FamilyVacationPlanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5558E78C2C24867300CE6991 /* Build configuration list for PBXProject "FamilyVacationPlanner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5558E79D2C24867500CE6991 /* Debug */,
+				5558E79E2C24867500CE6991 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5558E79F2C24867500CE6991 /* Build configuration list for PBXNativeTarget "FamilyVacationPlanner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5558E7A02C24867500CE6991 /* Debug */,
+				5558E7A12C24867500CE6991 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		5558E7D82C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				5550146B2C34F610003DED29 /* FamilyVacationPlanner 2.xcdatamodel */,
+				5558E7D92C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodel */,
+			);
+			currentVersion = 5558E7D92C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodel */;
+			name = FamilyVacationPlanner.xcdatamodeld;
+			path = FamilyVacationPlanner/CoreData/FamilyVacationPlanner.xcdatamodeld;
+			sourceTree = SOURCE_ROOT;
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 5558E7892C24867300CE6991 /* Project object */;
+}
