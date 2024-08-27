@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+extension ContentView {
+    @Observable
+    class ViewModel {
+        
+    }
+}

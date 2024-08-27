@@ -15,58 +15,36 @@ struct ContentView: View {
     @State var coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
     @State var markerIndex = 0
     @State var showSheet = true
+    @State private var sheetDetent: PresentationDetent = .fraction(0.5)
     var body: some View {
-        
-        TabView {
-            MapReader { proxy in
-                Map() {
-                    if coordinate.latitude != 0 {
-                        Marker("Selected Location", coordinate: coordinate)
-                    }
+    
+        MapReader { proxy in
+            Map() {
+                if coordinate.latitude != 0 {
+                    Marker("Selected Location", coordinate: coordinate)
                 }
-                .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
-                .onTapGesture { position in
-                    if let coordinate = proxy.convert(position, from: .local) {
-                        print(coordinate)
-                    }
-                }
-                .sheet(isPresented: $showSheet, content: {
-                    TripSetUpView()
-                        .interactiveDismissDisabled()
-                        .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)])
-                        .sheet(isPresented: $showSheet, content: {
-                            Text("Second Sheet")
-                        })
-                        
-                })
-
             }
-            .tabItem {
-                Label("map", systemImage: "map")
+            .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
+            .onTapGesture { position in
+                if let coordinate = proxy.convert(position, from: .local) {
+                    print(coordinate)
+                }
             }
-        
-            
-            
-            AllDestinationsView()
-                .tabItem {
-                    Label("All", systemImage: "list.dash")
-                }
-            //.toolbar(.hidden, for: .tabBar)
-            TripSetUpView()
-                .tabItem {
-                    Label("Trips", systemImage: "steeringwheel")
-                }
-            toolbar(.hidden, for: .tabBar)
-            
         }
+        .sheet(isPresented: $showSheet, content: {
+            TripSetUpView()
+                .interactiveDismissDisabled()
+                .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)], selection: $sheetDetent)
+                .presentationBackgroundInteraction(.enabled)
+                .sheet(isPresented: $showSheet, content: {
+                    Text("Second Sheet")
+                })
+                
+        })
     }
 }
 
-extension Binding {
-    func toUnwrapped<T>(defaultValue: T) -> Binding<T> where Value == Optional<T>  {
-        Binding<T>(get: { self.wrappedValue ?? defaultValue }, set: { self.wrappedValue = $0 })
-    }
-}
+
 
 #Preview {
     ContentView().environment(\.managedObjectContext, DataController.preview)
