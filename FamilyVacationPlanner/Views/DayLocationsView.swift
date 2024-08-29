@@ -11,7 +11,7 @@ import SwiftUI
 
 
 struct DayLocationsView: View {
-    @Environment(LocationsViewModel.self) private var viewModel
+    @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVar
     @State var trip: Trip
     
@@ -39,21 +39,9 @@ struct DayLocationsView: View {
      }
      */
     var body: some View {
-        ZStack {
-            Map(position: $position) {
-                ForEach(viewModel.allMapInfo) {mapInfo in
-                    Marker(mapInfo.markerLabelStart, coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D())
-                    Marker(mapInfo.markerLabelEnd, coordinate: mapInfo.endingPoint ?? CLLocationCoordinate2D())
-                    MapPolyline(mapInfo.route ?? MKRoute())
-                        .stroke(.blue, lineWidth: 5)
-                }
-            }
-            .animation(.easeInOut(duration: 1), value: selectedDetent)
-            .animation(.easeInOut(duration: 1), value: position)
-        }
-        .sheet(isPresented: $showSheet) {
+
             TabView(selection: $selectedTabIndex) {
-                ForEach(viewModel.comprehensiveAndDailySegments, id: \.id) { contentForTabView in
+                ForEach(dataModel.comprehensiveAndDailySegments, id: \.id) { contentForTabView in
                     VStack {
                         Section(header: SectionHeaderView(date: viewDate , isPresented: $isPresented, locationType: $locationType, comprehensive: .constant(contentForTabView.comprehensive))) {
                             List {
@@ -84,16 +72,16 @@ struct DayLocationsView: View {
                                     //.moveDisabled(segment.startLocation == true || segment.endLocation == true)
                                 }
                                 .onMove { indices, newOffset in
-                                    print("old segmentIndex: \(viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex)")
-                                    viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments.move(fromOffsets: indices, toOffset: newOffset)
+                                    print("old segmentIndex: \(dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex)")
+                                    dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments.move(fromOffsets: indices, toOffset: newOffset)
 
                                     print(indices.last ?? 0)
                                     print("destination \(newOffset)")
                                     print("selectedTabIndex: \(selectedTabIndex)")
-                                    print("old segmentIndex: \(viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex)")
-                                    viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex = newOffset
-                                    print("new segmentIndex: \(viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex)")
-                                    viewModel.fetchData(trip: trip)
+                                    print("old segmentIndex: \(dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex)")
+                                    dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex = newOffset
+                                    print("new segmentIndex: \(dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex)")
+                                    dataModel.fetchData(trip: trip)
                                 }
                             }
                             .environment(\.editMode, .constant(.active))
@@ -107,106 +95,30 @@ struct DayLocationsView: View {
             }
             .tabViewStyle(.page)
             .onAppear {
-                viewModel.fetchData(trip: trip)
-                selectedTabIndex = viewModel.comprehensiveAndDailySegments[0].dayIndex
-                updateMap()
+                dataModel.fetchData(trip: trip)
+                print("fetched data")
+                selectedTabIndex = dataModel.comprehensiveAndDailySegments[0].dayIndex
             }
-        }
+        
         .sheet(isPresented: $isPresented, onDismiss: {
-            viewModel.fetchData(trip: trip)
+            dataModel.fetchData(trip: trip)
             selectedTabIndex = globalVar.selectedTabIndex
         }) {
-            SearchDestinationView(trip: $trip, isPresented: $isPresented, locationType: $locationType, daySegments: .constant(viewModel.daySegmentsForFunction))
+            SearchDestinationView(trip: $trip, isPresented: $isPresented, locationType: $locationType, daySegments: .constant(dataModel.daySegmentsForFunction))
         }
         
         .onChange(of: selectedTabIndex) {
             globalVar.selectedTabIndex = selectedTabIndex
-            updateMap()
-        }
-        
-        .onChange(of: selectedDetent) {
-            adjustRegion()
         }
     }
     
     @MainActor func move(source: IndexSet, destination: Int) {
-        viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments.move(fromOffsets: source, toOffset: destination)
+        dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments.move(fromOffsets: source, toOffset: destination)
         print("Source: \(source)")
         print("destination \(destination)")
         print("selectedTabIndex: \(selectedTabIndex)")
-        viewModel.fetchData(trip: trip)
+        dataModel.fetchData(trip: trip)
     }
-    
-    @MainActor func updateMap() {
-        viewModel.daySegmentsForFunction = viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments
-        viewModel.getMapInfo()
-        if viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments[0].startLocation == viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments[0].endLocation {
-            singleLocation = true
-        } else {
-            singleLocation = false
-        }
-        print("SingleLocation: \(singleLocation)")
-        adjustRegion()
-        viewDate = viewModel.comprehensiveAndDailySegments[0].segments.first?.dayDate ?? Date()
-        print("viewDate: \(viewDate)")
-    }
-    
-    func adjustRegion() {
-            let screenWidth = UIScreen.main.bounds.width
-            let screenHeight = UIScreen.main.bounds.height
-            
-            
-            // Calculate the bounding box for all annotations
-            let latitudesEndPoint = viewModel.allMapInfo.map { $0.endingPoint!.latitude}
-            let latitudesStartPoint = viewModel.allMapInfo.map { $0.startingPoint!.latitude}
-            let latitudes: [CLLocationDegrees] = latitudesEndPoint + latitudesStartPoint
-            let longitudesEndPoint = viewModel.allMapInfo.map { $0.endingPoint!.longitude}
-            let longitudesStartPoint = viewModel.allMapInfo.map { $0.startingPoint!.longitude}
-            let longitudes: [CLLocationDegrees] = longitudesEndPoint + longitudesStartPoint
-            
-            let minLat = latitudes.min()!
-            let maxLat = latitudes.max()!
-            let minLon = longitudes.min()!
-            let maxLon = longitudes.max()!
-            
-            // Calculate the span
-            let spanLat = (maxLat - minLat)
-            let spanLon = (maxLon - minLon)
-            
-            // Calculate the center of the bounding box
-            let centerLat = (minLat + maxLat) / 2
-            let centerLon = (minLon + maxLon) / 2
-            
-            var adjustedCenterLat = centerLat
-            var adjustedSpanLon = spanLon * 1.5
-            var adjustedSpanLat = spanLat * 1.5
-            
-            if spanLon >= spanLat {
-                let screenSpanLat = spanLon * screenHeight/screenWidth
-                adjustedCenterLat = centerLat - screenSpanLat / 2 * 0.4
-            }
-            
-            if spanLon < spanLat {
-                adjustedCenterLat = centerLat - spanLat / 2
-                adjustedSpanLon = spanLon / 0.4
-                adjustedSpanLat = spanLat / 0.4
-            }
-        if selectedDetent == .fraction(0.5) {
-            
-            position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: adjustedSpanLat, longitudeDelta: adjustedSpanLon)))
-            if singleLocation {
-                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 0.03/4, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)))
-            }
-        } else {
-            position = .automatic
-            if singleLocation {
-                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)))
-            }
-        }
- 
-}
-    
-    
 }
 
 /*

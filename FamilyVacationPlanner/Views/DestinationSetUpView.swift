@@ -11,7 +11,7 @@ import SwiftUI
 struct DestinationSetUpView: View {
     @Binding var annotationItem: AnnotationItem
     @Binding var trip: Trip
-    @Environment(LocationsViewModel.self) private var viewModel
+    @Environment(DataModel.self) private var dataModel
     //@Environment(\.managedObjectContext) var moc
     @Environment(GlobalVariables.self) private var globalVar
     @FocusState private var isFocusedTextField: Bool
@@ -125,7 +125,7 @@ struct DestinationSetUpView: View {
             }
             
             Button(action: {
-                let location = Location(context: viewModel.moc)
+                let location = Location(context: dataModel.moc)
                 location.id = UUID()
                 location.name = annotationItem.name
                 location.title = annotationItem.title
@@ -141,7 +141,7 @@ struct DestinationSetUpView: View {
                 location.startIndex = Int16(possibleStartLocationsIndex)
                 location.primary = true
                 trip.addToLocation(location)
-                try? viewModel.moc.save()
+                try? dataModel.moc.save()
                 if locationType == LocationType.pointOfInterest {
                     selectedStartLocation = possibleStartLocations[possibleStartLocationsIndex]
                 }

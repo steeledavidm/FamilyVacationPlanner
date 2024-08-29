@@ -12,7 +12,7 @@ struct EditDestinationView: View {
     @State var location: Location
     
     //@Environment(\.managedObjectContext) var moc
-    @Environment(LocationsViewModel.self) private var viewModel
+    @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVar
     @FocusState private var isFocusedTextField: Bool
     @State var overNightStopToggle: Bool = false
@@ -82,7 +82,7 @@ struct EditDestinationView: View {
             location.startLocation = startLocation
             location.overNightStop = overNightStop
             
-            try? viewModel.moc.save()
+            try? dataModel.moc.save()
             //globalVar.refreshMap.toggle()
             
         }

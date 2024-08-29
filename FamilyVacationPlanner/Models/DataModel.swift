@@ -1,5 +1,5 @@
 //
-//  LocationsViewModel.swift
+//  DataModel.swift
 //  FamilyVacationPlanner
 //
 //  Created by David Steele on 8/2/24.
@@ -10,7 +10,7 @@ import Foundation
 import MapKit
 import SwiftUI
 
-@Observable class LocationsViewModel {
+@Observable class DataModel {
     
     let moc: NSManagedObjectContext = DataController.shared.container.viewContext
     var locationManager = LocationManager()
@@ -36,6 +36,7 @@ import SwiftUI
         }
         setUpDailySegments(trip: trip)
         setUpTripComprehensiveView()
+        print("allMapInfo.count: \(allMapInfo.count)")
     }
     
     @MainActor func getMapInfo() {
@@ -76,8 +77,7 @@ import SwiftUI
             allMapInfo.sort {$0.dateLeave < $1.dateLeave}
         }
     }
-    
-    
+
     @MainActor func getDirections() async throws -> MKRoute  {
         route = nil
         print("Getting Directions")
@@ -209,6 +209,7 @@ import SwiftUI
             })
         }
     }
+    
     func populateRecentList(trip: Trip) -> [Location] {
         
         let request: NSFetchRequest<Location> = Location.fetchRequest()

@@ -13,7 +13,7 @@ struct FamilyVacationPlannerApp: App {
 
     let dataController = DataController.shared
     @State private var globalVariables = GlobalVariables()
-    @State private var viewModel = LocationsViewModel()
+    @State private var dataModel = DataModel()
 
     
     var body: some Scene {
@@ -21,7 +21,7 @@ struct FamilyVacationPlannerApp: App {
             ContentView()
                 .environment(\.managedObjectContext, dataController.container.viewContext)
                 .environment(globalVariables)
-                .environment(viewModel)
+                .environment(dataModel)
         }
     }
 }

@@ -6,46 +6,67 @@
 //
 
 import CoreData
+import CoreLocation
 import MapKit
 import SwiftUI
 import Foundation
 
 struct ContentView: View {
+    @Environment(DataModel.self) private var dataModel
+    @Environment(GlobalVariables.self) private var globalVars
     
-    @State var coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
-    @State var markerIndex = 0
-    @State var showSheet = true
-    @State private var sheetDetent: PresentationDetent = .fraction(0.5)
+    @State private var currentLocation: CLLocation = CLLocation()
+    @State private var position: MapCameraPosition = .automatic
+    @State private var selectedDetent: PresentationDetent = .fraction(0.5)
+    @State private var selectedTabIndex: Int = 0
+    @State private var showSheet = true
+    @State private var trip: Trip = Trip()
+    @State private var viewModel = ViewModel()
+
     var body: some View {
-    
-        MapReader { proxy in
-            Map() {
-                if coordinate.latitude != 0 {
-                    Marker("Selected Location", coordinate: coordinate)
+        ZStack {
+            MapReader {_ in
+                Map(position: $position) {
+                    ForEach(dataModel.allMapInfo) {mapInfo in
+                        Marker(mapInfo.markerLabelStart, coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D())
+                        Marker(mapInfo.markerLabelEnd, coordinate: mapInfo.endingPoint ?? CLLocationCoordinate2D())
+                        MapPolyline(mapInfo.route ?? MKRoute())
+                            .stroke(.blue, lineWidth: 5)
+                    }
                 }
+                .animation(.easeInOut(duration: 1), value: selectedDetent)
+                .animation(.easeInOut(duration: 1), value: position)
+                .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
             }
-            .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
-            .onTapGesture { position in
-                if let coordinate = proxy.convert(position, from: .local) {
-                    print(coordinate)
-                }
+            .onAppear {
+                selectedDetent = globalVars.selectedDetent
+                dataModel.getCurrentLocation(completionHandler: { currentCLLocation in
+                    print("name: \(String(describing: currentCLLocation?.name))")
+                    print("address: \(String(describing: currentCLLocation?.thoroughfare))")
+                    currentLocation = currentCLLocation?.location ?? CLLocation(latitude: 0, longitude: 0)
+                    position = viewModel.updateMapCameraPosition(selectedTabIndex: selectedTabIndex, selectedDetent: selectedDetent, currentLocation: currentLocation)
+                })
+            }
+            .onChange(of: selectedDetent) {
+                globalVars.selectedDetent = selectedDetent
+                position = viewModel.updateMapCameraPosition(selectedTabIndex: selectedTabIndex, selectedDetent: selectedDetent, currentLocation: currentLocation)
+            }
+            .onChange(of: globalVars.selectedDetent) {
+                selectedDetent = globalVars.selectedDetent
+                position = viewModel.updateMapCameraPosition(selectedTabIndex: selectedTabIndex, selectedDetent: selectedDetent, currentLocation: currentLocation)
+                print("detent Changed")
+            }
+            .onChange(of: globalVars.selectedTabIndex) {
+                selectedTabIndex = globalVars.selectedTabIndex
+                position = viewModel.updateMapCameraPosition(selectedTabIndex: selectedTabIndex, selectedDetent: selectedDetent, currentLocation: currentLocation)
+                print("tab Changed")
             }
         }
-        .sheet(isPresented: $showSheet, content: {
+        .sheet(isPresented: $showSheet) {
             TripSetUpView()
-                .interactiveDismissDisabled()
-                .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)], selection: $sheetDetent)
-                .presentationBackgroundInteraction(.enabled)
-                .sheet(isPresented: $showSheet, content: {
-                    Text("Second Sheet")
-                })
-                
-        })
+            .interactiveDismissDisabled()
+            .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1), .large], selection: $selectedDetent)
+            .presentationBackgroundInteraction(.enabled)
+        }
     }
-}
-
-
-
-#Preview {
-    ContentView().environment(\.managedObjectContext, DataController.preview)
 }

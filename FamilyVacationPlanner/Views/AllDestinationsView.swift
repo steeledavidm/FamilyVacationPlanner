@@ -11,7 +11,7 @@ import SwiftUI
 
 struct AllDestinationsView: View {
     //@Environment(\.managedObjectContext) var moc
-    @Environment(LocationsViewModel.self) private var viewModel
+    @Environment(DataModel.self) private var dataModel
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)])
         var locations: FetchedResults<Location>
 
@@ -49,10 +49,10 @@ struct AllDestinationsView: View {
     func removeLocation(at offsets: IndexSet) {
         for index in offsets {
             let location = locations[index]
-            viewModel.moc.delete(location)
+            dataModel.moc.delete(location)
         }
         do {
-            try viewModel.moc.save()
+            try dataModel.moc.save()
         } catch {
             print("Core Data Error")
         }

@@ -9,52 +9,43 @@ import MapKit
 import SwiftUI
 
 struct TripSetUpView: View {
-    //@Environment(\.managedObjectContext) var moc
-    @Environment(LocationsViewModel.self) private var viewModel
+
+    @Environment(DataModel.self) private var dataModel
+    @Environment(GlobalVariables.self) private var globalVars
     
     @FetchRequest(sortDescriptors: [SortDescriptor(\.tripName)])
     var trips: FetchedResults<Trip>
     
-    @State private var tripName: String = ""
-    @State private var oneWay: Bool = false
-    @State private var dateLeave: Date = Date()
     @State private var dateArrive: Date = Date()
-    var selection: MKMapItem?
-    @State private var startLocation: Location?
-    @State private var test: String = "test"
-    
-    @State var editMode: Bool = false
-    
-    @FocusState private var isFocused: Bool
-    @State private var path: NavigationPath = NavigationPath()
+    @State private var dateLeave: Date = Date()
+    @State private var editMode: Bool = false
     @State private var newTrip: Bool = false
-    
+    @State private var oneWay: Bool = false
+    @State private var path: NavigationPath = NavigationPath()
+    @State private var startLocation: Location?
+    @State private var tripName: String = ""
+
     var body: some View {
         NavigationStack(path: $path) {
             VStack(alignment: .leading) {
-                Section("Trips") {
-                    List {
-                        ForEach(trips) { trip in
-                            NavigationLink(value: trip) {
-                                VStack(alignment: .leading) {
-                                    HStack {
-                                        trip.oneWay ?
-                                        Label(trip.tripName ?? "Unknown", systemImage: "arrow.forward")
-                                        :
-                                        Label(trip.tripName ?? "Unknown", systemImage: "arrow.circlepath")
-                                    }
-                                    .font(.headline)
+                List {
+                    ForEach(trips) { trip in
+                        NavigationLink(value: trip) {
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    trip.oneWay ?
+                                    Label(trip.tripName ?? "Unknown", systemImage: "arrow.forward")
+                                    :
+                                    Label(trip.tripName ?? "Unknown", systemImage: "arrow.circlepath")
                                 }
+                                .font(.headline)
                             }
                         }
-                        .onDelete(perform: removeTrip)
                     }
-                }
-                
-                
-                VStack {
+                    .onDelete(perform: removeTrip)
+                    
                     Button(action: {
-                        let trip = Trip(context: viewModel.moc)
+                        let trip = Trip(context: dataModel.moc)
                         trip.tripName = ""
                         trip.startDate = Date()
                         trip.endDate = Date()
@@ -62,13 +53,14 @@ struct TripSetUpView: View {
                         path.append(trip)
                         editMode = true
                         newTrip = true
+                        globalVars.selectedDetent = .large
                     }, label: {
                         Text("New Trip")
-                            .padding()
-                            .background(Color(.blue))
-                            .foregroundColor(.white)
-                            .clipShape(.capsule)
                     })
+                }
+                .onAppear {
+                    editMode = false
+                    globalVars.selectedDetent = .fraction(0.5)
                 }
             }
             .navigationTitle("Select Trip")
@@ -86,7 +78,7 @@ struct TripSetUpView: View {
             }
             .navigationDestination(for: Trip.self, destination: {trip in
                 if editMode {
-                    EditTripView(trip: trip, newTrip: $newTrip, editMode: $editMode, path: $path)
+                    EditTripView(editMode: $editMode, newTrip: $newTrip, path: $path, trip: trip)
                 } else {
                     TripOverviewView(trip: trip)
                 }
@@ -96,17 +88,14 @@ struct TripSetUpView: View {
             }
         }
     }
-
-
-
     
     func removeTrip(at offsets: IndexSet) {
         for index in offsets {
             let trip = trips[index]
-            viewModel.moc.delete(trip)
+            dataModel.moc.delete(trip)
         }
         do {
-            try viewModel.moc.save()
+            try dataModel.moc.save()
         } catch {
             print("Core Data Error")
         }

@@ -12,7 +12,7 @@ import Foundation
 
 struct SearchDestinationView : View {
     @State var searchModel = SearchModel()
-    @Environment(LocationsViewModel.self) private var viewModel
+    @Environment(DataModel.self) private var dataModel
     @FocusState private var isFocusedTextField: Bool
     var backgroundColor: Color = Color.init(uiColor: . systemGray6)
     @State private var addressResult: AddressResult?
@@ -97,11 +97,11 @@ struct SearchDestinationView : View {
                 searchText = ""
             }
             
-            recentList = viewModel.populateRecentList(trip: trip)
+            recentList = dataModel.populateRecentList(trip: trip)
             
             
             
-            viewModel.getCurrentLocation(completionHandler: { currentLocation in
+            dataModel.getCurrentLocation(completionHandler: { currentLocation in
                 print("name: \(String(describing: currentLocation?.name))")
                 print("address: \(String(describing: currentLocation?.thoroughfare))")
             })

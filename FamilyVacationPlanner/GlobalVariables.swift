@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import SwiftUI
 @Observable
 
 class GlobalVariables {
-    var selectedTabIndex: Int = 0
     var currentLocation: Location = Location()
+    var selectedTabIndex: Int = 0
+    var selectedDetent: PresentationDetent = .fraction(0.5)
 }

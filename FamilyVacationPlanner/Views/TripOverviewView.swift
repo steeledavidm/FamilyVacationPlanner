@@ -10,7 +10,7 @@ import MapKit
 import SwiftUI
 
 struct TripOverviewView: View {
-    @Environment(GlobalVariables.self) private var globalVar
+    //@Environment(GlobalVariables.self) private var globalVar
     //@Environment(LocationsViewModel.self) private var viewModel
     @FetchRequest var locations: FetchedResults<Location>
     
@@ -43,29 +43,6 @@ struct TripOverviewView: View {
     
     var body: some View {
         VStack {
-            ZStack {
-                Map(position: $position) {
-                    ForEach(allMapInfo) {mapInfo in
-                        Marker(mapInfo.markerLabelStart, coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D())
-                    }
-                }
-                VStack() {
-                    HStack {
-                        Text(trip.tripName ?? "Unknown")
-                            .font(.title)
-                            .padding(.horizontal)
-                            .background(Color(.blue))
-                            .foregroundColor(.white)
-                            .clipShape(.capsule)
-                            .padding(.horizontal)
-                            .shadow(radius: 5)
-                        Spacer()
-                    }
-                    Text(trip.startDate!, style: .date)
-                    Text(trip.endDate!, style: .date)
-                    Spacer()
-                }
-            }
             Section(header: SectionHeaderView(date: trip.startDate ?? Date(), isPresented: $isPresented, locationType: $locationType, comprehensive: .constant(false))) {
                 List {
                     ForEach(locations) {location in
