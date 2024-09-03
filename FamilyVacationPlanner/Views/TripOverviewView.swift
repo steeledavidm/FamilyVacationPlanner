@@ -10,13 +10,13 @@ import MapKit
 import SwiftUI
 
 struct TripOverviewView: View {
-    //@Environment(GlobalVariables.self) private var globalVar
-    //@Environment(LocationsViewModel.self) private var viewModel
+    @Environment(GlobalVariables.self) private var globalVar
+    @Environment(DataModel.self) private var dataModel
+    
     @FetchRequest var locations: FetchedResults<Location>
     
     @State var trip: Trip
     @State private var allMapInfo: [MapInfo] = []
-    //@State private var dateArray: [LocationsForDay] = []
     
     init(trip: Trip) {
         _locations = FetchRequest<Location>(sortDescriptors: [SortDescriptor(\.dateLeave)], predicate: NSPredicate(format: "%@ IN trip", trip))
@@ -72,9 +72,9 @@ struct TripOverviewView: View {
             }
             .padding()
             
+            
         }
-        .toolbar(.hidden, for: .navigationBar)
-        
+        .toolbar(.hidden, for: .navigationBar)        
         .presentationDetents([.medium]) //.fraction(0.5), .medium])
         .interactiveDismissDisabled()
         .sheet(isPresented: $isPresented) {

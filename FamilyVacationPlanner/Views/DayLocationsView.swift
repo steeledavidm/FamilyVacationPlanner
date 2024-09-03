@@ -95,8 +95,8 @@ struct DayLocationsView: View {
             }
             .tabViewStyle(.page)
             .onAppear {
+                globalVar.selectedTabIndex = 0
                 dataModel.fetchData(trip: trip)
-                print("fetched data")
                 selectedTabIndex = dataModel.comprehensiveAndDailySegments[0].dayIndex
             }
         
@@ -109,6 +109,7 @@ struct DayLocationsView: View {
         
         .onChange(of: selectedTabIndex) {
             globalVar.selectedTabIndex = selectedTabIndex
+            print(dataModel.comprehensiveAndDailySegments.count)
         }
     }
     

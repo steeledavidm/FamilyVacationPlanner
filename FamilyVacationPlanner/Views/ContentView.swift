@@ -14,6 +14,7 @@ import Foundation
 struct ContentView: View {
     @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVars
+    @Environment(LocationManager.self) private var locationManager
     
     @State private var currentLocation: CLLocation = CLLocation()
     @State private var position: MapCameraPosition = .automatic
@@ -21,7 +22,7 @@ struct ContentView: View {
     @State private var selectedTabIndex: Int = 0
     @State private var showSheet = true
     @State private var trip: Trip = Trip()
-    @State private var viewModel = ViewModel()
+    @State private var viewModel: ViewModel = ViewModel(selectedTabIndex: 0, selectedDetent: .fraction(0.5))
 
     var body: some View {
         ZStack {
@@ -39,27 +40,33 @@ struct ContentView: View {
                 .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
             }
             .onAppear {
-                selectedDetent = globalVars.selectedDetent
-                dataModel.getCurrentLocation(completionHandler: { currentCLLocation in
-                    print("name: \(String(describing: currentCLLocation?.name))")
-                    print("address: \(String(describing: currentCLLocation?.thoroughfare))")
-                    currentLocation = currentCLLocation?.location ?? CLLocation(latitude: 0, longitude: 0)
-                    position = viewModel.updateMapCameraPosition(selectedTabIndex: selectedTabIndex, selectedDetent: selectedDetent, currentLocation: currentLocation)
-                })
+                viewModel.selectedDetent = globalVars.selectedDetent
+                Task {
+                    await dataModel.getCurrentLocation(locationManager: locationManager)
+                    currentLocation = dataModel.currentLocation
+                    viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel)
+                    position = viewModel.position
+                }
             }
             .onChange(of: selectedDetent) {
                 globalVars.selectedDetent = selectedDetent
-                position = viewModel.updateMapCameraPosition(selectedTabIndex: selectedTabIndex, selectedDetent: selectedDetent, currentLocation: currentLocation)
             }
             .onChange(of: globalVars.selectedDetent) {
+                print(currentLocation)
                 selectedDetent = globalVars.selectedDetent
-                position = viewModel.updateMapCameraPosition(selectedTabIndex: selectedTabIndex, selectedDetent: selectedDetent, currentLocation: currentLocation)
+                viewModel.selectedDetent = selectedDetent
+                viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel)
+                position = viewModel.position
                 print("detent Changed")
             }
             .onChange(of: globalVars.selectedTabIndex) {
-                selectedTabIndex = globalVars.selectedTabIndex
-                position = viewModel.updateMapCameraPosition(selectedTabIndex: selectedTabIndex, selectedDetent: selectedDetent, currentLocation: currentLocation)
                 print("tab Changed")
+                selectedTabIndex = globalVars.selectedTabIndex
+                viewModel.selectedTabIndex = selectedTabIndex
+                dataModel.getMapInfo(selectedTabIndex: selectedTabIndex)
+                viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel)
+                position = viewModel.position
+                dataModel.getRoute()
             }
         }
         .sheet(isPresented: $showSheet) {

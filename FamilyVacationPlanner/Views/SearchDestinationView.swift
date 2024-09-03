@@ -97,14 +97,14 @@ struct SearchDestinationView : View {
                 searchText = ""
             }
             
-            recentList = dataModel.populateRecentList(trip: trip)
+            //recentList = dataModel.populateRecentList(trip: trip)
             
-            
-            
-            dataModel.getCurrentLocation(completionHandler: { currentLocation in
-                print("name: \(String(describing: currentLocation?.name))")
-                print("address: \(String(describing: currentLocation?.thoroughfare))")
-            })
+//            
+//            
+//            dataModel.getCurrentLocation(completionHandler: { currentLocation in
+//                print("name: \(String(describing: currentLocation?.name))")
+//                print("address: \(String(describing: currentLocation?.thoroughfare))")
+//            })
             
         }
     }

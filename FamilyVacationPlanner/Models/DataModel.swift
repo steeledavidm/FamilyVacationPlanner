@@ -13,9 +13,6 @@ import SwiftUI
 @Observable class DataModel {
     
     let moc: NSManagedObjectContext = DataController.shared.container.viewContext
-    var locationManager = LocationManager()
-    
-    
     var locations: [Location] = []
     var allMapInfo: [MapInfo] = []
     var daySegmentsForFunction: [Segment] = [Segment(segmentIndex: 0, dayDate: Date(), dayString: "", startLocation: Location(), endLocation: Location())]
@@ -25,9 +22,11 @@ import SwiftUI
     var tripSegments: [DaySegments] = []
     var daySegments: [Segment] = []
     var comprehensiveAndDailySegments: [DaySegments] = []
+    var currentLocation: CLLocation = CLLocation()
     
     
-    @MainActor func fetchData(trip: Trip) {
+    
+    func fetchData(trip: Trip) {
         let request: NSFetchRequest<Location> = Location.fetchRequest()
         request.predicate = NSPredicate(format: "%@ IN trip", trip)
         do {
@@ -36,11 +35,13 @@ import SwiftUI
         }
         setUpDailySegments(trip: trip)
         setUpTripComprehensiveView()
-        print("allMapInfo.count: \(allMapInfo.count)")
     }
     
-    @MainActor func getMapInfo() {
+    func getMapInfo(selectedTabIndex: Int) {
+        print("Function 2")
         allMapInfo = []
+        daySegmentsForFunction = comprehensiveAndDailySegments[selectedTabIndex].segments
+        print("day Segment count: \(daySegmentsForFunction.count)")
         
         for segment in daySegmentsForFunction {
             let startLocation = CLLocationCoordinate2D(latitude: segment.startLocation.latitude, longitude: segment.startLocation.longitude)
@@ -52,19 +53,17 @@ import SwiftUI
             
             allMapInfo.append(MapInfo(locationid: locationId ?? UUID(), dateLeave: dateLeave, markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation))
         }
+    }
+    
+    func getRoute() {
         Task {
             for (index, mapInfo) in allMapInfo.enumerated() {
-                //print("Imdex is: \(index)")
-                //print("count is: \(allMapInfo.count)")
                 startingPoint = mapInfo.startingPoint ?? CLLocationCoordinate2D()
                 endingPoint = mapInfo.endingPoint  ?? CLLocationCoordinate2D()
                 
-                //print("startingPoint: \(startingPoint.longitude), endingPoint: \(endingPoint.longitude)")
                 if startingPoint.longitude != endingPoint.longitude {
                     do {
                         let route = try await getDirections()
-                        //print("now Imdex is: \(index)")
-                        //print("now count is: \(allMapInfo.count)")
                         if index < allMapInfo.count {
                             allMapInfo[index].route = route
                         }
@@ -75,10 +74,12 @@ import SwiftUI
                 }
             }
             allMapInfo.sort {$0.dateLeave < $1.dateLeave}
+            print("allMapInfo.count: \(allMapInfo.count)")
         }
     }
 
-    @MainActor func getDirections() async throws -> MKRoute  {
+
+    func getDirections() async throws -> MKRoute  {
         route = nil
         print("Getting Directions")
         let request = MKDirections.Request()
@@ -92,7 +93,7 @@ import SwiftUI
     }
     
     
-    @MainActor func setUpDailySegments(trip: Trip) {
+   func setUpDailySegments(trip: Trip) {
         let calendar = Calendar.current
         var tripStartDate: Date = Date()
         var tripEndDate: Date = Date()
@@ -117,17 +118,12 @@ import SwiftUI
             daySegments = []
             tripSegments.append(DaySegments(dayIndex: dayNumber + 1, segments: [], comprehensive: false))
             dateOfDay = calendar.date(byAdding: DateComponents(day: dayNumber), to: tripStartDate) ?? Date()
-            //print("Day number: \(dayNumber), dateOfDay: \(dateOfDay)")
             let formatter = DateFormatter()
-            formatter.dateFormat = "MMM-dd-yyyy" // Customize the format (e.g., "MMM d, yyyy")
+            formatter.dateFormat = "MMM-dd-yyyy"
             let formattedDateString = formatter.string(from: dateOfDay)
             var startLocationSet = false
             for location in locations {
-                //print(location.id?.uuidString as Any)
                 if location.overNightStop || location.startLocation {
-                    //print(location.name ?? "Unknown")
-                    // print(location.dateLeave!)
-                    //print(location.dateArrive!)
                     if location.startLocation {
                         if !trip.oneWay {
                             tripEndLocation = location
@@ -136,7 +132,6 @@ import SwiftUI
                     if location.dateLeave ?? Date() > dateOfDay && location.dateLeave ?? Date() < (dateOfDay + 3600 * 24) {
                         dayStartLocation = location
                         startLocationSet = true
-                        //print("start location set")
                     }
                     if !startLocationSet {
                         dayStartLocation = currentLocation
@@ -144,23 +139,16 @@ import SwiftUI
                     if location.dateArrive ?? Date() > dateOfDay && location.dateArrive ?? Date() < (dateOfDay + 3600 * 24) {
                         dayEndLocation = location
                         currentLocation = location
-                        //print("end Location Set")
                     }
                 }
             }
             if dayNumber == numberOfDays - 1 {
                 dayEndLocation = tripEndLocation
             }
-            //print("startLocation: \(String(describing: dayStartLocation.name))")
-            //print("endLocation: \(String(describing: dayEndLocation.name))")
             daySegments.append(Segment(segmentIndex: 0, dayDate: dateOfDay, dayString: formattedDateString, startLocation: dayStartLocation , endLocation: dayEndLocation ))
             tripSegments[dayNumber].segments = daySegments
             
             for location in locations {
-                //print(location.name as Any)
-                //print("dateArrive: \(String(describing: location.dateArrive))")
-                //print("dateOfDay: \(dateOfDay)")
-                //print("dateOfDay+24hours: \(dateOfDay + 3600 * 24)")
                 if location.dateArrive ?? Date() >= dateOfDay && location.dateArrive ?? Date() < (dateOfDay + 3600 * 24) {
                     if !location.overNightStop && !location.startLocation {
                         let newSegment = Segment(segmentIndex: 0, dayDate: dateOfDay, dayString: formattedDateString, startLocation: daySegments[Int(location.startIndex)].startLocation, endLocation: location)
@@ -181,7 +169,7 @@ import SwiftUI
         }
     }
     
-    @MainActor func setUpTripComprehensiveView() {
+    func setUpTripComprehensiveView() {
         comprehensiveAndDailySegments = []
         var daySegmentsAccumulator: [Segment] = []
         for tripSegment in tripSegments {
@@ -192,55 +180,64 @@ import SwiftUI
         comprehensiveAndDailySegments.append(contentsOf: tripSegments)
     }
     
-    func getCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void ) {
-        
+//    func getCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void ) {
+//        
+//        locationManager.checkLocationAuthorization()
+//        if let lastLocation = self.locationManager.lastKnownLocation {
+//            let geocoder = CLGeocoder()
+//            
+//            geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+//                if error == nil {
+//                    let firstLocation = placemarks?[0]
+//                    completionHandler(firstLocation)
+//                }
+//                else {
+//                    completionHandler(nil)
+//                }
+//            })
+//        }
+//    }
+    
+    func getCurrentLocation(locationManager: LocationManager) async {
         locationManager.checkLocationAuthorization()
-        if let lastLocation = self.locationManager.lastKnownLocation {
-            let geocoder = CLGeocoder()
-            
-            geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
-                if error == nil {
-                    let firstLocation = placemarks?[0]
-                    completionHandler(firstLocation)
-                }
-                else {
-                    completionHandler(nil)
-                }
-            })
-        }
+        currentLocation = locationManager.lastKnownLocation ?? CLLocation()
+        print("current Location")
     }
     
-    func populateRecentList(trip: Trip) -> [Location] {
-        
-        let request: NSFetchRequest<Location> = Location.fetchRequest()
-        request.predicate = NSPredicate(format: "%@ IN trip", trip)
-        do {
-            locations = try moc.fetch(request)
-        } catch {
-        }
-        
-        let currentLoc = Location(context: moc)
-        var recentList: [Location] = []
-        getCurrentLocation(completionHandler: { currentLocation in
-            currentLoc.name = "Current Location"
-            currentLoc.title = currentLocation?.name
-            currentLoc.latitude = currentLocation?.location?.coordinate.latitude ?? 0.0
-            currentLoc.longitude = currentLocation?.location?.coordinate.longitude ?? 0.0
-        })
-        
-        recentList.append(currentLoc)
-        
-        for location in locations {
-            if location.overNightStop {
-                recentList.append(location)
-            }
-        }
-        for location in locations {
-            if location.startLocation {
-                recentList.append(location)
-            }
-        }
-        
-        return recentList
-    }
+//    func populateRecentList(trip: Trip) -> [Location] {
+//        
+//        let request: NSFetchRequest<Location> = Location.fetchRequest()
+//        request.predicate = NSPredicate(format: "%@ IN trip", trip)
+//        do {
+//            locations = try moc.fetch(request)
+//        } catch {
+//        }
+//        
+//        let currentLoc = Location(context: moc)
+//        var recentList: [Location] = []
+//        getCurrentLocation(completionHandler: { currentLocation in
+//            currentLoc.name = "Current Location"
+//            currentLoc.title = currentLocation?.name
+//            currentLoc.latitude = currentLocation?.location?.coordinate.latitude ?? 0.0
+//            currentLoc.longitude = currentLocation?.location?.coordinate.longitude ?? 0.0
+//        })
+//        
+//        recentList.append(currentLoc)
+//        
+//        for location in locations {
+//            if location.overNightStop {
+//                recentList.append(location)
+//            }
+//        }
+//        for location in locations {
+//            if location.startLocation {
+//                recentList.append(location)
+//            }
+//        }
+//        
+//        return recentList
+//    }
+    
+    
+    
 }

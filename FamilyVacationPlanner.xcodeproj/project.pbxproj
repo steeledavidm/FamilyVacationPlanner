@@ -113,7 +113,6 @@
 				5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */,
 				5573954B2C7A29750006DEE5 /* Models */,
 				5573954A2C7A28FE0006DEE5 /* Views */,
-				553588F92C415F540014D48C /* GlobalVariables.swift */,
 				557395492C7A28AA0006DEE5 /* Structures */,
 				5558E7DD2C25E21200CE6991 /* CoreData */,
 				5558E7982C24867500CE6991 /* Assets.xcassets */,
@@ -180,6 +179,7 @@
 				557395452C7A24E70006DEE5 /* LocationManager.swift */,
 				5558E7A22C2486CF00CE6991 /* SearchModel.swift */,
 				55559C562C5D7D2F00149F8C /* DataModel.swift */,
+				553588F92C415F540014D48C /* GlobalVariables.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";

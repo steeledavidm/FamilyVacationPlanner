@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import MapKit
 import SwiftUI
+
 @Observable
 
 class GlobalVariables {
-    var currentLocation: Location = Location()
-    var selectedTabIndex: Int = 0
+    var selectedTabIndex: Int = 999
     var selectedDetent: PresentationDetent = .fraction(0.5)
 }

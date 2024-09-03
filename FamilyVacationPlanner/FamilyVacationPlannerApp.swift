@@ -8,13 +8,13 @@
 
 import SwiftUI
 
+
 @main
 struct FamilyVacationPlannerApp: App {
-
     let dataController = DataController.shared
     @State private var globalVariables = GlobalVariables()
     @State private var dataModel = DataModel()
-
+    @State private var locationManager = LocationManager()
     
     var body: some Scene {
         WindowGroup {
@@ -22,6 +22,7 @@ struct FamilyVacationPlannerApp: App {
                 .environment(\.managedObjectContext, dataController.container.viewContext)
                 .environment(globalVariables)
                 .environment(dataModel)
+                .environment(locationManager)
         }
     }
 }

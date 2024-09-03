@@ -8,9 +8,10 @@
 import Foundation
 import CoreLocation
 
+@Observable 
 final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     
-    @Published var lastKnownLocation: CLLocation?
+    var lastKnownLocation: CLLocation?
     var manager = CLLocationManager()
     
     
