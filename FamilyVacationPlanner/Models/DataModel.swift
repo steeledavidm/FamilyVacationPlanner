@@ -23,6 +23,8 @@ import SwiftUI
     var daySegments: [Segment] = []
     var comprehensiveAndDailySegments: [DaySegments] = []
     var currentLocation: CLLocation = CLLocation()
+    var currentLocationPlacemark: CLPlacemark?
+    var startLocationSet: Bool = false
     
     
     
@@ -121,7 +123,7 @@ import SwiftUI
             let formatter = DateFormatter()
             formatter.dateFormat = "MMM-dd-yyyy"
             let formattedDateString = formatter.string(from: dateOfDay)
-            var startLocationSet = false
+            startLocationSet = false
             for location in locations {
                 if location.overNightStop || location.startLocation {
                     if location.startLocation {
@@ -198,45 +200,54 @@ import SwiftUI
 //        }
 //    }
     
-    func getCurrentLocation(locationManager: LocationManager) async {
+    func getCurrentLocation(locationManager: LocationManager) async throws -> CLPlacemark {
         locationManager.checkLocationAuthorization()
         currentLocation = locationManager.lastKnownLocation ?? CLLocation()
-        print("current Location")
+        
+        let geoCoder = CLGeocoder()
+        
+        guard let placemark = try await geoCoder.reverseGeocodeLocation(currentLocation).first else {
+            throw CLError(.geocodeFoundPartialResult)
+        }
+        currentLocationPlacemark = placemark
+        return placemark
     }
     
-//    func populateRecentList(trip: Trip) -> [Location] {
-//        
-//        let request: NSFetchRequest<Location> = Location.fetchRequest()
-//        request.predicate = NSPredicate(format: "%@ IN trip", trip)
-//        do {
-//            locations = try moc.fetch(request)
-//        } catch {
-//        }
-//        
-//        let currentLoc = Location(context: moc)
-//        var recentList: [Location] = []
-//        getCurrentLocation(completionHandler: { currentLocation in
-//            currentLoc.name = "Current Location"
-//            currentLoc.title = currentLocation?.name
-//            currentLoc.latitude = currentLocation?.location?.coordinate.latitude ?? 0.0
-//            currentLoc.longitude = currentLocation?.location?.coordinate.longitude ?? 0.0
-//        })
-//        
-//        recentList.append(currentLoc)
-//        
-//        for location in locations {
-//            if location.overNightStop {
-//                recentList.append(location)
-//            }
-//        }
-//        for location in locations {
-//            if location.startLocation {
-//                recentList.append(location)
-//            }
-//        }
-//        
-//        return recentList
-//    }
+    
+    func populateRecentList(trip: Trip) async throws -> [Location] {
+
+        let request: NSFetchRequest<Location> = Location.fetchRequest()
+        request.predicate = NSPredicate(format: "%@ IN trip", trip)
+        do {
+            locations = try moc.fetch(request)
+        } catch {
+        }
+            
+            let currentLoc = Location(context: moc)
+            var recentList: [Location] = []
+            currentLoc.name = "Current Location"
+            currentLoc.title = currentLocationPlacemark?.name
+            currentLoc.latitude = currentLocationPlacemark?.location?.coordinate.latitude ?? 0.0
+            currentLoc.longitude = currentLocationPlacemark?.location?.coordinate.longitude ?? 0.0
+            
+            recentList.append(currentLoc)
+            
+            for location in locations {
+                if location.overNightStop {
+                    recentList.append(location)
+                }
+            }
+            for location in locations {
+                if location.startLocation {
+                    recentList.append(location)
+                }
+            }
+            
+            return recentList
+        
+    }
+    
+    
     
     
     

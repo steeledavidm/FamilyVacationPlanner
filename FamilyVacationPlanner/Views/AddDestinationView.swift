@@ -24,10 +24,6 @@ struct AddDestinationView: View {
     
     @State private var setUpViewIsPresented = false
     
-    @Binding var trip: Trip
-    @Binding var isPresented: Bool
-    @Binding var locationType: LocationType
-    @Binding var daySegments: [Segment]
 
 
     var body: some View {
@@ -60,7 +56,7 @@ struct AddDestinationView: View {
         }
         
         .sheet(isPresented: $setUpViewIsPresented) {
-            DestinationSetUpView(annotationItem: $annotationItem, trip: $trip, isPresented: $isPresented, locationType: $locationType, daySegments: $daySegments)
+            DestinationSetUpView(annotationItem: $annotationItem)
         }
         
         
@@ -71,15 +67,15 @@ struct AddDestinationView: View {
 
 
 
-#Preview {
-    let sampleItem1 = AnnotatedMapItem(item: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.7833, longitude: -122.4167), addressDictionary: nil)))
-    let sampleItem2 = AnnotatedMapItem(item: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.8000, longitude: -122.4000), addressDictionary: nil)))
-
-    let isPresented = false
-    let trip = Trip()
-    let locationType: LocationType = .startLocation
-    let locationsForDay = [Segment(segmentIndex: 0, dayDate: Date(), dayString: "Today", startLocation: Location(), endLocation: Location())]
-        
-    return AddDestinationView(results: .constant([sampleItem1, sampleItem2]), trip: .constant(trip), isPresented: .constant(isPresented), locationType: .constant(locationType), daySegments: .constant(locationsForDay)).environment(\.managedObjectContext, DataController.preview)
-}
+//#Preview {
+//    let sampleItem1 = AnnotatedMapItem(item: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.7833, longitude: -122.4167), addressDictionary: nil)))
+//    let sampleItem2 = AnnotatedMapItem(item: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.8000, longitude: -122.4000), addressDictionary: nil)))
+//
+//    let isPresented = false
+//    let trip = Trip()
+//    let locationType: LocationType = .startLocation
+//    let locationsForDay = [Segment(segmentIndex: 0, dayDate: Date(), dayString: "Today", startLocation: Location(), endLocation: Location())]
+//        
+//    return AddDestinationView(results: .constant([sampleItem1, sampleItem2]), trip: .constant(trip), isPresented: .constant(isPresented), locationType: .constant(locationType), daySegments: .constant(locationsForDay)).environment(\.managedObjectContext, DataController.preview)
+//}
 

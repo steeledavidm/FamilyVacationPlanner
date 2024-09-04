@@ -115,7 +115,7 @@ extension ContentView {
 
                 }
                 if plotCurrentLocation {
-                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 50/4, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta:25, longitudeDelta: 25)))
+                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 40/4, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta:20, longitudeDelta: 20)))
                 }
             }
         }

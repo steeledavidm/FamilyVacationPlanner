@@ -10,10 +10,10 @@ import SwiftUI
 
 struct DestinationSetUpView: View {
     @Binding var annotationItem: AnnotationItem
-    @Binding var trip: Trip
+    @State private var trip: Trip = Trip()
     @Environment(DataModel.self) private var dataModel
     //@Environment(\.managedObjectContext) var moc
-    @Environment(GlobalVariables.self) private var globalVar
+    @Environment(GlobalVariables.self) private var globalVars
     @FocusState private var isFocusedTextField: Bool
     @State private var overNightStop: Bool = false
     @State private var dateArrive: Date = .now
@@ -27,10 +27,8 @@ struct DestinationSetUpView: View {
     @State private var selectedStartLocation: Location = Location()
     @State private var possibleStartLocationsIndex: Int = 0
     @State private var possibleStartLocations: [Location] = []
+    @State private var locationType: LocationType = .startLocation
     
-    @Binding var isPresented: Bool
-    @Binding var locationType: LocationType
-    @Binding var daySegments: [Segment]
 
     var body: some View {
         VStack {
@@ -96,6 +94,8 @@ struct DestinationSetUpView: View {
             }
             
             .onAppear {
+                trip = globalVars.trip ?? Trip()
+                locationType = globalVars.locationType ?? .startLocation
                 isFocusedTextField = true
                 switch locationType {
                 case .startLocation:
@@ -113,12 +113,12 @@ struct DestinationSetUpView: View {
                 case .pointOfInterest:
                     addLocationType = "Add Point Of Interest"
      
-                    dateArrive = daySegments.first?.dayDate ?? Date()//adding 1 second so leave time is after trip start time
-                    dateLeave = daySegments.first?.dayDate  ?? Date() //adding 1 second so leave time is after trip start time
-                    print("DateArrive and DateLeave \(dateArrive), \(dateLeave)")
-                    for daySegment in daySegments {
-                        possibleStartLocations.append(daySegment.startLocation)
-                    }
+//                    dateArrive = daySegments.first?.dayDate ?? Date()//adding 1 second so leave time is after trip start time
+//                    dateLeave = daySegments.first?.dayDate  ?? Date() //adding 1 second so leave time is after trip start time
+//                    print("DateArrive and DateLeave \(dateArrive), \(dateLeave)")
+//                    for daySegment in daySegments {
+//                        possibleStartLocations.append(daySegment.startLocation)
+//                    }
                 case .currentLocation:
                     print("Current Location Type")
                 }
@@ -146,7 +146,7 @@ struct DestinationSetUpView: View {
                     selectedStartLocation = possibleStartLocations[possibleStartLocationsIndex]
                 }
                 //globalVar.refreshMap.toggle()
-                isPresented.toggle()
+                //isPresented.toggle()
             }, label: {
                 Text(addLocationType)
                     .padding()

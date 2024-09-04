@@ -54,6 +54,7 @@ struct TripSetUpView: View {
                         editMode = true
                         newTrip = true
                         globalVars.selectedDetent = .large
+                        globalVars.trip = trip
                     }, label: {
                         Text("New Trip")
                     })
@@ -80,7 +81,7 @@ struct TripSetUpView: View {
                 if editMode {
                     EditTripView(editMode: $editMode, newTrip: $newTrip, path: $path, trip: trip)
                 } else {
-                    TripOverviewView(trip: trip)
+                    DaySegmentsSetUpView()
                 }
             })
             .navigationDestination(for: Location.self) {location in

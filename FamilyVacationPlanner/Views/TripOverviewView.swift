@@ -78,7 +78,7 @@ struct TripOverviewView: View {
         .presentationDetents([.medium]) //.fraction(0.5), .medium])
         .interactiveDismissDisabled()
         .sheet(isPresented: $isPresented) {
-            SearchDestinationView(trip: $trip, isPresented: $isPresented, locationType: $locationType, daySegments: .constant([Segment(segmentIndex: 0, dayDate: Date(), dayString: "", startLocation: Location(), endLocation: Location())]))
+//            SearchDestinationView(trip: $trip, isPresented: $isPresented, locationType: $locationType, daySegments: .constant([Segment(segmentIndex: 0, dayDate: Date(), dayString: "", startLocation: Location(), endLocation: Location())]))
         }
     }
 }

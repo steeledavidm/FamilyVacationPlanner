@@ -13,6 +13,7 @@ import Foundation
 struct SearchDestinationView : View {
     @State var searchModel = SearchModel()
     @Environment(DataModel.self) private var dataModel
+    @Environment(GlobalVariables.self) private var globalVars
     @FocusState private var isFocusedTextField: Bool
     var backgroundColor: Color = Color.init(uiColor: . systemGray6)
     @State private var addressResult: AddressResult?
@@ -26,10 +27,9 @@ struct SearchDestinationView : View {
     @State private var currentLocation: CLPlacemark?
     @State private var recentList: [Location] = []
     
-    @Binding var trip: Trip
-    @Binding var isPresented: Bool
-    @Binding var locationType: LocationType
-    @Binding var daySegments: [Segment]
+    @State var trip: Trip
+    @State private var locationType: LocationType = .startLocation
+    @State private var daySegments: [Segment]?
     
     var body: some View {
         NavigationStack {
@@ -78,12 +78,15 @@ struct SearchDestinationView : View {
                         Text(recentLocation.name ?? "")
                         Text(recentLocation.title ?? "")
                     }}
-                
-                .navigationDestination(isPresented: $showAddDestinationView, destination: {AddDestinationView(results: $results, trip: $trip, isPresented: $isPresented, locationType: $locationType, daySegments: $daySegments)
-                })
+               .navigationDestination(isPresented: $showAddDestinationView, destination: {AddDestinationView(results: $results)
+               })
             }
         }
         .onAppear() {
+            
+            trip = globalVars.trip ?? Trip()
+            locationType = globalVars.locationType ?? .startLocation
+            
             switch locationType {
             case .startLocation:
                 searchText = "Enter Trip Start Location"
@@ -97,15 +100,9 @@ struct SearchDestinationView : View {
                 searchText = ""
             }
             
-            //recentList = dataModel.populateRecentList(trip: trip)
-            
-//            
-//            
-//            dataModel.getCurrentLocation(completionHandler: { currentLocation in
-//                print("name: \(String(describing: currentLocation?.name))")
-//                print("address: \(String(describing: currentLocation?.thoroughfare))")
-//            })
-            
+            Task {
+                recentList = try await dataModel.populateRecentList(trip: trip)
+            }
         }
     }
         

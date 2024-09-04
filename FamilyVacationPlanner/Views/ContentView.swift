@@ -17,16 +17,21 @@ struct ContentView: View {
     @Environment(LocationManager.self) private var locationManager
     
     @State private var currentLocation: CLLocation = CLLocation()
+    @State private var currentLocationPlacemark: CLPlacemark?
+    @State private var isLongPressActive = false
+    @State private var locationFromMap: AnnotationItem?
     @State private var position: MapCameraPosition = .automatic
     @State private var selectedDetent: PresentationDetent = .fraction(0.5)
     @State private var selectedTabIndex: Int = 0
     @State private var showSheet = true
+    @State private var showSearchLocationSheet = false
     @State private var trip: Trip = Trip()
     @State private var viewModel: ViewModel = ViewModel(selectedTabIndex: 0, selectedDetent: .fraction(0.5))
+    
 
     var body: some View {
         ZStack {
-            MapReader {_ in
+            MapReader {proxy in
                 Map(position: $position) {
                     ForEach(dataModel.allMapInfo) {mapInfo in
                         Marker(mapInfo.markerLabelStart, coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D())
@@ -38,12 +43,38 @@ struct ContentView: View {
                 .animation(.easeInOut(duration: 1), value: selectedDetent)
                 .animation(.easeInOut(duration: 1), value: position)
                 .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
+                .gesture (
+                    LongPressGesture(minimumDuration: 0.5)
+                        .onChanged { value in
+                            isLongPressActive = value
+                            print(isLongPressActive)
+                        }
+                        .onEnded { _ in
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                        }
+                        .sequenced(before: DragGesture(minimumDistance: 0))
+                        .onEnded { value in
+                            switch value {
+                            case .second(true, let drag):
+                                if let location = drag?.location {
+                                    let coordinate = proxy.convert(location, from: .local)
+                                    if let pin = coordinate {
+
+                                        print("Tapped at \(String(describing: coordinate))")
+                                        locationFromMap = AnnotationItem(name: "New Location", title: "", subtitle: "", latitude: pin.latitude, longitude: pin.longitude)
+                                    }
+                                }
+                            default:
+                                break
+                            }
+                        }
+                )
             }
             .onAppear {
                 viewModel.selectedDetent = globalVars.selectedDetent
                 Task {
-                    await dataModel.getCurrentLocation(locationManager: locationManager)
-                    currentLocation = dataModel.currentLocation
+                    currentLocationPlacemark = try await dataModel.getCurrentLocation(locationManager: locationManager)
+                    currentLocation = CLLocation(latitude: currentLocationPlacemark?.location?.coordinate.latitude ?? 0.0, longitude: currentLocationPlacemark?.location?.coordinate.longitude ?? 0.0)
                     viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel)
                     position = viewModel.position
                 }
@@ -68,12 +99,24 @@ struct ContentView: View {
                 position = viewModel.position
                 dataModel.getRoute()
             }
+            .onChange(of: globalVars.showSearchLocationSheet) {
+                showSearchLocationSheet = globalVars.showSearchLocationSheet
+            }
+            .onChange(of: globalVars.trip) {
+                trip = globalVars.trip ?? Trip()
+            }
         }
         .sheet(isPresented: $showSheet) {
             TripSetUpView()
-            .interactiveDismissDisabled()
-            .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1), .large], selection: $selectedDetent)
-            .presentationBackgroundInteraction(.enabled)
+                .interactiveDismissDisabled()
+                .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1), .large], selection: $selectedDetent)
+                .presentationBackgroundInteraction(.enabled)
+                .sheet(isPresented: $showSearchLocationSheet) {
+                    SearchDestinationView(trip: trip)
+                        .interactiveDismissDisabled()
+                        .presentationBackgroundInteraction(.enabled)
+                        .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)])
+                }
         }
     }
 }

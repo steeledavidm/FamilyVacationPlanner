@@ -12,6 +12,11 @@ import SwiftUI
 @Observable
 
 class GlobalVariables {
-    var selectedTabIndex: Int = 999
+    var locationType: LocationType?
     var selectedDetent: PresentationDetent = .fraction(0.5)
+    var selectedTabIndex: Int = 999
+    var showSearchLocationSheet: Bool = false
+    var trip: Trip?
+    
+    
 }
