@@ -18,17 +18,24 @@ import SwiftUI
     var daySegmentsForFunction: [Segment] = [Segment(segmentIndex: 0, dayDate: Date(), dayString: "", startLocation: Location(), endLocation: Location())]
     var startingPoint: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 42.0, longitude: -92.0)
     var endingPoint: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 42.0, longitude: -100.0)
+    var mapCameraRegion: MKCoordinateRegion = MKCoordinateRegion()
+    var results: [AnnotatedMapItem] = []
+    var region: MKCoordinateRegion = MKCoordinateRegion()
     var route: MKRoute?
     var tripSegments: [DaySegments] = []
     var daySegments: [Segment] = []
     var comprehensiveAndDailySegments: [DaySegments] = []
     var currentLocation: CLLocation = CLLocation()
-    var currentLocationPlacemark: CLPlacemark?
+    var locationPlacemark: CLPlacemark?
     var startLocationSet: Bool = false
+    var plotRecentItems: Bool = true
+    var recentList: [Location] = []
+    //var annotatedMapItem: AnnotatedMapItem = AnnotatedMapItem()
     
     
     
     func fetchData(trip: Trip) {
+        print("Fetch Data")
         let request: NSFetchRequest<Location> = Location.fetchRequest()
         request.predicate = NSPredicate(format: "%@ IN trip", trip)
         do {
@@ -58,6 +65,7 @@ import SwiftUI
     }
     
     func getRoute() {
+        print("Get route")
         Task {
             for (index, mapInfo) in allMapInfo.enumerated() {
                 startingPoint = mapInfo.startingPoint ?? CLLocationCoordinate2D()
@@ -96,6 +104,7 @@ import SwiftUI
     
     
    func setUpDailySegments(trip: Trip) {
+       print("setUp Daily Segments")
         let calendar = Calendar.current
         var tripStartDate: Date = Date()
         var tripEndDate: Date = Date()
@@ -172,6 +181,7 @@ import SwiftUI
     }
     
     func setUpTripComprehensiveView() {
+        print("setup Trip Comp View")
         comprehensiveAndDailySegments = []
         var daySegmentsAccumulator: [Segment] = []
         for tripSegment in tripSegments {
@@ -200,22 +210,25 @@ import SwiftUI
 //        }
 //    }
     
-    func getCurrentLocation(locationManager: LocationManager) async throws -> CLPlacemark {
+    func getCurrentLocation(locationManager: LocationManager) async throws -> CLLocation {
+        print("get current location")
         locationManager.checkLocationAuthorization()
         currentLocation = locationManager.lastKnownLocation ?? CLLocation()
-        
+        return currentLocation
+    }
+    func getLocationPlacemark(location: CLLocation) async throws {
+        print("get Location Placemark")
         let geoCoder = CLGeocoder()
         
-        guard let placemark = try await geoCoder.reverseGeocodeLocation(currentLocation).first else {
+        guard let placemark = try await geoCoder.reverseGeocodeLocation(location).first else {
             throw CLError(.geocodeFoundPartialResult)
         }
-        currentLocationPlacemark = placemark
-        return placemark
+        locationPlacemark = placemark
     }
     
     
     func populateRecentList(trip: Trip) async throws -> [Location] {
-
+        print("populate Recent List")
         let request: NSFetchRequest<Location> = Location.fetchRequest()
         request.predicate = NSPredicate(format: "%@ IN trip", trip)
         do {
@@ -224,11 +237,10 @@ import SwiftUI
         }
             
             let currentLoc = Location(context: moc)
-            var recentList: [Location] = []
             currentLoc.name = "Current Location"
-            currentLoc.title = currentLocationPlacemark?.name
-            currentLoc.latitude = currentLocationPlacemark?.location?.coordinate.latitude ?? 0.0
-            currentLoc.longitude = currentLocationPlacemark?.location?.coordinate.longitude ?? 0.0
+            currentLoc.title = "\(locationPlacemark?.name ?? ""), \(locationPlacemark?.locality ?? ""), \(locationPlacemark?.administrativeArea ?? "")  \(locationPlacemark?.postalCode ?? "") \(locationPlacemark?.country ?? "")"
+            currentLoc.latitude = locationPlacemark?.location?.coordinate.latitude ?? 0.0
+            currentLoc.longitude = locationPlacemark?.location?.coordinate.longitude ?? 0.0
             
             recentList.append(currentLoc)
             
@@ -242,8 +254,49 @@ import SwiftUI
                     recentList.append(location)
                 }
             }
-            
+        results = []
+        for item in recentList {
+        let mapItem: MKMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude)))
+            mapItem.name = item.name
+            results.append(AnnotatedMapItem(item: mapItem))
+        }
             return recentList
+        }
+    
+    func saveLocation(annotationItem: AnnotationItem, startLocation: Bool, overNightStop: Bool, trip: Trip) {
+        let location = Location(context: moc)
+        location.id = UUID()
+        location.name = annotationItem.name
+        location.title = annotationItem.title
+        location.subtitle = annotationItem.subtitle
+        location.latitude = annotationItem.latitude
+        location.longitude = annotationItem.longitude
+        location.startLocation = startLocation
+        location.overNightStop = overNightStop
+        trip.addToLocation(location)
+        try? moc.save()
+    }
+    
+    func getPlace(from address: AddressResult) async throws {
+        let request = MKLocalSearch.Request()
+        let title = address.title
+        let subtitle = address.subtitle
+        results = []
+        
+        request.region = mapCameraRegion
+        print("in getPlace")
+        print(request.region)
+        request.naturalLanguageQuery = subtitle.contains(title)
+        ? subtitle : title + ", " + subtitle
+
+        let response = try await MKLocalSearch(request: request).start()
+        await MainActor.run {
+            region = response.boundingRegion
+            let resultsMKMapItem = response.mapItems
+            for result in resultsMKMapItem {
+                results.append(AnnotatedMapItem(item: result))
+            }
+        }
         
     }
     

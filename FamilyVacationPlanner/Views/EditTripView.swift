@@ -22,7 +22,7 @@ struct EditTripView: View {
     @State private var tripName: String = ""
     @State private var oneWayToggle: Bool = false
     
-    @State public var trip: Trip
+    @State var trip: Trip
 
     var body: some View {
         VStack {

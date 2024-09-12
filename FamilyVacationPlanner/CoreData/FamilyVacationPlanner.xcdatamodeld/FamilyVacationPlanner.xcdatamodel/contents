@@ -10,7 +10,6 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="notes" optional="YES" attributeType="String"/>
         <attribute name="overNightStop" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="primary" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="requester" optional="YES" attributeType="String"/>
         <attribute name="startIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="startLocation" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

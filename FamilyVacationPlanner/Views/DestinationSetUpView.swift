@@ -139,13 +139,11 @@ struct DestinationSetUpView: View {
                 location.startLocation = startLocation
                 location.overNightStop = overNightStop
                 location.startIndex = Int16(possibleStartLocationsIndex)
-                location.primary = true
                 trip.addToLocation(location)
                 try? dataModel.moc.save()
                 if locationType == LocationType.pointOfInterest {
                     selectedStartLocation = possibleStartLocations[possibleStartLocationsIndex]
                 }
-                //globalVar.refreshMap.toggle()
                 //isPresented.toggle()
             }, label: {
                 Text(addLocationType)

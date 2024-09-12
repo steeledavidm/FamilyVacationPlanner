@@ -17,17 +17,17 @@ struct SearchDestinationView : View {
     @FocusState private var isFocusedTextField: Bool
     var backgroundColor: Color = Color.init(uiColor: . systemGray6)
     @State private var addressResult: AddressResult?
-    @State private var position: MapCameraPosition = .automatic
     @State private var results: [AnnotatedMapItem] = []
     @State private var selectedResult: MKMapItem?
     @State private var region = MKCoordinateRegion()
     @State private var annotationItems: [AnnotationItem] = []
-    @State private var showAddDestinationView = false
+    @State private var showLocationSetUpView = false
     @State private var searchText: String = ""
     @State private var currentLocation: CLPlacemark?
     @State private var recentList: [Location] = []
-    
-    @State var trip: Trip
+    @State private var overNightStop: Bool = false
+    @State private var startLocation: Bool = false
+    @State private var trip: Trip = Trip()
     @State private var locationType: LocationType = .startLocation
     @State private var daySegments: [Segment]?
     
@@ -48,94 +48,76 @@ struct SearchDestinationView : View {
                             .padding(.trailing)
                             .padding(.top, 8)
                     }
-                    .onAppear {
-                        isFocusedTextField = true
-                    }
-                
-                List(searchModel.locationResult) { address in
-                    VStack(alignment: .leading) {
-                        Text(address.title)
-                        Text(address.subtitle)
-                            .font(.caption)
-                    }
-                    .onTapGesture {
-                        isFocusedTextField = false
-                        addressResult = address
-                        Task {
-                            do{
-                                _ = try await getPlace(from: addressResult ?? AddressResult(title: "201 Whitetail Ridge", subtitle: "201 Whitetail Ridge, Hudson, IA  50643, United States"))
-                                showAddDestinationView = true
+                if isFocusedTextField {
+                    List(searchModel.locationResult) { address in
+                        VStack(alignment: .leading) {
+                            Text(address.title)
+                            Text(address.subtitle)
+                                .font(.caption)
+                        }
+                        .onTapGesture {
+                            isFocusedTextField = false
+                            dataModel.plotRecentItems = false
+                            addressResult = address
+                            Task {
+                                do {
+                                    _ = try await dataModel.getPlace(from: addressResult ?? AddressResult(title: "201 Whitetail Ridge", subtitle: "201 Whitetail Ridge, Hudson, IA  50643, United States"))
+                                }
                             }
                         }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
                     }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
+                    .background(backgroundColor)
+                } else {
+                    List(recentList) { recentLocation in
+                        VStack(alignment: .leading) {
+                            Text(recentLocation.name ?? "")
+                                .font(.title3)
+                            Text(recentLocation.title ?? "")
+                        }
+                        .onTapGesture {
+                            let annotationItem = AnnotationItem(name: recentLocation.name ?? "", title: recentLocation.title ?? "", subtitle: recentLocation.subtitle ?? "", latitude: recentLocation.latitude, longitude: recentLocation.longitude)
+                        }
+                    }
                 }
-                .background(backgroundColor)
-                
-                List(recentList) { recentLocation in
-                    VStack(alignment: .leading) {
-                        Text(recentLocation.name ?? "")
-                        Text(recentLocation.title ?? "")
-                    }}
-               .navigationDestination(isPresented: $showAddDestinationView, destination: {AddDestinationView(results: $results)
-               })
             }
         }
         .onAppear() {
             
             trip = globalVars.trip ?? Trip()
             locationType = globalVars.locationType ?? .startLocation
+            dataModel.plotRecentItems = true
             
             switch locationType {
             case .startLocation:
                 searchText = "Enter Trip Start Location"
+                startLocation = true
+                overNightStop = false
             case .endLocation:
                 searchText = "Enter Trip End Location"
+                startLocation = false
+                overNightStop = false
             case .overNightStop:
                 searchText = "Enter Overnight Stop"
+                startLocation = false
+                overNightStop = true
             case .pointOfInterest:
                 searchText = "Enter Point Of Interest"
+                startLocation = false
+                overNightStop = false
             case .currentLocation:
                 searchText = ""
             }
             
             Task {
                 recentList = try await dataModel.populateRecentList(trip: trip)
+                var annotationForMap: [AnnotationItem] = []
+                for item in recentList {
+                    annotationForMap.append(AnnotationItem(name: item.name ?? "", title: item.title ?? "", subtitle: item.subtitle ?? "", latitude: item.latitude, longitude: item.longitude))
+                }
             }
         }
-    }
-        
-        
-    func getPlace(from address: AddressResult) async throws -> [AnnotatedMapItem] {
-        let request = MKLocalSearch.Request()
-        let title = address.title
-        let subtitle = address.subtitle
-        results = []
-        
-        request.naturalLanguageQuery = subtitle.contains(title)
-        ? subtitle : title + ", " + subtitle
-
-        let response = try await MKLocalSearch(request: request).start()
-        await MainActor.run {
-            annotationItems = response.mapItems.map {
-                AnnotationItem(
-                    name: $0.name ?? "",
-                    title: $0.placemark.title ?? "",
-                    subtitle: $0.placemark.subtitle ?? "",
-                    latitude: $0.placemark.coordinate.latitude,
-                    longitude: $0.placemark.coordinate.longitude
-                )
-            }
-            
-            region = response.boundingRegion
-            position = .region(region)
-            let resultsMKMapItem = response.mapItems
-            for result in resultsMKMapItem {
-                results.append(AnnotatedMapItem(item: result))
-            }
-        }
-        return results
     }
 }
 

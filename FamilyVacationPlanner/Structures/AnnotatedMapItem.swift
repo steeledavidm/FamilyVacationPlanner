@@ -9,11 +9,11 @@ import MapKit
 import Foundation
 
 struct AnnotatedMapItem: Identifiable, Hashable {
-  let id: String // Unique identifier for the item
-  let item: MKMapItem
+    let id: String // Unique identifier for the item
+    var item: MKMapItem
 
-  init(item: MKMapItem) {
-    self.id = UUID().uuidString // Generate unique ID using UUID
-    self.item = item
+    init(item: MKMapItem) {
+      self.id = UUID().uuidString // Generate unique ID using UUID
+      self.item = item
   }
 }
