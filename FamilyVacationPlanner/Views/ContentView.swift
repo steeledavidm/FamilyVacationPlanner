@@ -18,7 +18,6 @@ struct ContentView: View {
     
     @State private var currentLocation: CLLocation = CLLocation()
     @State private var currentLocationPlacemark: CLPlacemark?
-    @State private var isLongPressActive = false
     @State private var locationFromMap: AnnotationItem?
     @State private var mapItemSelected: AnnotatedMapItem?
     @State private var position: MapCameraPosition = .automatic
@@ -50,38 +49,26 @@ struct ContentView: View {
                 }
                 .animation(.easeInOut(duration: 1), value: selectedDetent)
                 .animation(.easeInOut(duration: 1), value: position)
+                .animation(.easeInOut(duration: 1), value: mapItemSelected)
                 .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
-//                .gesture (
-//                    LongPressGesture(minimumDuration: 0.5)
-//                        .onChanged { value in
-//                            isLongPressActive = value
-//                            print(isLongPressActive)
-//                        }
-//                        .onEnded { _ in
-//                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
-//                        }
-//                        .sequenced(before: DragGesture(minimumDistance: 0))
-//                        .onEnded { value in
-//                            switch value {
-//                            case .second(true, let drag):
-//                                if let location = drag?.location {
-//                                    let coordinate = proxy.convert(location, from: .local)
-//                                    if let pin = coordinate {
-//
-//                                        print("Tapped at \(String(describing: coordinate))")
-//                                        locationFromMap = AnnotationItem(name: "New Location", title: "", subtitle: "", latitude: pin.latitude, longitude: pin.longitude)
-//                                    }
-//                                }
-//                            default:
-//                                break
-//                            }
-//                        }
-//                )
+                
                 .onTapGesture(perform: { position in
-                    if let coordinate = proxy.convert(position, from: .local) {
-                        locationFromMap = AnnotationItem(name: "New Location", title: "", subtitle: "", latitude: coordinate.latitude, longitude: coordinate.longitude)
-                        print("TapGesture")
-                        print(locationFromMap?.coordinate ?? CLLocation())
+                    if !globalVars.displaySearchedLocations {
+                        if let coordinate = proxy.convert(position, from: .local) {
+                            print("TapGesture")
+                            searchResults = []
+                            let latitude = coordinate.latitude
+                            let longitude = coordinate.longitude
+                            Task {
+                                try await dataModel.getLocationPlacemark(location: CLLocation(latitude: latitude, longitude: longitude))
+                                selectedLocation = dataModel.mapAnnotation
+                                
+                                if let unWrappedLocation = selectedLocation {
+                                    searchResults.append(unWrappedLocation)
+                                    print("location is selected")
+                                }
+                            }
+                        }
                     }
                 })
             }
@@ -93,7 +80,6 @@ struct ContentView: View {
                     try await dataModel.getLocationPlacemark(location: currentLocation)
                     viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                     position = viewModel.position
-                    dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
                 }
             }
             .onChange(of: selectedDetent) {
@@ -133,33 +119,29 @@ struct ContentView: View {
                 viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                 position = viewModel.position
             }
-            .onChange(of: locationFromMap) {
-                print("location From Map Changed")
-                searchResults = []
-                let latitude = locationFromMap?.latitude ?? 0
-                let longitude = locationFromMap?.longitude ?? 0
-                Task {
-                    try await dataModel.getLocationPlacemark(location: CLLocation(latitude: latitude, longitude: longitude))
-                    let selectionName = "\(dataModel.locationPlacemark?.name ?? "")"
-                    var selectionAnnotatedMapItem = AnnotatedMapItem(item: MKMapItem())
-                    selectionAnnotatedMapItem.item = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)))
-                    searchResults.append(selectionAnnotatedMapItem)
-                    selectionAnnotatedMapItem.item.name = selectionName
-                    selectedLocation = selectionAnnotatedMapItem
-                    globalVars.locationFromMap = locationFromMap
-                    viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
-                    position = viewModel.position
-                    print(selectionName)
-                }
-            }
+
             .onChange(of: selectedLocation) {
                 if let selectedAnnotation = selectedLocation {
                     print("selectionChanged")
                     let mkMapItem = selectedLocation?.item ?? MKMapItem()
+                    let coordinate: CLLocationCoordinate2D = mkMapItem.placemark.coordinate
+                    let latitude = coordinate.latitude
+                    let longitude = coordinate.longitude
                     print(mkMapItem.name ?? "")
                     print(mkMapItem.placemark)
                     mapItemSelected = selectedAnnotation
+                    globalVars.locationFromMap = AnnotationItem(name: "", title: "", subtitle: "", latitude: latitude, longitude: longitude)
+                    dataModel.plotRecentItems = true
+                    viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
+                    position = viewModel.position
                 }
+            }
+            .onChange(of: position) {
+                print("position Changed")
+                dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
+            }
+            .onChange(of: mapItemSelected) {
+                print("selected map item changed")
             }
         }
         .sheet(isPresented: $showSheet) {
@@ -169,13 +151,15 @@ struct ContentView: View {
                 .presentationBackgroundInteraction(.enabled)
                 .sheet(isPresented: $showSearchLocationSheet) {
                     SearchDestinationView()
-                        .interactiveDismissDisabled()
                         .presentationBackgroundInteraction(.enabled)
                         .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)], selection: $selectedDetent)
-                        .sheet(item: $mapItemSelected) { locationFromMap in
-                            LocationSetUpView(locationFromMap: locationFromMap)
-                                .presentationBackgroundInteraction(.enabled)
-                                .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)], selection: $selectedDetent)
+                        .onDisappear(perform: {
+                            globalVars.showSearchLocationSheet = false
+                        })
+                        .sheet(item: $mapItemSelected) { selectedItem in
+                            LocationSetUpView(locationFromMap: selectedItem)
+                            .presentationBackgroundInteraction(.enabled)
+                            .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)], selection: $selectedDetent)
                         }
                 }
         }

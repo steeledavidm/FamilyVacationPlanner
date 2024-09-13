@@ -12,6 +12,7 @@ import SwiftUI
 @Observable
 
 class GlobalVariables {
+    var displaySearchedLocations: Bool = false
     var locationFromMap: AnnotationItem?
     var locationType: LocationType?
     var selectedDetent: PresentationDetent = .fraction(0.5)

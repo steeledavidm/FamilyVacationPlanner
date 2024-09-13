@@ -40,6 +40,7 @@ extension ContentView {
             }
             
             if globalVars.locationFromMap != nil {
+                print("filling MapInfo")
                 let locationfromMap = globalVars.locationFromMap
                 allMapInfo = []
                 allMapInfo.append(MapInfo(locationid: UUID(), dateLeave: Date(), markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0), endingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0)))
@@ -72,8 +73,9 @@ extension ContentView {
             // Calculate the center of the bounding box
             var centerLat = (minLat! + maxLat!) / 2
             var centerLon = (minLon! + maxLon!) / 2
-            
+            print("plot RecentItems: \(dataModel.plotRecentItems)")
             if globalVars.showSearchLocationSheet && !dataModel.plotRecentItems {
+                print("using dataModel.region")
                 allMapInfo = []
                 plotCurrentLocation = false
                 centerLat = dataModel.region.center.latitude

@@ -58,6 +58,7 @@ struct SearchDestinationView : View {
                         .onTapGesture {
                             isFocusedTextField = false
                             dataModel.plotRecentItems = false
+                            globalVars.displaySearchedLocations = true
                             addressResult = address
                             Task {
                                 do {

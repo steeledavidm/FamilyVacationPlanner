@@ -26,10 +26,11 @@ import SwiftUI
     var daySegments: [Segment] = []
     var comprehensiveAndDailySegments: [DaySegments] = []
     var currentLocation: CLLocation = CLLocation()
-    var locationPlacemark: CLPlacemark?
+    var locationPlacemark: MKPlacemark?
     var startLocationSet: Bool = false
     var plotRecentItems: Bool = true
     var recentList: [Location] = []
+    var mapAnnotation: AnnotatedMapItem?
     //var annotatedMapItem: AnnotatedMapItem = AnnotatedMapItem()
     
     
@@ -216,6 +217,7 @@ import SwiftUI
         currentLocation = locationManager.lastKnownLocation ?? CLLocation()
         return currentLocation
     }
+    
     func getLocationPlacemark(location: CLLocation) async throws {
         print("get Location Placemark")
         let geoCoder = CLGeocoder()
@@ -223,12 +225,16 @@ import SwiftUI
         guard let placemark = try await geoCoder.reverseGeocodeLocation(location).first else {
             throw CLError(.geocodeFoundPartialResult)
         }
-        locationPlacemark = placemark
+        
+        locationPlacemark = MKPlacemark.init(placemark: placemark)
+        mapAnnotation = AnnotatedMapItem(item: MKMapItem(placemark: locationPlacemark ?? MKPlacemark.init(placemark: placemark)))
+    
     }
     
     
     func populateRecentList(trip: Trip) async throws -> [Location] {
         print("populate Recent List")
+        recentList = []
         let request: NSFetchRequest<Location> = Location.fetchRequest()
         request.predicate = NSPredicate(format: "%@ IN trip", trip)
         do {

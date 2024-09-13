@@ -32,6 +32,7 @@ struct DaySegmentsSetUpView: View {
                 }
             }
         }
+        
         .onAppear() {
             globalVars.trip = trip
             selectedTabIndex = globalVars.selectedTabIndex
