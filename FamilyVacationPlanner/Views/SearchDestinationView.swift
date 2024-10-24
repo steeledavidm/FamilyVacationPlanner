@@ -14,6 +14,7 @@ struct SearchDestinationView : View {
     @State var searchModel = SearchModel()
     @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVars
+    @Environment(\.dismiss) var dismiss
     @FocusState private var isFocusedTextField: Bool
     var backgroundColor: Color = Color.init(uiColor: . systemGray6)
     @State private var addressResult: AddressResult?
@@ -62,7 +63,7 @@ struct SearchDestinationView : View {
                             addressResult = address
                             Task {
                                 do {
-                                    _ = try await dataModel.getPlace(from: addressResult ?? AddressResult(title: "201 Whitetail Ridge", subtitle: "201 Whitetail Ridge, Hudson, IA  50643, United States"))
+                                    _ = try await dataModel.getPlace(from: addressResult ?? AddressResult(title: "title", subtitle: "subtitle"))
                                 }
                             }
                         }
@@ -78,7 +79,25 @@ struct SearchDestinationView : View {
                             Text(recentLocation.title ?? "")
                         }
                         .onTapGesture {
-                            let annotationItem = AnnotationItem(name: recentLocation.name ?? "", title: recentLocation.title ?? "", subtitle: recentLocation.subtitle ?? "", latitude: recentLocation.latitude, longitude: recentLocation.longitude)
+                            if recentLocation.name == "Current Location" {
+                                
+                            }
+                            else {
+                                var location = Location(context: dataModel.moc)
+                                location = recentLocation
+                                location.id = UUID()
+                                location.primary = false
+                                recentLocation.primary = true
+                                if globalVars.locationType == LocationType.startLocation {
+                                    location.startLocation = true
+                                }
+                                if globalVars.locationType == LocationType.overNightStop {
+                                    location.overNightStop = true
+                                }
+                                globalVars.trip.addToLocation(location)
+                                try? dataModel.moc.save()
+                                dismiss()
+                            }
                         }
                     }
                 }
@@ -86,13 +105,13 @@ struct SearchDestinationView : View {
         }
         .onAppear() {
             
-            trip = globalVars.trip ?? Trip()
+            trip = globalVars.trip
             locationType = globalVars.locationType ?? .startLocation
             dataModel.plotRecentItems = true
             
             switch locationType {
             case .startLocation:
-                searchText = "Enter Trip Start Location"
+                searchText = "Trip Start Address"
                 startLocation = true
                 overNightStop = false
             case .endLocation:
@@ -104,7 +123,7 @@ struct SearchDestinationView : View {
                 startLocation = false
                 overNightStop = true
             case .pointOfInterest:
-                searchText = "Enter Point Of Interest"
+                searchText = "Enter Address"
                 startLocation = false
                 overNightStop = false
             case .currentLocation:

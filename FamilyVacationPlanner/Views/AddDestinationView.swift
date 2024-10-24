@@ -55,9 +55,9 @@ struct AddDestinationView: View {
             }
         }
         
-        .sheet(isPresented: $setUpViewIsPresented) {
-            DestinationSetUpView(annotationItem: $annotationItem)
-        }
+//        .sheet(isPresented: $setUpViewIsPresented) {
+//            DestinationSetUpView(annotationItem: $annotationItem)
+//        }
         
         
         .presentationDetents([.medium, .large, .fraction(0.2)]) //.fraction(0.5), .medium])            

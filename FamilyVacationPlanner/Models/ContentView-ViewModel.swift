@@ -32,7 +32,7 @@ extension ContentView {
             var plotCurrentLocation = false
             print(allMapInfo.count)
             if !dataModel.comprehensiveAndDailySegments.isEmpty {
-                if dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[0].startLocation == dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[0].endLocation {
+                if dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].startLocation == dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].endLocation {
                     singleLocation = true
                 } else {
                     singleLocation = false
@@ -74,10 +74,11 @@ extension ContentView {
             var centerLat = (minLat! + maxLat!) / 2
             var centerLon = (minLon! + maxLon!) / 2
             print("plot RecentItems: \(dataModel.plotRecentItems)")
-            if globalVars.showSearchLocationSheet && !dataModel.plotRecentItems {
+            if globalVars.showSearchLocationSheet && !dataModel.plotRecentItems && !globalVars.markerSelected {
                 print("using dataModel.region")
                 allMapInfo = []
                 plotCurrentLocation = false
+                singleLocation = false
                 centerLat = dataModel.region.center.latitude
                 centerLon = dataModel.region.center.longitude
                 spanLat = dataModel.region.span.latitudeDelta
@@ -98,24 +99,39 @@ extension ContentView {
                 adjustedSpanLon = spanLon / 0.4
                 adjustedSpanLat = spanLat / 0.4
             }
+            print("selectedDetent: \(selectedDetent)")
+            print("singleLocation: \(singleLocation)")
+            print("plotCurrentLocation: \(plotCurrentLocation)")
+            print("allMapInfoCount: \(allMapInfo.count)")
+            print("showSearchSheet: \(globalVars.showSearchLocationSheet)")
+            print("plotRecentItems: \(dataModel.plotRecentItems)")
+            print("marker Selected: \(globalVars.markerSelected)")
+            var positionSetter = 0
             if selectedDetent == .fraction(0.1)  {
                 position = .automatic
+                positionSetter = 1
                 if singleLocation {
-                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)))
+                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
+                        positionSetter = 2
                     }
                 } else {
                     position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: adjustedSpanLat, longitudeDelta: adjustedSpanLon)))
+                    positionSetter = 3
                     if singleLocation {
-                        position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 0.01/4, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)))
+                        position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
+                        positionSetter = 4
                     }
 
                 }
             if plotCurrentLocation || allMapInfo.count == 1 {
-                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 20/4, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)))
+                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 10/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)))
+                positionSetter = 5
                 }
             if globalVars.showSearchLocationSheet && dataModel.plotRecentItems {
-                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 0.01/4, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)))
+                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
+                positionSetter = 6
             }
+            print("positionSetter: \(positionSetter)")
             print(position)
             }
         }

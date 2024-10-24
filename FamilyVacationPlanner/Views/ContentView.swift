@@ -19,10 +19,11 @@ struct ContentView: View {
     @State private var currentLocation: CLLocation = CLLocation()
     @State private var currentLocationPlacemark: CLPlacemark?
     @State private var locationFromMap: AnnotationItem?
-    @State private var mapItemSelected: AnnotatedMapItem?
+    @State private var locationSetupDetent: PresentationDetent = .fraction(0.5)
     @State private var position: MapCameraPosition = .automatic
     @State private var selectedDetent: PresentationDetent = .fraction(0.5)
     @State private var selectedLocation: AnnotatedMapItem?
+    @State private var selectedMarker: AnnotatedMapItem?
     @State private var selectedTabIndex: Int = 0
     @State private var searchDestinationSheetDetent: PresentationDetent = .fraction(0.5)
     @State private var searchResults: [AnnotatedMapItem] = []
@@ -35,7 +36,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             MapReader { proxy in
-                Map(position: $position, selection: $selectedLocation) {
+                Map(position: $position, selection: $selectedMarker) {
                     ForEach(dataModel.allMapInfo) {mapInfo in
                         Marker(mapInfo.markerLabelStart, coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D())
                         Marker(mapInfo.markerLabelEnd, coordinate: mapInfo.endingPoint ?? CLLocationCoordinate2D())
@@ -49,27 +50,39 @@ struct ContentView: View {
                 }
                 .animation(.easeInOut(duration: 1), value: selectedDetent)
                 .animation(.easeInOut(duration: 1), value: position)
-                .animation(.easeInOut(duration: 1), value: mapItemSelected)
                 .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
                 
-                .onTapGesture(perform: { position in
-                    if !globalVars.displaySearchedLocations {
-                        if let coordinate = proxy.convert(position, from: .local) {
+                .onTapGesture(perform: { screenposition in
+                    print("markerSelected: \(globalVars.markerSelected)")
+                    //if !globalVars.displaySearchedLocations {
+                        if let coordinate = proxy.convert(screenposition, from: .local) {
                             print("TapGesture")
-                            searchResults = []
                             let latitude = coordinate.latitude
                             let longitude = coordinate.longitude
+                            //print("\(latitude), \(longitude)")
                             Task {
                                 try await dataModel.getLocationPlacemark(location: CLLocation(latitude: latitude, longitude: longitude))
-                                selectedLocation = dataModel.mapAnnotation
-                                
-                                if let unWrappedLocation = selectedLocation {
-                                    searchResults.append(unWrappedLocation)
-                                    print("location is selected")
+                                if !globalVars.markerSelected {
+                                    searchResults = []
+                                    selectedLocation = dataModel.mapAnnotation
+                                    print("selectedLocation from tapGesture: \(globalVars.markerSelected)")
+                                    
+                                    if let unWrappedLocation = selectedLocation {
+                                        searchResults.append(unWrappedLocation)
+                                        print("location is selected")
+                                    }
+                                } else {
+                                    selectedLocation = selectedMarker
+                                    print("selectedLocation updated in else")
                                 }
                             }
+                            globalVars.locationFromMap = AnnotationItem(name: "", title: "", subtitle: "", latitude: latitude, longitude: longitude)
+                            dataModel.plotRecentItems = true
+                            viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
+                            position = viewModel.position
+                            globalVars.markerSelected = false
                         }
-                    }
+                    //}
                 })
             }
             .onAppear {
@@ -80,13 +93,13 @@ struct ContentView: View {
                     try await dataModel.getLocationPlacemark(location: currentLocation)
                     viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                     position = viewModel.position
+                    print(dataModel.locationPlacemark?.thoroughfare ?? "no street")
                 }
             }
             .onChange(of: selectedDetent) {
                 globalVars.selectedDetent = selectedDetent
             }
             .onChange(of: globalVars.selectedDetent) {
-                print(currentLocation)
                 selectedDetent = globalVars.selectedDetent
                 viewModel.selectedDetent = selectedDetent
                 viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
@@ -97,7 +110,7 @@ struct ContentView: View {
                 print("tab Changed")
                 selectedTabIndex = globalVars.selectedTabIndex
                 viewModel.selectedTabIndex = selectedTabIndex
-                dataModel.getMapInfo(selectedTabIndex: selectedTabIndex)
+                //dataModel.getMapInfo(selectedTabIndex: selectedTabIndex)
                 viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                 position = viewModel.position
                 dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
@@ -109,39 +122,37 @@ struct ContentView: View {
             }
             .onChange(of: globalVars.trip) {
                 print("trip changed")
-                trip = globalVars.trip ?? Trip()
+                trip = globalVars.trip
             }
             .onChange(of: dataModel.results) {
                 print("resultscount \(dataModel.results.count)")
                 searchResults = dataModel.results
-                print(searchResults)
+                //print(searchResults)
                 print("data model result changed")
                 viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                 position = viewModel.position
             }
 
-            .onChange(of: selectedLocation) {
-                if let selectedAnnotation = selectedLocation {
-                    print("selectionChanged")
-                    let mkMapItem = selectedLocation?.item ?? MKMapItem()
-                    let coordinate: CLLocationCoordinate2D = mkMapItem.placemark.coordinate
-                    let latitude = coordinate.latitude
-                    let longitude = coordinate.longitude
-                    print(mkMapItem.name ?? "")
-                    print(mkMapItem.placemark)
-                    mapItemSelected = selectedAnnotation
-                    globalVars.locationFromMap = AnnotationItem(name: "", title: "", subtitle: "", latitude: latitude, longitude: longitude)
-                    dataModel.plotRecentItems = true
-                    viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
-                    position = viewModel.position
+            .onChange(of: selectedMarker) {
+                print("marker changed: \(globalVars.markerSelected)")
+                if let marker = selectedMarker {
+                    searchResults = []
+                    searchResults.append(marker)
+                    globalVars.markerSelected = true
+                    dataModel.plotRecentItems = false
+                } else {
+                    globalVars.markerSelected = false
                 }
+                print("selectedLocationchanged: \(globalVars.markerSelected)")
+                
             }
             .onChange(of: position) {
                 print("position Changed")
                 dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
             }
-            .onChange(of: mapItemSelected) {
-                print("selected map item changed")
+            .onChange(of: dataModel.locationPlacemark) {
+                print("Location Placemark changed")
+                print(dataModel.locationPlacemark?.thoroughfare ?? "No street!!!")
             }
         }
         .sheet(isPresented: $showSheet) {
@@ -156,10 +167,10 @@ struct ContentView: View {
                         .onDisappear(perform: {
                             globalVars.showSearchLocationSheet = false
                         })
-                        .sheet(item: $mapItemSelected) { selectedItem in
+                        .sheet(item: $selectedLocation) { selectedItem in
                             LocationSetUpView(locationFromMap: selectedItem)
                             .presentationBackgroundInteraction(.enabled)
-                            .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)], selection: $selectedDetent)
+                            .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)], selection: $locationSetupDetent)
                         }
                 }
         }

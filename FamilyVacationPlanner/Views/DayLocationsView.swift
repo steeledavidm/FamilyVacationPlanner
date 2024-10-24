@@ -29,7 +29,7 @@ struct DayLocationsView: View {
 
     
     
-    /*
+    
      @FetchRequest(sortDescriptors: [SortDescriptor(\.dateLeave)])
      var locations: FetchedResults<Location>
      
@@ -37,11 +37,10 @@ struct DayLocationsView: View {
      _locations = FetchRequest<Location>(sortDescriptors: [SortDescriptor(\.dateLeave)], predicate: NSPredicate(format: "%@ IN trip", trip))
      self.trip = trip
      }
-     */
+     
     var body: some View {
-        Text("")
-
-//            TabView(selection: $selectedTabIndex) {
+        Text("hello")
+//             TabView(selection: $selectedTabIndex) {
 //                ForEach(dataModel.comprehensiveAndDailySegments, id: \.id) { contentForTabView in
 //                    VStack {
 //                        Section(header: SectionHeaderView(date: viewDate , isPresented: $isPresented, locationType: $locationType, comprehensive: .constant(contentForTabView.comprehensive))) {
@@ -54,13 +53,13 @@ struct DayLocationsView: View {
 //                                            Text("index: \(segment.segmentIndex)")
 //                                        }
 //                                        HStack {
-//                                            Text(segment.startLocation.name ?? "Start Location")
+//                                            Text(segment.startLocation?.name ?? "Start Location")
 //                                            Text("->")
-//                                            Text(segment.endLocation.name ?? "End Location")
+//                                            Text(segment.endLocation?.name ?? "End Location")
 //                                            Button(
 //                                                "GO", action:  {
-//                                                    let latitude = segment.endLocation.latitude
-//                                                    let longitude = segment.endLocation.longitude
+//                                                    let latitude = segment.endLocation?.latitude ?? 0.0
+//                                                    let longitude = segment.endLocation?.longitude ?? 0.0
 //                                                    let url = URL(string: "maps://?saddr=&daddr=\(latitude),\(longitude)")
 //                                                    if UIApplication.shared.canOpenURL(url!) {
 //                                                        UIApplication.shared.open(url!, options: [:], completionHandler: nil)
@@ -82,7 +81,7 @@ struct DayLocationsView: View {
 //                                    print("old segmentIndex: \(dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex)")
 //                                    dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex = newOffset
 //                                    print("new segmentIndex: \(dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments[indices.last ?? 0].segmentIndex)")
-//                                    dataModel.fetchData(trip: trip)
+//                                    //dataModel.fetchData(trip: trip)
 //                                }
 //                            }
 //                            .environment(\.editMode, .constant(.active))
@@ -97,29 +96,29 @@ struct DayLocationsView: View {
 //            .tabViewStyle(.page)
 //            .onAppear {
 //                globalVar.selectedTabIndex = 0
-//                dataModel.fetchData(trip: trip)
+//                //dataModel.fetchData(trip: trip)
 //                selectedTabIndex = dataModel.comprehensiveAndDailySegments[0].dayIndex
 //            }
 //        
 //        .sheet(isPresented: $isPresented, onDismiss: {
-//            dataModel.fetchData(trip: trip)
+//            //viewModel.fetchData(trip: trip)
 //            selectedTabIndex = globalVar.selectedTabIndex
 //        }) {
-//            SearchDestinationView(trip: $trip, isPresented: $isPresented, locationType: $locationType, daySegments: .constant(dataModel.daySegmentsForFunction))
+//            SearchDestinationView()
 //        }
 //        
 //        .onChange(of: selectedTabIndex) {
 //            globalVar.selectedTabIndex = selectedTabIndex
 //            print(dataModel.comprehensiveAndDailySegments.count)
 //        }
-    }
-    
-    @MainActor func move(source: IndexSet, destination: Int) {
-        dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments.move(fromOffsets: source, toOffset: destination)
-        print("Source: \(source)")
-        print("destination \(destination)")
-        print("selectedTabIndex: \(selectedTabIndex)")
-        dataModel.fetchData(trip: trip)
+//    }
+//    
+//    @MainActor func move(source: IndexSet, destination: Int) {
+//        dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments.move(fromOffsets: source, toOffset: destination)
+//        print("Source: \(source)")
+//        print("destination \(destination)")
+//        print("selectedTabIndex: \(selectedTabIndex)")
+//        //dataModel.fetchData(trip: trip)
     }
 }
 

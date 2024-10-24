@@ -10,6 +10,10 @@ import Foundation
 struct DaySegments: Identifiable, Hashable {
     let id: UUID = UUID()
     var dayIndex: Int
-    var segments: [Segment]
+    var dayDate: Date?
+    var formattedDateString: String
+    var segments: [Segment]?
+    var startLocationSet: Bool
+    var endLocationSet: Bool
     var comprehensive: Bool
 }

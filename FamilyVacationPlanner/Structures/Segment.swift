@@ -11,7 +11,14 @@ struct Segment: Identifiable, Hashable {
     let id: UUID = UUID()
     var segmentIndex: Int
     var dayDate: Date
-    var dayString: String
-    var startLocation: Location
-    var endLocation: Location
+    var startLocation: Location?
+    var endLocation: Location?
+    var placeholder: Bool = false
+    var segmentComplete: Bool {
+        if startLocation != nil && endLocation != nil {
+            return true
+        } else {
+            return false
+        }
+    }
 }

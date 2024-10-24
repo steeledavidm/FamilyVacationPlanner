@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		550B8FD12C98C96A008648DC /* DaySegmentsView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550B8FD02C98C96A008648DC /* DaySegmentsView-ViewModel.swift */; };
+		550B8FD32C9DBCD9008648DC /* MapDisplayState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550B8FD22C9DBCD9008648DC /* MapDisplayState.swift */; };
+		550B8FF12CA6F3F4008648DC /* LocationSetUpView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550B8FF02CA6F3F4008648DC /* LocationSetUpView-ViewModel.swift */; };
 		551A58382C2DAAA000E6DA03 /* EditTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551A58372C2DAAA000E6DA03 /* EditTripView.swift */; };
 		553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553588F92C415F540014D48C /* GlobalVariables.swift */; };
 		553588FC2C42AB0C0014D48C /* LocationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553588FB2C42AB0C0014D48C /* LocationType.swift */; };
 		555014752C3C6EDA003DED29 /* MapInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555014742C3C6EDA003DED29 /* MapInfo.swift */; };
-		55510B822C87897C000CA28D /* DaySegmentsSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55510B812C87897C000CA28D /* DaySegmentsSetUpView.swift */; };
+		55510B822C87897C000CA28D /* DaySegmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55510B812C87897C000CA28D /* DaySegmentsView.swift */; };
 		55510B842C8B898C000CA28D /* LocationSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55510B832C8B898C000CA28D /* LocationSetUpView.swift */; };
 		55559C572C5D7D2F00149F8C /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55559C562C5D7D2F00149F8C /* DataModel.swift */; };
 		5558E7952C24867300CE6991 /* FamilyVacationPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */; };
@@ -42,11 +45,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		550B8FD02C98C96A008648DC /* DaySegmentsView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DaySegmentsView-ViewModel.swift"; sourceTree = "<group>"; };
+		550B8FD22C9DBCD9008648DC /* MapDisplayState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDisplayState.swift; sourceTree = "<group>"; };
+		550B8FF02CA6F3F4008648DC /* LocationSetUpView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationSetUpView-ViewModel.swift"; sourceTree = "<group>"; };
 		551A58372C2DAAA000E6DA03 /* EditTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTripView.swift; sourceTree = "<group>"; };
 		553588F92C415F540014D48C /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		553588FB2C42AB0C0014D48C /* LocationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationType.swift; sourceTree = "<group>"; };
 		555014742C3C6EDA003DED29 /* MapInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapInfo.swift; sourceTree = "<group>"; };
-		55510B812C87897C000CA28D /* DaySegmentsSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaySegmentsSetUpView.swift; sourceTree = "<group>"; };
+		55510B812C87897C000CA28D /* DaySegmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaySegmentsView.swift; sourceTree = "<group>"; };
 		55510B832C8B898C000CA28D /* LocationSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSetUpView.swift; sourceTree = "<group>"; };
 		55559C562C5D7D2F00149F8C /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		5558E7912C24867300CE6991 /* FamilyVacationPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FamilyVacationPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -148,6 +154,7 @@
 				55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */,
 				55B5FC142C4B1AE80087D31B /* DaySegments.swift */,
 				553588FB2C42AB0C0014D48C /* LocationType.swift */,
+				550B8FD22C9DBCD9008648DC /* MapDisplayState.swift */,
 				555014742C3C6EDA003DED29 /* MapInfo.swift */,
 				557395472C7A27D30006DEE5 /* RecentLocations.swift */,
 				55651C7C2C45EFD10042D020 /* Segment.swift */,
@@ -159,7 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				5558E7962C24867300CE6991 /* ContentView.swift */,
-				55510B812C87897C000CA28D /* DaySegmentsSetUpView.swift */,
+				55510B812C87897C000CA28D /* DaySegmentsView.swift */,
 				55510B832C8B898C000CA28D /* LocationSetUpView.swift */,
 				5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */,
 				551A58372C2DAAA000E6DA03 /* EditTripView.swift */,
@@ -179,6 +186,8 @@
 			isa = PBXGroup;
 			children = (
 				55F69FF62C7E509300CAF2DB /* ContentView-ViewModel.swift */,
+				550B8FD02C98C96A008648DC /* DaySegmentsView-ViewModel.swift */,
+				550B8FF02CA6F3F4008648DC /* LocationSetUpView-ViewModel.swift */,
 				55559C562C5D7D2F00149F8C /* DataModel.swift */,
 				553588F92C415F540014D48C /* GlobalVariables.swift */,
 				557395452C7A24E70006DEE5 /* LocationManager.swift */,
@@ -260,19 +269,22 @@
 				553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */,
 				55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */,
 				557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */,
-				55510B822C87897C000CA28D /* DaySegmentsSetUpView.swift in Sources */,
+				55510B822C87897C000CA28D /* DaySegmentsView.swift in Sources */,
 				55651C7F2C46066D0042D020 /* DayLocationsView.swift in Sources */,
 				5558E7E72C260FCE00CE6991 /* AddDestinationView.swift in Sources */,
 				55F69FF72C7E509300CAF2DB /* ContentView-ViewModel.swift in Sources */,
 				5558E7A32C2486CF00CE6991 /* SearchModel.swift in Sources */,
 				5558E7AF2C24968A00CE6991 /* AnnotationItem.swift in Sources */,
 				55FD9B3B2C2F30BD000EB3FA /* SectionHeaderView.swift in Sources */,
+				550B8FD12C98C96A008648DC /* DaySegmentsView-ViewModel.swift in Sources */,
+				550B8FF12CA6F3F4008648DC /* LocationSetUpView-ViewModel.swift in Sources */,
 				55559C572C5D7D2F00149F8C /* DataModel.swift in Sources */,
 				5558E7A92C24918900CE6991 /* AddressResult.swift in Sources */,
 				55FD9B3F2C2FD794000EB3FA /* DestinationSetUpView.swift in Sources */,
 				5558E7F52C28BA4B00CE6991 /* TripSetUpView.swift in Sources */,
 				5558E7DC2C25E02900CE6991 /* DataController.swift in Sources */,
 				5558E7F72C28D94D00CE6991 /* TripOverviewView.swift in Sources */,
+				550B8FD32C9DBCD9008648DC /* MapDisplayState.swift in Sources */,
 				5558E7ED2C272C8F00CE6991 /* EditDestinationView.swift in Sources */,
 				5558E7E52C260FB800CE6991 /* SearchDestinationView.swift in Sources */,
 				557395482C7A27D30006DEE5 /* RecentLocations.swift in Sources */,
