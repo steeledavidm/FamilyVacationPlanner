@@ -35,21 +35,23 @@ struct LocationSetUpView: View {
             Section("Address"){
                 Text(address)
             }
-            Toggle("Overnight Stop", isOn: $overnightStop)
-                .toggleStyle(.switch)
-            if overnightStop {
-                Picker("Leave", selection: $numberOfNights, content: {
-                    ForEach(1..<viewModel.numberOfNightsLeft, id: \.self) {
-                        if $0 != 1 {
-                            Text("\($0) Nights - \(viewModel.dayFromDayIndex + TimeInterval($0 * 60 * 60 * 24))")
-                        } else {
-                            Text("\($0) Night - \(viewModel.dayFromDayIndex + TimeInterval($0 * 60 * 60 * 24))")
+            if viewModel.numberOfNightsLeft > 0 {
+                Toggle("Overnight Stop", isOn: $overnightStop)
+                    .toggleStyle(.switch)
+                if overnightStop {
+                    Picker("Leave", selection: $numberOfNights, content: {
+                        ForEach(1..<viewModel.numberOfNightsLeft + 1, id: \.self) {
+                            if $0 != 1 {
+                                Text("\($0) Nights - \(viewModel.dayFromDayIndex + TimeInterval(($0 + 1) * 60 * 60 * 24))")
+                            } else {
+                                Text("\($0) Night - \(viewModel.dayFromDayIndex + TimeInterval(($0 + 1) * 60 * 60 * 24))")
+                            }
                         }
+                    })
+                    .pickerStyle(.menu)
+                    .onChange(of: numberOfNights) {
+                        leaveDate = viewModel.dayFromDayIndex + TimeInterval((numberOfNights + 1) * 60 * 60 * 24)
                     }
-                })
-                .pickerStyle(.menu)
-                .onChange(of: numberOfNights) {
-                    leaveDate = viewModel.dayFromDayIndex + TimeInterval(numberOfNights * 60 * 60 * 24)
                 }
             }
             

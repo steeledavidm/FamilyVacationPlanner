@@ -15,12 +15,13 @@ struct EditTripView: View {
 
     
     @Environment(DataModel.self) private var dataModel
-    @FocusState private var isTextFieldFocused: Bool
     @State var trip: Trip
     @State private var endDate: Date = Date()
     @State private var startDate: Date = Date()
     @State private var tripName: String = ""
     @State private var oneWayToggle: Bool = false
+    @State private var showingStartDatePicker = false
+    @State private var showingEndDatePicker = false
     
     var body: some View {
         VStack {
@@ -28,10 +29,67 @@ struct EditTripView: View {
                 Form {
                     Section("Trip Info") {
                         TextField("Trip Name", text: $tripName)
-                            //.autocorrectionDisabled()
-                            .focused($isTextFieldFocused)
-                        DatePicker("Trip Start", selection: $startDate, displayedComponents: [.date])
-                        DatePicker("Trip Finish", selection: $endDate, displayedComponents: [.date])
+                            .autocorrectionDisabled()
+                            .submitLabel(.return)
+                         Button(action: { showingStartDatePicker = true }) {
+                             HStack {
+                                 Text("Trip Start")
+                                 Spacer()
+                                 Text(startDate.formatted(date: .numeric, time: .omitted))
+                             }
+                         }
+                         .sheet(isPresented: $showingStartDatePicker) {
+                             NavigationStack {
+                                 DatePicker("Select Start Date",
+                                          selection: $startDate,
+                                          displayedComponents: [.date])
+                                     .datePickerStyle(.graphical)
+                                     .padding()
+                                     .navigationTitle("Select Start Date")
+                                     .navigationBarTitleDisplayMode(.inline)
+                                     .toolbar {
+                                         ToolbarItem(placement: .confirmationAction) {
+                                             Button("Done") {
+                                                 showingStartDatePicker = false
+                                             }
+                                         }
+                                     }
+                             }
+                             .presentationDetents([.medium])
+                         }
+                         .onChange(of: startDate) {
+                             showingStartDatePicker = false
+                         }
+                         
+                         Button(action: { showingEndDatePicker = true }) {
+                             HStack {
+                                 Text("Trip Finish")
+                                 Spacer()
+                                 Text(endDate.formatted(date: .numeric, time: .omitted))
+                             }
+                         }
+                         .sheet(isPresented: $showingEndDatePicker) {
+                             NavigationStack {
+                                 DatePicker("Select End Date",
+                                          selection: $endDate,
+                                          displayedComponents: [.date])
+                                     .datePickerStyle(.graphical)
+                                     .padding()
+                                     .navigationTitle("Select End Date")
+                                     .navigationBarTitleDisplayMode(.inline)
+                                     .toolbar {
+                                         ToolbarItem(placement: .confirmationAction) {
+                                             Button("Done") {
+                                                 showingEndDatePicker = false
+                                             }
+                                         }
+                                     }
+                             }
+                             .presentationDetents([.medium])
+                         }
+                         .onChange(of: endDate) {
+                             showingEndDatePicker = false
+                         }
                         Toggle("One Way", isOn: $oneWayToggle)
                             .toggleStyle(.switch)
                         Button(action: {
@@ -54,25 +112,12 @@ struct EditTripView: View {
                 startDate = trip.startDate ?? Date()
                 endDate = trip.endDate ?? Date()
                 oneWayToggle = trip.oneWay
-                isTextFieldFocused = true
                 print("text field appeared")
             }
             .onDisappear{
                 if newTrip {
                     dataModel.moc.delete(trip)
                 }
-            }
-            .onChange(of: startDate) {
-                isTextFieldFocused = false
-                print("start date changed")
-            }
-            .onChange(of: endDate) {
-                isTextFieldFocused = false
-                print("end date changed")
-            }
-            .onChange(of: oneWayToggle) {
-                isTextFieldFocused = false
-                print("toggle changed")
             }
         }
     }

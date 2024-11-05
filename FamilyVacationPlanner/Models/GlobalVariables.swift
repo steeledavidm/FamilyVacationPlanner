@@ -22,4 +22,5 @@ class GlobalVariables {
     var markerSelected: Bool = false
     var locationAdded: Bool = false
     var locationIndex: Int = 0
+    var comprehensiveAndDailySegments: [DaySegments] = []
 }

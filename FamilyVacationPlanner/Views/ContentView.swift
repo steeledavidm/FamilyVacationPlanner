@@ -31,6 +31,7 @@ struct ContentView: View {
     @State private var showSearchLocationSheet = false
     @State private var trip: Trip = Trip()
     @State private var viewModel: ViewModel = ViewModel(selectedTabIndex: 0, selectedDetent: .fraction(0.5))
+    @State private var comprehensiveAndDailySegments: [DaySegments] = []
     
 
     var body: some View {
@@ -50,7 +51,7 @@ struct ContentView: View {
                 }
                 .animation(.easeInOut(duration: 1), value: selectedDetent)
                 .animation(.easeInOut(duration: 1), value: position)
-                .mapStyle(.hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
+                .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
                 
                 .onTapGesture(perform: { screenposition in
                     print("markerSelected: \(globalVars.markerSelected)")
@@ -94,6 +95,7 @@ struct ContentView: View {
                     viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                     position = viewModel.position
                     print(dataModel.locationPlacemark?.thoroughfare ?? "no street")
+        
                 }
             }
             .onChange(of: selectedDetent) {
@@ -108,9 +110,10 @@ struct ContentView: View {
             }
             .onChange(of: globalVars.selectedTabIndex) {
                 print("tab Changed")
+                comprehensiveAndDailySegments = globalVars.comprehensiveAndDailySegments
                 selectedTabIndex = globalVars.selectedTabIndex
                 viewModel.selectedTabIndex = selectedTabIndex
-                //dataModel.getMapInfo(selectedTabIndex: selectedTabIndex)
+                dataModel.getMapInfo(selectedTabIndex: selectedTabIndex, comprehensiveAndDailySegments: comprehensiveAndDailySegments)
                 viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                 position = viewModel.position
                 dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
@@ -123,6 +126,16 @@ struct ContentView: View {
             .onChange(of: globalVars.trip) {
                 print("trip changed")
                 trip = globalVars.trip
+            }
+            
+            .onChange(of: globalVars.comprehensiveAndDailySegments) {
+                print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
+                comprehensiveAndDailySegments = globalVars.comprehensiveAndDailySegments
+                dataModel.getMapInfo(selectedTabIndex: selectedTabIndex, comprehensiveAndDailySegments: comprehensiveAndDailySegments)
+                viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
+                position = viewModel.position
+                dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
+                dataModel.getRoute()
             }
             .onChange(of: dataModel.results) {
                 print("resultscount \(dataModel.results.count)")

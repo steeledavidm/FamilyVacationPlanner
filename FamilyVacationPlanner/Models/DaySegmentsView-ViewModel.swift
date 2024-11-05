@@ -18,7 +18,7 @@ extension DaySegmentsView {
         var comprehensiveAndDailySegments: [DaySegments] = []
         var tripStartLocation: Location?
         
-        func fetchData(trip: Trip) {
+        func fetchData(trip: Trip) async throws {
             print("Fetch Data")
             let request: NSFetchRequest<Location> = Location.fetchRequest()
             request.predicate = NSPredicate(format: "%@ IN trip", trip)
@@ -90,6 +90,7 @@ extension DaySegmentsView {
                                             if overNightStaysAccumulator >= 0 {
                                                 let numberOfSegments = tripSegments[day + 1].segments?.count
                                                 tripSegments[day + 1].segments?[(numberOfSegments ?? 1) - 1].endLocation = overNightStayLocation
+                                                tripSegments[day + 1].endLocationSet = true
                                             }
                                         }
                                     }
@@ -108,14 +109,6 @@ extension DaySegmentsView {
             for dayNumber in 0..<numberOfDays {
                 if let daySegmentsCount = tripSegments[dayNumber].segments?.count {
                     tripSegments[dayNumber].segments?.append(Segment(segmentIndex: daySegmentsCount, dayDate: dateOfDay, startLocation: tripStartLocation, endLocation: tripEndLocation, placeholder: true))
-                }
-            }
-            
-            for tripSegment in tripSegments {
-                if let segments = tripSegment.segments {
-                    for segment in segments {
-                        print("\(segment.segmentIndex) \(String(describing: segment.startLocation?.name)) \(String(describing: segment.endLocation?.name))")
-                    }
                 }
             }
          }
@@ -149,5 +142,21 @@ extension DaySegmentsView {
              //comprehensiveAndDailySegments.append(daySegmentforComprehensive)
              comprehensiveAndDailySegments.append(contentsOf: tripSegments)
          }
+        
+        func saveLocationIndex(segments: [Segment], dayIndex: Int, trip: Trip) async throws {
+            for (index, segment) in segments.enumerated() {
+                print(index, segment.endLocation?.name ?? "", segment.segmentIndex)
+                if let location = segment.endLocation {
+                    if !location.overNightStop && !location.startLocation {
+                        location.locationIndex = Int16(dayIndex) * Int16(100) + Int16(index + 1)
+                        try moc.save()
+                    }
+                }
+            }
+            try await fetchData(trip: trip)
+        }
+        func removeSegment(at offsets: IndexSet) {
+            print("Delete initiated")
+        }
     }
 }

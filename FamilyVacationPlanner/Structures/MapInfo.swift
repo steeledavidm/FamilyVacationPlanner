@@ -19,4 +19,6 @@ struct MapInfo: Identifiable {
     var route: MKRoute?
     var routeColor: String?
     var polyline: MKPolyline?
+    var travelTime: String?
+    var travelDistance: String?
 }

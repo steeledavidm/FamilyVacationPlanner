@@ -85,9 +85,6 @@ struct TripSetUpView: View {
                         .toolbar(.hidden, for: .navigationBar)
                 }
             })
-            .navigationDestination(for: Location.self) {location in
-                EditDestinationView(location: location)
-            }
         }
     }
     
