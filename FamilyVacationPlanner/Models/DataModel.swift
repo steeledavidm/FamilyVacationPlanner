@@ -16,12 +16,9 @@ import SwiftUI
     var locations: [Location] = []
     var allMapInfo: [MapInfo] = []
     var daySegmentsForFunction: [Segment] = []
-    var startingPoint: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 42.0, longitude: -92.0)
-    var endingPoint: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 42.0, longitude: -100.0)
     var mapCameraRegion: MKCoordinateRegion = MKCoordinateRegion()
     var results: [AnnotatedMapItem] = []
     var region: MKCoordinateRegion = MKCoordinateRegion()
-    var route: MKRoute?
     var tripSegments: [DaySegments] = []
     var daySegments: [Segment] = []
     var comprehensiveAndDailySegments: [DaySegments] = []
@@ -35,9 +32,15 @@ import SwiftUI
     func getMapInfo(selectedTabIndex: Int, comprehensiveAndDailySegments: [DaySegments]) {
         print("Function 2")
         allMapInfo = []
-        if let daySegments = comprehensiveAndDailySegments[selectedTabIndex].segments {
-            daySegmentsForFunction = daySegments
-            print("day Segment count: \(daySegmentsForFunction.count)")
+        if comprehensiveAndDailySegments.count > selectedTabIndex {
+            if let daySegments = comprehensiveAndDailySegments[selectedTabIndex].segments, !daySegments.isEmpty {
+                daySegmentsForFunction = daySegments
+                print("day Segment count: \(daySegmentsForFunction.count)")
+            } else {
+                print("No segments found for the selected tab.")
+            }
+        } else {
+            print("Invalid tab index selected.")
         }
     
         for segment in daySegmentsForFunction {
@@ -51,52 +54,13 @@ import SwiftUI
                 let locationId = segmentEnd.id
                 let markerLabelEnd = segmentEnd.name ?? "Uknown Name"
                 
+                let route = segment.route
+                
                 let dateLeave = segment.dayDate
-                allMapInfo.append(MapInfo(locationid: locationId ?? UUID(), dateLeave: dateLeave, markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation))
+                allMapInfo.append(MapInfo(locationid: locationId ?? UUID(), dateLeave: dateLeave, markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation, route: route))
                 print(allMapInfo.count)
             }
         }
-    }
-    
-    func getRoute() {
-        print("Get route")
-        Task {
-            for (index, mapInfo) in allMapInfo.enumerated() {
-                startingPoint = mapInfo.startingPoint ?? CLLocationCoordinate2D()
-                endingPoint = mapInfo.endingPoint  ?? CLLocationCoordinate2D()
-                
-                if startingPoint.longitude != endingPoint.longitude {
-                    do {
-                        let route = try await getDirections()
-                        let segmentDistance = Measurement(value: route.distance, unit: UnitLength.meters)
-                        let segmentTime = Measurement(value: route.expectedTravelTime, unit: UnitDuration.seconds)
-                        if index < allMapInfo.count {
-                            allMapInfo[index].route = route
-                            allMapInfo[index].travelDistance = segmentDistance.formatted(.measurement(width: .abbreviated, usage: .road))
-                            allMapInfo[index].travelTime = segmentTime.formatted()
-                        }
-                    } catch {
-                        print("Error fetching data : \(error.localizedDescription)")
-                    }
-                }
-            }
-            allMapInfo.sort {$0.dateLeave < $1.dateLeave}
-            print("allMapInfo.count: \(allMapInfo.count)")
-        }
-    }
-
-
-    func getDirections() async throws -> MKRoute  {
-        route = nil
-        print("Getting Directions")
-        let request = MKDirections.Request()
-        request.source = MKMapItem(placemark: MKPlacemark(coordinate: startingPoint))
-        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: endingPoint))
-        
-        let directions = MKDirections(request: request)
-        let response = try? await directions.calculate()
-        route = response?.routes.first
-        return route ?? MKRoute()
     }
     
     func getCurrentLocation(locationManager: LocationManager) async throws -> CLLocation {

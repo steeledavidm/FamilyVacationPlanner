@@ -36,43 +36,51 @@ struct DaySegmentsView: View {
                             }
                             if let segments = contentForTabView.segments {
                                 ForEach(segments, id: \.self) { segment in
-                                    if segment.segmentComplete {
-                                        NavigationLink(value: segment.endLocation) {
+                                    if !segment.placeholder {
+                                        if segment.segmentComplete {
                                             Group {
-                                                if !segment.placeholder {
-                                                    VStack {
-                                                        HStack {
-                                                            Text(String(segment.segmentIndex))
-                                                            Text(segment.startLocation?.name ?? "")
-                                                            Text(String(segment.startLocation?.locationIndex ?? 66))
-                                                            Text("->")
-                                                            Text(segment.endLocation?.name ?? "")
-                                                            Text(String(segment.endLocation?.locationIndex ?? 66))
-                                                            Spacer()
-                                                            Button(action:  {
-                                                                let latitude = segment.endLocation?.latitude ?? 0.0
-                                                                let longitude = segment.endLocation?.longitude ?? 0.0
-                                                                let url = URL(string: "maps://?saddr=&daddr=\(latitude),\(longitude)")
-                                                                if UIApplication.shared.canOpenURL(url!) {
-                                                                    UIApplication.shared.open(url!, options: [:], completionHandler: nil)
-                                                                }
+                                                VStack {
+                                                    HStack {
+                                                        Text(String(segment.segmentIndex))
+                                                        Text(segment.startLocation?.name ?? "")
+                                                        Text(String(segment.startLocation?.locationIndex ?? 66))
+                                                        Text("->")
+                                                        Text(segment.endLocation?.name ?? "")
+                                                        Text(String(segment.endLocation?.locationIndex ?? 66))
+                                                        Spacer()
+                                                        Button(action:  {
+                                                            let latitude = segment.endLocation?.latitude ?? 0.0
+                                                            let longitude = segment.endLocation?.longitude ?? 0.0
+                                                            let url = URL(string: "maps://?saddr=&daddr=\(latitude),\(longitude)")
+                                                            if UIApplication.shared.canOpenURL(url!) {
+                                                                UIApplication.shared.open(url!, options: [:], completionHandler: nil)
                                                             }
-                                                            ) {
-                                                                Text("GO")
-                                                                    .font(.title2)
-                                                                    .fontWeight(.bold)
-                                                                    .foregroundColor(.white)
-                                                                    .padding(.vertical, 8)
-                                                                    .padding(.horizontal, 16)
-                                                                    .background(RoundedRectangle(cornerRadius: 20)
-                                                                        .fill(Color.green)
-                                                                        .shadow(color: Color.green.opacity(0.3), radius: 10, x: 0, y: 5)
-                                                                    )
-                                                                
-                                                            }
-                                                            .contentShape(Rectangle())
-                                                            .buttonStyle(PlainButtonStyle())
                                                         }
+                                                        ) {
+                                                            Text("GO")
+                                                                .font(.title2)
+                                                                .fontWeight(.bold)
+                                                                .foregroundColor(.white)
+                                                                .padding(.vertical, 8)
+                                                                .padding(.horizontal, 16)
+                                                                .background(RoundedRectangle(cornerRadius: 20)
+                                                                    .fill(Color.green)
+                                                                    .shadow(color: Color.green.opacity(0.3), radius: 10, x: 0, y: 5)
+                                                                )
+                                                            
+                                                        }
+                                                        .contentShape(Rectangle())
+                                                        .buttonStyle(PlainButtonStyle())
+                                                    }
+                                                    HStack {
+                                                        Text("time: \(segment.time ?? 0) ")
+                                                        Text("distance: \(segment.distance ?? 0)")
+                                                        //                            let segmentDistance = Measurement(value: route.distance, unit: UnitLength.meters)
+                                                        //                            let segmentTime = Measurement(value: route.expectedTravelTime, unit: UnitDuration.seconds)
+                                                        //                            if index < allMapInfo.count {
+                                                        //                                allMapInfo[index].route = route
+                                                        //                                allMapInfo[index].travelDistance = segmentDistance.formatted(.measurement(width: .abbreviated, usage: .road))
+                                                        //                                allMapInfo[index].travelTime = segmentTime.formatted()
                                                     }
                                                 }
                                             }
@@ -132,10 +140,6 @@ struct DaySegmentsView: View {
             }
         }
         .tabViewStyle(.page)
-        
-        .navigationDestination(for: Location.self) {location in
-            EditLocationView(location: location)
-        }
         
         .onAppear() {
             globalVars.selectedTabIndex = 0

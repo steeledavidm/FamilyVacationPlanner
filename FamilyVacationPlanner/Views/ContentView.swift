@@ -117,7 +117,7 @@ struct ContentView: View {
                 viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                 position = viewModel.position
                 dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
-                dataModel.getRoute()
+                //dataModel.getRoute()
             }
             .onChange(of: globalVars.showSearchLocationSheet) {
                 showSearchLocationSheet = globalVars.showSearchLocationSheet
@@ -135,7 +135,7 @@ struct ContentView: View {
                 viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                 position = viewModel.position
                 dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
-                dataModel.getRoute()
+                //dataModel.getRoute()
             }
             .onChange(of: dataModel.results) {
                 print("resultscount \(dataModel.results.count)")

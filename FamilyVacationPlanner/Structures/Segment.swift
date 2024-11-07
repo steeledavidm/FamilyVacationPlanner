@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MapKit
 
 struct Segment: Identifiable, Hashable {
     let id: UUID = UUID()
@@ -14,11 +15,18 @@ struct Segment: Identifiable, Hashable {
     var startLocation: Location?
     var endLocation: Location?
     var placeholder: Bool = false
+    var route: MKRoute?
     var segmentComplete: Bool {
         if startLocation != nil && endLocation != nil {
             return true
         } else {
             return false
         }
+    }
+    var distance: CLLocationDistance? {
+        route?.distance
+    }
+    var time: TimeInterval? {
+        route?.expectedTravelTime
     }
 }
