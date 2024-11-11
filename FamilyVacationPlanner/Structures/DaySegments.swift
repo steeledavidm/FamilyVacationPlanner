@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MapKit
 
 struct DaySegments: Identifiable, Hashable {
     let id: UUID = UUID()
@@ -16,4 +17,7 @@ struct DaySegments: Identifiable, Hashable {
     var startLocationSet: Bool
     var endLocationSet: Bool
     var comprehensive: Bool
+    var totalTime: TimeInterval
+    var totalDistance: CLLocationDistance
+    var totalPolyline: MKPolyline?
 }

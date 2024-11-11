@@ -21,7 +21,6 @@ import SwiftUI
     var region: MKCoordinateRegion = MKCoordinateRegion()
     var tripSegments: [DaySegments] = []
     var daySegments: [Segment] = []
-    var comprehensiveAndDailySegments: [DaySegments] = []
     var currentLocation: CLLocation = CLLocation()
     var locationPlacemark: MKPlacemark?
     var startLocationSet: Bool = false
@@ -44,7 +43,7 @@ import SwiftUI
         }
     
         for segment in daySegmentsForFunction {
-            if segment.segmentComplete {
+            if segment.segmentComplete && !segment.placeholder {
                 let segmentStart = segment.startLocation ?? Location()
                 let startLocation = CLLocationCoordinate2D(latitude: segmentStart.latitude, longitude: segmentStart.longitude)
                 let markerLabelStart = segmentStart.name ?? "Unknown Name"
@@ -54,11 +53,10 @@ import SwiftUI
                 let locationId = segmentEnd.id
                 let markerLabelEnd = segmentEnd.name ?? "Uknown Name"
                 
-                let route = segment.route
+                let route = segment.polyline
                 
                 let dateLeave = segment.dayDate
                 allMapInfo.append(MapInfo(locationid: locationId ?? UUID(), dateLeave: dateLeave, markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation, route: route))
-                print(allMapInfo.count)
             }
         }
     }

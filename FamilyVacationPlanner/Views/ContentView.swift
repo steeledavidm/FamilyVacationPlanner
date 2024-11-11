@@ -41,12 +41,13 @@ struct ContentView: View {
                     ForEach(dataModel.allMapInfo) {mapInfo in
                         Marker(mapInfo.markerLabelStart, coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D())
                         Marker(mapInfo.markerLabelEnd, coordinate: mapInfo.endingPoint ?? CLLocationCoordinate2D())
-                        MapPolyline(mapInfo.route ?? MKRoute())
+                        MapPolyline(mapInfo.route ?? MKPolyline())
                             .stroke(.blue, lineWidth: 5)
                     }
                     ForEach(searchResults, id: \.self) { item in
                         Marker(item: item.item)
                     }
+                    //show current location on map
                     UserAnnotation()
                 }
                 .animation(.easeInOut(duration: 1), value: selectedDetent)

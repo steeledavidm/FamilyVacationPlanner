@@ -16,7 +16,7 @@ struct MapInfo: Identifiable {
     var markerLabelEnd: String
     var startingPoint: CLLocationCoordinate2D?
     var endingPoint: CLLocationCoordinate2D?
-    var route: MKRoute?
+    var route: MKPolyline?
     var routeColor: String?
     var polyline: MKPolyline?
 }

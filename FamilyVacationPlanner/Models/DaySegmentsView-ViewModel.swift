@@ -16,6 +16,7 @@ extension DaySegmentsView {
         var locations: [Location] = []
         var tripSegments: [DaySegments] = []
         var comprehensiveAndDailySegments: [DaySegments] = []
+        var daySummary: [Segment] = []
         var tripStartLocation: Location?
         
         func fetchData(trip: Trip) async throws {
@@ -100,6 +101,7 @@ extension DaySegmentsView {
                                 // fill out dayEndLocation for next days in same location.
                                 while overNightStaysAccumulator >= 0 {
                                     for day in dayNumber..<numberOfDays {
+                                        print("day: \(day), numberOfDays: \(numberOfDays)")
                                         if day + 1 < numberOfDays {
                                             tripSegments[day + 1].segments?[0].startLocation = overNightStayLocation
                                             tripSegments[day + 1].startLocationSet = true
@@ -122,14 +124,30 @@ extension DaySegmentsView {
                     }
                 }
                 
+                
                 // if segment is complete get route information
+                var completeRouteForDay: [MKRoute] = []
                 if let segments = tripSegments[dayNumber].segments {
                     for (index, segment) in segments.enumerated() {
-                        if segment.segmentComplete {
-                            tripSegments[dayNumber].segments?[index].route = await getRoute(segment: segment)
+                        if segment.segmentComplete && !segment.placeholder {
+                            let route = await getRoute(segment: segment)
+                            tripSegments[dayNumber].segments?[index].time = route.expectedTravelTime
+                            tripSegments[dayNumber].segments?[index].distance = route.distance
+                            tripSegments[dayNumber].segments?[index].polyline = route.polyline
+                            completeRouteForDay.append(route)
                         }
                     }
+                    var totalTime: TimeInterval = 0
+                    var totalDistance: CLLocationDistance = 0
+                    for route in completeRouteForDay {
+                        totalTime += route.expectedTravelTime
+                        totalDistance += route.distance
+                    }
+                    tripSegments[dayNumber].totalTime = totalTime
+                    tripSegments[dayNumber].totalDistance = totalDistance
+                    tripSegments[dayNumber].totalPolyline = combineRoutes(routes: completeRouteForDay)
                 }
+                print("dayNumber: \(dayNumber)")
             }
             
             if numberOfDays > 1 {
@@ -148,12 +166,14 @@ extension DaySegmentsView {
             let tripEndDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: trip.endDate ?? Date()) ?? Date()
             let numberOfDays = (calendar.dateComponents([.day], from: tripStartDate, to: tripEndDate).day ?? 0) + 1
             let segments: [Segment] = [Segment(segmentIndex: 0, dayDate: Date())]
-            for dayNumber in 0..<numberOfDays {
+            for dayNumber in 1..<(numberOfDays + 1) {
                 let dateOfDay = calendar.date(byAdding: DateComponents(day: dayNumber), to: tripStartDate) ?? Date()
                 let formatter = DateFormatter()
                 formatter.dateFormat = "MMM-dd-yyyy"
                 let formattedDateString = formatter.string(from: dateOfDay)
-                tripSegments.append(DaySegments(dayIndex: dayNumber, dayDate: dateOfDay, formattedDateString: formattedDateString, segments: segments, startLocationSet: false, endLocationSet: false, comprehensive: false))
+                let totalTime = 0
+                let totalDistance = 0
+                tripSegments.append(DaySegments(dayIndex: dayNumber, dayDate: dateOfDay, formattedDateString: formattedDateString, segments: segments, startLocationSet: false, endLocationSet: false, comprehensive: false, totalTime: TimeInterval(totalTime), totalDistance: CLLocationDistance(totalDistance)))
             }
         }
          
@@ -161,14 +181,15 @@ extension DaySegmentsView {
              print("setup Trip Comp View")
              comprehensiveAndDailySegments = []
              var daySegmentsAccumulator: [Segment] = []
+             var totalTime: TimeInterval = 0
+             var totalDistance: CLLocationDistance = 0
              for tripSegment in tripSegments {
-                 if let segments = tripSegment.segments {
-                     daySegmentsAccumulator = daySegmentsAccumulator + segments
-                 }
+                 daySegmentsAccumulator.append(Segment(segmentIndex: tripSegment.dayIndex, dayDate: tripSegment.dayDate ?? Date(), startLocation: tripSegment.segments?.first?.startLocation, endLocation: tripSegment.segments?[(tripSegment.segments?.count ?? 2) - 2].endLocation, placeholder: false, distance: tripSegment.totalDistance, time: tripSegment.totalTime, polyline: tripSegment.totalPolyline))
+                 totalTime += tripSegment.totalTime
+                 totalDistance += tripSegment.totalDistance
              }
-
-             //let daySegmentforComprehensive: DaySegments = DaySegments(dayIndex: 0, formattedDateString: "", segments: daySegmentsAccumulator, startLocationSet: false, endLocationSet: false, comprehensive: true)
-             //comprehensiveAndDailySegments.append(daySegmentforComprehensive)
+             let daySegmentforComprehensive: DaySegments = DaySegments(dayIndex: 0, formattedDateString: "Trip Overview", segments: daySegmentsAccumulator, startLocationSet: true, endLocationSet: true, comprehensive: true, totalTime: totalTime, totalDistance: totalDistance)
+             comprehensiveAndDailySegments.append(daySegmentforComprehensive)
              comprehensiveAndDailySegments.append(contentsOf: tripSegments)
          }
         
@@ -211,6 +232,22 @@ extension DaySegmentsView {
             }
             print("route calculated")
             return route ?? MKRoute()
+        }
+        
+        func combineRoutes(routes: [MKRoute]) -> MKPolyline {
+            var allCoordinates: [CLLocationCoordinate2D] = []
+            for route in routes {
+                var coordinates: [CLLocationCoordinate2D] = []
+                let pointCount = route.polyline.pointCount
+                coordinates = Array(UnsafeMutableBufferPointer(start: UnsafeMutablePointer<CLLocationCoordinate2D>.allocate(capacity: pointCount), count: pointCount))
+                route.polyline.getCoordinates(&coordinates, range: NSRange(location: 0, length: pointCount))
+                allCoordinates.append(contentsOf: coordinates)
+            }
+            
+            // Create a new polyline from all coordinates
+            let combinedRoute = MKPolyline(coordinates: allCoordinates, count: allCoordinates.count)
+            return combinedRoute
+            
         }
     }
 }

@@ -15,7 +15,7 @@ struct Segment: Identifiable, Hashable {
     var startLocation: Location?
     var endLocation: Location?
     var placeholder: Bool = false
-    var route: MKRoute?
+    //var route: MKRoute?
     var segmentComplete: Bool {
         if startLocation != nil && endLocation != nil {
             return true
@@ -23,10 +23,13 @@ struct Segment: Identifiable, Hashable {
             return false
         }
     }
-    var distance: CLLocationDistance? {
-        route?.distance
-    }
-    var time: TimeInterval? {
-        route?.expectedTravelTime
-    }
+    var distance: CLLocationDistance? // {
+//        route?.distance
+//    }
+    var time: TimeInterval? //{
+//        route?.expectedTravelTime
+//    }
+    var polyline: MKPolyline? //{
+//        route?.polyline
+//    }
 }

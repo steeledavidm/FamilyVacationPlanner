@@ -31,12 +31,15 @@ extension ContentView {
             let currentLongitude: Double = currentLocation.coordinate.longitude
             var plotCurrentLocation = false
             print(allMapInfo.count)
-            if !dataModel.comprehensiveAndDailySegments.isEmpty {
-                if dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].startLocation == dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].endLocation {
+            if !globalVars.comprehensiveAndDailySegments.isEmpty {
+                print("I'm here")
+                if globalVars.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].startLocation == globalVars.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].endLocation {
                     singleLocation = true
                 } else {
                     singleLocation = false
                 }
+            } else {
+                print("I'm actually here")
             }
             
             if globalVars.locationFromMap != nil {
@@ -93,7 +96,6 @@ extension ContentView {
                 let screenSpanLat = spanLon * screenHeight/screenWidth
                 adjustedCenterLat = centerLat - screenSpanLat / 2 * 0.6
             }
-            
             if spanLon < spanLat {
                 adjustedCenterLat = centerLat - spanLat / 1.5
                 adjustedSpanLon = spanLon / 0.4
@@ -121,10 +123,9 @@ extension ContentView {
                         position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
                         positionSetter = 4
                     }
-
                 }
-            if plotCurrentLocation || allMapInfo.count == 1 {
-                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 10/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)))
+            if plotCurrentLocation || allMapInfo.count == 1 && singleLocation {
+                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 0.1/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
                 positionSetter = 5
                 }
             if globalVars.showSearchLocationSheet && dataModel.plotRecentItems {
