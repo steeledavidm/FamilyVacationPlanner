@@ -5,6 +5,7 @@
 //  Created by David Steele on 9/3/24.
 //
 
+import CoreData
 import SwiftUI
 
 struct DaySegmentsView: View {
@@ -12,7 +13,7 @@ struct DaySegmentsView: View {
     @Environment(DataModel.self) private var dataModel
     @State private var comprehensiveAndDailySegments: [DaySegments] = []
     @State private var selectedTabIndex: Int = 0
-    @State var trip: Trip
+    @ObservedObject var trip: Trip
     @State private var viewModel: ViewModel = ViewModel()
     @State private var states = [true, true, false, true, false]
     @State private var selectedLocation: Location?
@@ -56,9 +57,9 @@ struct DaySegmentsView: View {
                                                 .font(.title2)
                                                 .fontWeight(.bold)
                                                 .foregroundColor(.white)
-                                                .padding(.vertical, 8)
-                                                .padding(.horizontal, 16)
-                                                .background(RoundedRectangle(cornerRadius: 20)
+                                                .padding(.vertical, 10)
+                                                .padding(.horizontal, 8)
+                                                .background(RoundedRectangle(cornerRadius: 10)
                                                     .fill(Color.green)
                                                     .shadow(color: Color.green.opacity(0.3), radius: 10, x: 0, y: 5)
                                                 )
@@ -119,9 +120,9 @@ struct DaySegmentsView: View {
                                                                     .font(.title2)
                                                                     .fontWeight(.bold)
                                                                     .foregroundColor(.white)
-                                                                    .padding(.vertical, 8)
-                                                                    .padding(.horizontal, 16)
-                                                                    .background(RoundedRectangle(cornerRadius: 20)
+                                                                    .padding(.vertical, 10)
+                                                                    .padding(.horizontal, 8)
+                                                                    .background(RoundedRectangle(cornerRadius: 10)
                                                                         .fill(Color.green)
                                                                         .shadow(color: Color.green.opacity(0.3), radius: 10, x: 0, y: 5)
                                                                     )
@@ -234,5 +235,64 @@ struct DaySegmentsView: View {
     }
 
 //#Preview {
-//    DaySegmentsView()
+//    let context = DataController.preview
+//    let trips: [Trip]
+//    let requestTrips: NSFetchRequest<Trip> = Trip.fetchRequest()
+//    do {
+//        trips = try context.fetch(requestTrips)
+//    } catch {
+//        let nserror = error as NSError
+//        fatalError("Error \(nserror): \(nserror.userInfo)")
+//    }
+//    let trip = trips[0]
+//    return DaySegmentsView(trip: trip)
+//        .environment(\.managedObjectContext, DataController.preview)
+//        .environment(DataModel())
+//        .environment(GlobalVariables())
+//}
+
+#Preview {
+    // Get the preview context with mock data already populated
+    let context = DataController.preview
+    
+    // Fetch the first trip from the mock data
+    let request: NSFetchRequest<Trip> = Trip.fetchRequest()
+    var previewTrip: Trip?
+    
+    do {
+        let trips = try context.fetch(request)
+        if let firstTrip = trips.first {
+            previewTrip = firstTrip
+        }
+    } catch {
+        fatalError("Failed to fetch preview trip: \(error.localizedDescription)")
+    }
+    
+    // Create DaySegmentsView with the fetched trip
+    return Group {
+        if let trip = previewTrip {
+            DaySegmentsView(trip: trip)
+                .environment(\.managedObjectContext, context)
+                .environment(DataModel())
+                .environment(GlobalVariables())
+        } else {
+            Text("Failed to load preview trip")
+        }
+    }
+}
+
+//#Preview {
+//    struct PreviewWrapper: View {
+//        
+//        var body: some View {
+//            let context = DataController.preview
+//            let trip = try! context.fetch(Trip.fetchRequest()).first!
+//            
+//            DaySegmentsView(trip: trip)
+//                .environment(\.managedObjectContext, DataController.preview)
+//                .environment(DataModel())
+//                .environment(GlobalVariables())
+//        }
+//    }
+//    return PreviewWrapper()
 //}

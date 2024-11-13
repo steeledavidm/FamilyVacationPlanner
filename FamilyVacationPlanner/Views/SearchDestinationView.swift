@@ -141,24 +141,12 @@ struct SearchDestinationView : View {
     }
 }
 
-/*
+
 #Preview {
-    let context = DataController.preview
-    let trips: [Trip]
-    let requestTrips: NSFetchRequest<Trip> = Trip.fetchRequest()
-    do {
-        trips = try context.fetch(requestTrips)
-    } catch {
-        let nserror = error as NSError
-        fatalError("Error \(nserror): \(nserror.userInfo)")
-    }
-    let isPresented = false
-    let trip = trips[0]
-    let locationType: LocationType = .startLocation
-    let daySegments = [Segment(dayDate: Date(), dayString: "Today", startLocation: Location(), endLocation: Location())]
-    return SearchDestinationView(trip: trip, isPresented: isPresented, locationType: locationType, daySegments: daySegments).environment(\.managedObjectContext, DataController.preview)
+    SearchDestinationView()
+        .environment(\.managedObjectContext, DataController.preview)
+        .environment(DataModel())
+        .environment(GlobalVariables())
 }
- 
- */
 
 

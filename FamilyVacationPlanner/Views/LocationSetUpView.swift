@@ -5,6 +5,7 @@
 //  Created by David Steele on 9/6/24.
 //
 
+import CoreData
 import MapKit
 import SwiftUI
 
@@ -115,6 +116,10 @@ struct LocationSetUpView: View {
     }
 }
 
-//#Preview {
-//    LocationSetUpView()
-//}
+#Preview {
+    let locationFromMap = AnnotatedMapItem(item: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 42, longitude: -92))))
+    return LocationSetUpView(locationFromMap: locationFromMap)
+        .environment(DataModel())
+        .environment(GlobalVariables())
+    
+}

@@ -5,6 +5,7 @@
 //  Created by David Steele on 6/23/24.
 //
 
+import CoreData
 import MapKit
 import SwiftUI
 
@@ -63,6 +64,12 @@ struct TripSetUpView: View {
                     editMode = false
                     globalVars.selectedDetent = .fraction(0.5)
                 }
+                
+                Button(action: {
+                    generateExampleData()
+                }, label: {
+                    Text("Generate Example Data")
+                })
             }
             .navigationTitle("Select Trip")
             .navigationBarTitleDisplayMode(.inline)
@@ -99,11 +106,18 @@ struct TripSetUpView: View {
             print("Core Data Error")
         }
     }
+    
+    func generateExampleData() {
+        print("data Generating")
+    }
 }
 
 
 #Preview {
-    TripSetUpView().environment(\.managedObjectContext, DataController.preview)
+    TripSetUpView()
+        .environment(\.managedObjectContext, DataController.preview)
+        .environment(DataModel())
+        .environment(GlobalVariables())
 }
  
 

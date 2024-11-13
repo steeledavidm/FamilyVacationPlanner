@@ -190,3 +190,10 @@ struct ContentView: View {
         }
     }
 }
+#Preview {
+    ContentView()
+        .environment(\.managedObjectContext, DataController.preview)
+        .environment(DataModel())
+        .environment(GlobalVariables())
+        .environment(LocationManager())
+}

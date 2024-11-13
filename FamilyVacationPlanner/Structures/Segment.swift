@@ -15,7 +15,6 @@ struct Segment: Identifiable, Hashable {
     var startLocation: Location?
     var endLocation: Location?
     var placeholder: Bool = false
-    //var route: MKRoute?
     var segmentComplete: Bool {
         if startLocation != nil && endLocation != nil {
             return true

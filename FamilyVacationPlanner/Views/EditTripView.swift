@@ -144,3 +144,20 @@ struct EditTripView: View {
     }
 }
 
+#Preview {
+    struct PreviewWrapper: View {
+        @State private var editMode: Bool = true
+        @State private var newTrip: Bool = false
+        @State private var path: NavigationPath = NavigationPath()
+        
+        var body: some View {
+            let context = DataController.preview
+            let trip = try! context.fetch(Trip.fetchRequest()).last!
+            
+            EditTripView(editMode: $editMode, newTrip: $newTrip, path: $path, trip: trip)
+                .environment(DataModel())
+        }
+    }
+    return PreviewWrapper()
+}
+

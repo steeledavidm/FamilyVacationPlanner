@@ -57,6 +57,18 @@ struct EditLocationView: View {
     }
 }
 
-//#Preview {
-//    EditLocationView()
-//}
+#Preview {
+    let context = DataController.preview
+    let locations: [Location]
+    let requestLocations: NSFetchRequest<Location> = Location.fetchRequest()
+    do {
+        locations = try context.fetch(requestLocations)
+    } catch {
+        let nserror = error as NSError
+        fatalError("Error \(nserror): \(nserror.userInfo)")
+    }
+    let location = locations[0]
+    return EditLocationView(location: location)
+        .environment(\.managedObjectContext, DataController.preview)
+        .environment(DataModel())
+}

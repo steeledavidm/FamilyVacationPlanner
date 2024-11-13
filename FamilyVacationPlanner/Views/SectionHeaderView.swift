@@ -46,10 +46,6 @@ struct SectionHeaderView: View {
     }
 }
 
-#Preview {
-    SectionHeaderView(date: Date(), isPresented: .constant(false), locationType: .constant(.overNightStop), comprehensive: .constant(false))
-}
-
 func formatDate(date: Date) -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "EEEE, MMMM dd"
@@ -57,6 +53,10 @@ func formatDate(date: Date) -> String {
     let formattedDate = dateFormatter.string(from: date)
     return formattedDate
     
+}
+
+#Preview {
+    SectionHeaderView(date: Date(), isPresented: .constant(false), locationType: .constant(.overNightStop), comprehensive: .constant(false))
 }
 
 
