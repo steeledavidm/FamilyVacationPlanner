@@ -234,23 +234,6 @@ struct DaySegmentsView: View {
         }
     }
 
-//#Preview {
-//    let context = DataController.preview
-//    let trips: [Trip]
-//    let requestTrips: NSFetchRequest<Trip> = Trip.fetchRequest()
-//    do {
-//        trips = try context.fetch(requestTrips)
-//    } catch {
-//        let nserror = error as NSError
-//        fatalError("Error \(nserror): \(nserror.userInfo)")
-//    }
-//    let trip = trips[0]
-//    return DaySegmentsView(trip: trip)
-//        .environment(\.managedObjectContext, DataController.preview)
-//        .environment(DataModel())
-//        .environment(GlobalVariables())
-//}
-
 #Preview {
     // Get the preview context with mock data already populated
     let context = DataController.preview
@@ -280,19 +263,3 @@ struct DaySegmentsView: View {
         }
     }
 }
-
-//#Preview {
-//    struct PreviewWrapper: View {
-//        
-//        var body: some View {
-//            let context = DataController.preview
-//            let trip = try! context.fetch(Trip.fetchRequest()).first!
-//            
-//            DaySegmentsView(trip: trip)
-//                .environment(\.managedObjectContext, DataController.preview)
-//                .environment(DataModel())
-//                .environment(GlobalVariables())
-//        }
-//    }
-//    return PreviewWrapper()
-//}

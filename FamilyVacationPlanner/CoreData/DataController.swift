@@ -51,8 +51,8 @@ extension DataController {
         location1.title = "XXX Street Name, City, ST  XXXXX, Country"
         location1.overNightStop = false
         location1.startLocation = true
-//        location1.dateLeave = Date()
-//        location1.dateArrive = Date() + 60*60*24*2 // 2 days in the future
+        location1.dateLeave = Date()
+        location1.dateArrive = Date() + 60*60*24*2 // 2 days in the future
         location1.latitude = 42.0
         location1.longitude = -92.0
         location1.locationIndex = 0
@@ -63,8 +63,8 @@ extension DataController {
         location2.title = "XXX Street Name, City, ST  XXXXX, Country"
         location2.overNightStop = true
         location2.startLocation = false
-//        location2.dateLeave = Date() + 86400 // leave tomorrow
-//        location2.dateArrive = Date()  // arrive today
+        location2.dateLeave = Date() + 86400 // leave tomorrow
+        location2.dateArrive = Date()  // arrive today
         location2.latitude = 42.0
         location2.longitude = -130.0
         location2.locationIndex = 99
@@ -75,8 +75,8 @@ extension DataController {
         location3.title = "XXX Street Name, City, ST  XXXXX, Country"
         location3.overNightStop = false
         location3.startLocation = false
-//        location3.dateLeave = Date() + 86400 // leave tomorrow
-//        location3.dateArrive = Date() + 86400 //arrive tomorrow
+        location3.dateLeave = Date() + 86400 // leave tomorrow
+        location3.dateArrive = Date() + 86400 //arrive tomorrow
         location3.latitude = 20.0
         location3.longitude = -130.0
         location3.locationIndex = 1

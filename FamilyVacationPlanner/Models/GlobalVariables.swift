@@ -23,8 +23,4 @@ class GlobalVariables {
     var locationAdded: Bool = false
     var locationIndex: Int = 0
     var comprehensiveAndDailySegments: [DaySegments] = []
-    
-    init(trip: Trip = Trip(context: DataController.preview)) {
-         self.trip = trip
-     }
 }
