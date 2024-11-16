@@ -10,6 +10,8 @@ import MapKit
 import SwiftUI
 
 struct TripSetUpView: View {
+    
+    @State private var viewModel: ViewModel = ViewModel()
 
     @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVars
@@ -66,7 +68,7 @@ struct TripSetUpView: View {
                 }
                 
                 Button(action: {
-                    generateExampleData()
+                    viewModel.generateMockData()
                 }, label: {
                     Text("Generate Example Data")
                 })
@@ -105,10 +107,6 @@ struct TripSetUpView: View {
         } catch {
             print("Core Data Error")
         }
-    }
-    
-    func generateExampleData() {
-        print("data Generating")
     }
 }
 

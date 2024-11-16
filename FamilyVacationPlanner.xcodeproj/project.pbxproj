@@ -38,6 +38,7 @@
 		55FD9B3B2C2F30BD000EB3FA /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */; };
 		55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */; };
 		55FEFCC12CDD789900407DBB /* EditLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FEFCC02CDD789900407DBB /* EditLocationView.swift */; };
+		55FEFCF72CE9365400407DBB /* TripSetUpView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FEFCF62CE9365400407DBB /* TripSetUpView-ViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,7 @@
 		55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatedMapItem.swift; sourceTree = "<group>"; };
 		55FEFCC02CDD789900407DBB /* EditLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationView.swift; sourceTree = "<group>"; };
+		55FEFCF62CE9365400407DBB /* TripSetUpView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TripSetUpView-ViewModel.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 				55F69FF62C7E509300CAF2DB /* ContentView-ViewModel.swift */,
 				550B8FD02C98C96A008648DC /* DaySegmentsView-ViewModel.swift */,
 				550B8FF02CA6F3F4008648DC /* LocationSetUpView-ViewModel.swift */,
+				55FEFCF62CE9365400407DBB /* TripSetUpView-ViewModel.swift */,
 				55559C562C5D7D2F00149F8C /* DataModel.swift */,
 				553588F92C415F540014D48C /* GlobalVariables.swift */,
 				557395452C7A24E70006DEE5 /* LocationManager.swift */,
@@ -268,6 +271,7 @@
 				5558E7A92C24918900CE6991 /* AddressResult.swift in Sources */,
 				5558E7F52C28BA4B00CE6991 /* TripSetUpView.swift in Sources */,
 				5558E7DC2C25E02900CE6991 /* DataController.swift in Sources */,
+				55FEFCF72CE9365400407DBB /* TripSetUpView-ViewModel.swift in Sources */,
 				55FEFCC12CDD789900407DBB /* EditLocationView.swift in Sources */,
 				550B8FD32C9DBCD9008648DC /* MapDisplayState.swift in Sources */,
 				5558E7E52C260FB800CE6991 /* SearchDestinationView.swift in Sources */,

@@ -105,14 +105,6 @@ struct EditTripView: View {
                 })
             }
         }
-        Section("Trip Locations") {
-            TabView {
-                ForEach(locations) { location in
-                    EditLocationView(location: location)
-                }
-            }
-            .tabViewStyle(.page)
-        }
     
         .onAppear() {
             tripName = trip.tripName ?? ""
