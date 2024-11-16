@@ -12,15 +12,19 @@ import SwiftUI
 @Observable
 
 class GlobalVariables {
+    var selectedTrip: Trip?
     var displaySearchedLocations: Bool = false
     var locationFromMap: AnnotationItem?
     var locationType: LocationType?
     var selectedDetent: PresentationDetent = .fraction(0.5)
     var selectedTabIndex: Int = 0
     var showSearchLocationSheet: Bool = false
-    var trip: Trip = Trip()
     var markerSelected: Bool = false
     var locationAdded: Bool = false
     var locationIndex: Int = 0
     var comprehensiveAndDailySegments: [DaySegments] = []
+    
+    func selectTrip(_ trip: Trip) {
+        selectedTrip = trip
+    }
 }

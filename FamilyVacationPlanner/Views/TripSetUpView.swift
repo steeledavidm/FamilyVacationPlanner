@@ -35,9 +35,9 @@ struct TripSetUpView: View {
                             VStack(alignment: .leading) {
                                 HStack {
                                     trip.oneWay ?
-                                    Label(trip.tripName ?? "Unknown", systemImage: "arrow.forward")
+                                    Label(trip.tripName ?? "Unknown_oneWay", systemImage: "arrow.forward")
                                     :
-                                    Label(trip.tripName ?? "Unknown", systemImage: "arrow.circlepath")
+                                    Label(trip.tripName ?? "Unknown_roundTrip", systemImage: "arrow.circlepath")
                                 }
                                 .font(.headline)
                             }

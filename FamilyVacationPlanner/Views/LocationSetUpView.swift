@@ -68,6 +68,7 @@ struct LocationSetUpView: View {
             }
             Button("Save") {
                 let location = Location(context: dataModel.moc)
+                guard let trip = globalVars.selectedTrip else { return }
                 location.id = UUID()
                 location.name = locationName
                 location.title = address
@@ -75,9 +76,9 @@ struct LocationSetUpView: View {
                 location.longitude = locationFromMap.item.placemark.coordinate.longitude
                 if locationType == LocationType.startLocation {
                     location.startLocation = true
-                    location.dateLeave = globalVars.trip.startDate
-                    if !globalVars.trip.oneWay {
-                        location.dateArrive = globalVars.trip.endDate
+                    location.dateLeave = trip.startDate
+                    if !trip.oneWay {
+                        location.dateArrive = trip.endDate
                     }
                 }
                 if overnightStop {
@@ -93,7 +94,7 @@ struct LocationSetUpView: View {
                     location.dateArrive = viewModel.dayFromDayIndex
                     location.dateLeave = viewModel.dayFromDayIndex
                 }
-                globalVars.trip.addToLocation(location)
+                trip.addToLocation(location)
                 viewModel.getLocationIndex(location: location, dayIndex: dayIndex, locationIndex: locationIndex)
                 globalVars.locationAdded.toggle()
                 globalVars.showSearchLocationSheet = false
@@ -110,7 +111,9 @@ struct LocationSetUpView: View {
             locationType = globalVars.locationType ?? LocationType.pointOfInterest
             locationIndex = globalVars.locationIndex
             dayIndex = globalVars.selectedTabIndex
-            viewModel.getDates(trip: globalVars.trip, dayIndex: dayIndex)
+            if let trip = globalVars.selectedTrip {
+                viewModel.getDates(trip: trip, dayIndex: dayIndex)
+            }
             leaveDate = viewModel.dayFromDayIndex + TimeInterval(numberOfNights * 60 * 60 * 24)
         }
     }
@@ -118,7 +121,7 @@ struct LocationSetUpView: View {
 
 #Preview {
     let locationFromMap = AnnotatedMapItem(item: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 42, longitude: -92))))
-    return LocationSetUpView(locationFromMap: locationFromMap)
+    LocationSetUpView(locationFromMap: locationFromMap)
         .environment(DataModel())
         .environment(GlobalVariables())
     

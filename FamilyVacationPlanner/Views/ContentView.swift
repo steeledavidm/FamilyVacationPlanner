@@ -29,7 +29,6 @@ struct ContentView: View {
     @State private var searchResults: [AnnotatedMapItem] = []
     @State private var showSheet = true
     @State private var showSearchLocationSheet = false
-    @State private var trip: Trip = Trip()
     @State private var viewModel: ViewModel = ViewModel(selectedTabIndex: 0, selectedDetent: .fraction(0.5))
     @State private var comprehensiveAndDailySegments: [DaySegments] = []
     
@@ -124,11 +123,6 @@ struct ContentView: View {
                 showSearchLocationSheet = globalVars.showSearchLocationSheet
                 print("showSearchLocationSheet: \(globalVars.showSearchLocationSheet)")
             }
-            .onChange(of: globalVars.trip) {
-                print("trip changed")
-                trip = globalVars.trip
-            }
-            
             .onChange(of: globalVars.comprehensiveAndDailySegments) {
                 print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
                 comprehensiveAndDailySegments = globalVars.comprehensiveAndDailySegments

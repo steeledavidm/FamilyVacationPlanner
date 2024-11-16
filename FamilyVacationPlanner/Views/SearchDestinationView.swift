@@ -28,7 +28,6 @@ struct SearchDestinationView : View {
     @State private var recentList: [Location] = []
     @State private var overNightStop: Bool = false
     @State private var startLocation: Bool = false
-    @State private var trip: Trip = Trip()
     @State private var locationType: LocationType = .startLocation
     @State private var daySegments: [Segment]?
     
@@ -94,7 +93,7 @@ struct SearchDestinationView : View {
                                 if globalVars.locationType == LocationType.overNightStop {
                                     location.overNightStop = true
                                 }
-                                globalVars.trip.addToLocation(location)
+                                globalVars.selectedTrip?.addToLocation(location)
                                 try? dataModel.moc.save()
                                 dismiss()
                             }
@@ -104,8 +103,6 @@ struct SearchDestinationView : View {
             }
         }
         .onAppear() {
-            
-            trip = globalVars.trip
             locationType = globalVars.locationType ?? .startLocation
             dataModel.plotRecentItems = true
             
@@ -131,6 +128,7 @@ struct SearchDestinationView : View {
             }
             
             Task {
+                guard let trip = globalVars.selectedTrip else { return }
                 recentList = try await dataModel.populateRecentList(trip: trip)
                 var annotationForMap: [AnnotationItem] = []
                 for item in recentList {

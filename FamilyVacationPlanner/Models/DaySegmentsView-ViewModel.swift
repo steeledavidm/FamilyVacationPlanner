@@ -37,7 +37,7 @@ extension DaySegmentsView {
             print("setUp Daily Segments")
             var tripStartDate: Date = Date()
             var dateOfDay: Date = Date()
-            var tripEndLocation: Location = Location()
+            var tripEndLocation: Location = Location(context: moc)
             var dayStartLocation: Location?
             var dayEndLocation: Location?
             var overNightStaysAccumulator: Int = 0

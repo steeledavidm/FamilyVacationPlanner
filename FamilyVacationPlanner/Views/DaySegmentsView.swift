@@ -202,7 +202,7 @@ struct DaySegmentsView: View {
             .tabViewStyle(.page)
             .onAppear() {
                 globalVars.selectedTabIndex = 0
-                globalVars.trip = trip
+                globalVars.selectTrip(trip)
                 Task {
                     try? await viewModel.fetchData(trip: trip)
                     comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments

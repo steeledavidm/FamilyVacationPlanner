@@ -44,11 +44,11 @@ import SwiftUI
     
         for segment in daySegmentsForFunction {
             if segment.segmentComplete && !segment.placeholder {
-                let segmentStart = segment.startLocation ?? Location()
+                let segmentStart = segment.startLocation ?? Location(context: moc)
                 let startLocation = CLLocationCoordinate2D(latitude: segmentStart.latitude, longitude: segmentStart.longitude)
                 let markerLabelStart = segmentStart.name ?? "Unknown Name"
                 
-                let segmentEnd = segment.endLocation ?? Location()
+                let segmentEnd = segment.endLocation ?? Location(context: moc)
                 let endLocation = CLLocationCoordinate2D(latitude: segmentEnd.latitude, longitude: segmentEnd.longitude)
                 let locationId = segmentEnd.id
                 let markerLabelEnd = segmentEnd.name ?? "Uknown Name"
