@@ -110,7 +110,7 @@ struct LocationSetUpView: View {
             address = placemark.title ?? ""
             locationType = globalVars.locationType ?? LocationType.pointOfInterest
             locationIndex = globalVars.locationIndex
-            dayIndex = globalVars.selectedTabIndex
+            dayIndex = globalVars.selectedTabIndex - 1
             if let trip = globalVars.selectedTrip {
                 viewModel.getDates(trip: trip, dayIndex: dayIndex)
             }
