@@ -48,12 +48,12 @@ struct TripSetUpView: View {
                     .onDelete(perform: removeTrip)
                     
                     Button(action: {
-                        let trip = Trip(context: dataModel.moc)
-                        trip.tripName = ""
-                        trip.startDate = Date()
-                        trip.endDate = Date()
-                        trip.oneWay = false
-                        path.append(trip)
+                        let tripTemplate = Trip(context: dataModel.moc)
+                        tripTemplate.tripName = ""
+                        tripTemplate.startDate = Date()
+                        tripTemplate.endDate = Date()
+                        tripTemplate.oneWay = false
+                        path.append(tripTemplate)
                         editMode = true
                         newTrip = true
                         globalVars.selectedDetent = .large

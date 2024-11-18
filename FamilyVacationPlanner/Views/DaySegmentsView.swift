@@ -18,6 +18,14 @@ struct DaySegmentsView: View {
     @State private var states = [true, true, false, true, false]
     @State private var selectedLocation: Location?
     
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.dateLeave)])
+        var locations: FetchedResults<Location>
+    
+    init(trip: Trip) {
+        _locations = FetchRequest<Location>(sortDescriptors: [SortDescriptor(\.dateLeave)], predicate: NSPredicate(format: "%@ IN trip", trip))
+        self.trip = trip
+    }
+    
     var body: some View {
         TabView(selection: $selectedTabIndex) {
             ForEach(comprehensiveAndDailySegments, id: \.id) { contentForTabView in
@@ -201,10 +209,12 @@ struct DaySegmentsView: View {
             }
             .tabViewStyle(.page)
             .onAppear() {
+                print("Number of Locations: \(locations.count)")
                 globalVars.selectedTabIndex = 0
                 globalVars.selectTrip(trip)
+                viewModel.setup(trip: trip)
                 Task {
-                    try? await viewModel.fetchData(trip: trip)
+                    await viewModel.updateLocations(Array(locations))
                     comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
                 }
             }
@@ -212,10 +222,10 @@ struct DaySegmentsView: View {
                 print("selectedTabIndex changed to: \(selectedTabIndex)")
                 globalVars.selectedTabIndex = selectedTabIndex
             }
-            .onChange(of: globalVars.locationAdded) {
+            .onChange(of: Array(locations)) { oldValue, newLocations in
                 Task {
                     print("updating locations")
-                    try? await viewModel.fetchData(trip: trip)
+                    await viewModel.updateLocations(Array(locations))
                     comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
                     print("locations updated")
                 }

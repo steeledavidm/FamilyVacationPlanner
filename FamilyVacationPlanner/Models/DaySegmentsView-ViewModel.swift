@@ -14,23 +14,21 @@ extension DaySegmentsView {
     @Observable class ViewModel {
         let moc: NSManagedObjectContext = DataController.shared.container.viewContext
         var locations: [Location] = []
+        var trip: Trip?
         var tripSegments: [DaySegments] = []
         var comprehensiveAndDailySegments: [DaySegments] = []
         var daySummary: [Segment] = []
         var tripStartLocation: Location?
         
-        func fetchData(trip: Trip) async throws {
-            print("Fetch Data")
-            let request: NSFetchRequest<Location> = Location.fetchRequest()
-            request.predicate = NSPredicate(format: "%@ IN trip", trip)
-            do {
-                locations = try moc.fetch(request)
-            } catch {
-            }
-            Task {
-                await setUpDailySegments(trip: trip)
-                setUpTripComprehensiveView()
-            }
+        func setup(trip: Trip) {
+            self.trip = trip
+        }
+        
+        func updateLocations(_ newLocations: [Location]) async {
+            guard let trip = trip else { return }
+            locations = newLocations
+            await setUpDailySegments(trip: trip)
+            setUpTripComprehensiveView()
         }
         
         func setUpDailySegments(trip: Trip) async {
@@ -203,7 +201,7 @@ extension DaySegmentsView {
                     }
                 }
             }
-            try await fetchData(trip: trip)
+            //try await fetchData(trip: trip)
         }
         
         func removeSegment(at offsets: IndexSet) {
