@@ -1,5 +1,5 @@
 //
-//  CustomMapMarkerView.swift
+//  CustomMapMarkertView.swift
 //  FamilyVacationPlanner
 //
 //  Created by David Steele on 11/18/24.
@@ -8,10 +8,11 @@
 import MapKit
 import SwiftUI
 
+@available(iOS 18.0, *)
 struct CustomMapMarkerView: View {
 
     let category: MKPointOfInterestCategory?
-    let title: String = "title"
+    let title: String
     
     var body: some View {
         markerContent
@@ -238,6 +239,10 @@ struct CustomMapMarkerView: View {
 }
 
 #Preview {
-    CustomMapMarkerView(category: .restaurant)
+    if #available(iOS 18.0, *) {
+        CustomMapMarkerView(category: .restaurant, title: "marker Name")
+    } else {
+        // Fallback on earlier versions
+    }
 }
 

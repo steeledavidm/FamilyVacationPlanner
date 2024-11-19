@@ -17,6 +17,7 @@
 		55510B822C87897C000CA28D /* DaySegmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55510B812C87897C000CA28D /* DaySegmentsView.swift */; };
 		55510B842C8B898C000CA28D /* LocationSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55510B832C8B898C000CA28D /* LocationSetUpView.swift */; };
 		55559C572C5D7D2F00149F8C /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55559C562C5D7D2F00149F8C /* DataModel.swift */; };
+		5557F6002CEC2F830085D0BB /* CustomMapMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5557F5FF2CEC2F830085D0BB /* CustomMapMarkerView.swift */; };
 		5558E7952C24867300CE6991 /* FamilyVacationPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */; };
 		5558E7972C24867300CE6991 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7962C24867300CE6991 /* ContentView.swift */; };
 		5558E7992C24867500CE6991 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5558E7982C24867500CE6991 /* Assets.xcassets */; };
@@ -34,7 +35,6 @@
 		557395482C7A27D30006DEE5 /* RecentLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557395472C7A27D30006DEE5 /* RecentLocations.swift */; };
 		55B5FC152C4B1AE80087D31B /* DaySegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B5FC142C4B1AE80087D31B /* DaySegments.swift */; };
 		55C5895D2CEBEC6F0026B20E /* LocationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C5895C2CEBEC6F0026B20E /* LocationExtension.swift */; };
-		55C589652CEC16470026B20E /* CustomMapMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C589642CEC16470026B20E /* CustomMapMarkerView.swift */; };
 		55F69FF72C7E509300CAF2DB /* ContentView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F69FF62C7E509300CAF2DB /* ContentView-ViewModel.swift */; };
 		55F69FF92C7E55D000CAF2DB /* FamilyVacationPlanner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7D82C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodeld */; };
 		55FD9B3B2C2F30BD000EB3FA /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */; };
@@ -54,6 +54,7 @@
 		55510B812C87897C000CA28D /* DaySegmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaySegmentsView.swift; sourceTree = "<group>"; };
 		55510B832C8B898C000CA28D /* LocationSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSetUpView.swift; sourceTree = "<group>"; };
 		55559C562C5D7D2F00149F8C /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
+		5557F5FF2CEC2F830085D0BB /* CustomMapMarkerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapMarkerView.swift; sourceTree = "<group>"; };
 		5558E7912C24867300CE6991 /* FamilyVacationPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FamilyVacationPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyVacationPlannerApp.swift; sourceTree = "<group>"; };
 		5558E7962C24867300CE6991 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -75,7 +76,6 @@
 		557395472C7A27D30006DEE5 /* RecentLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentLocations.swift; sourceTree = "<group>"; };
 		55B5FC142C4B1AE80087D31B /* DaySegments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaySegments.swift; sourceTree = "<group>"; };
 		55C5895C2CEBEC6F0026B20E /* LocationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationExtension.swift; sourceTree = "<group>"; };
-		55C589642CEC16470026B20E /* CustomMapMarkerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapMarkerView.swift; sourceTree = "<group>"; };
 		55F69FF62C7E509300CAF2DB /* ContentView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ContentView-ViewModel.swift"; path = "FamilyVacationPlanner/Models/ContentView-ViewModel.swift"; sourceTree = SOURCE_ROOT; };
 		55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatedMapItem.swift; sourceTree = "<group>"; };
@@ -164,6 +164,7 @@
 		5573954A2C7A28FE0006DEE5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5557F5FF2CEC2F830085D0BB /* CustomMapMarkerView.swift */,
 				5558E7962C24867300CE6991 /* ContentView.swift */,
 				55510B812C87897C000CA28D /* DaySegmentsView.swift */,
 				55510B832C8B898C000CA28D /* LocationSetUpView.swift */,
@@ -173,7 +174,6 @@
 				5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */,
 				55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */,
 				5558E7A42C248E3200CE6991 /* ClearButton.swift */,
-				55C589642CEC16470026B20E /* CustomMapMarkerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -265,6 +265,7 @@
 			files = (
 				553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */,
 				55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */,
+				5557F6002CEC2F830085D0BB /* CustomMapMarkerView.swift in Sources */,
 				557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */,
 				55510B822C87897C000CA28D /* DaySegmentsView.swift in Sources */,
 				55F69FF72C7E509300CAF2DB /* ContentView-ViewModel.swift in Sources */,
@@ -292,7 +293,6 @@
 				55F69FF92C7E55D000CAF2DB /* FamilyVacationPlanner.xcdatamodeld in Sources */,
 				551A58382C2DAAA000E6DA03 /* EditTripView.swift in Sources */,
 				5558E7A52C248E3200CE6991 /* ClearButton.swift in Sources */,
-				55C589652CEC16470026B20E /* CustomMapMarkerView.swift in Sources */,
 				555014752C3C6EDA003DED29 /* MapInfo.swift in Sources */,
 				55510B842C8B898C000CA28D /* LocationSetUpView.swift in Sources */,
 			);
@@ -441,7 +441,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -476,7 +476,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
