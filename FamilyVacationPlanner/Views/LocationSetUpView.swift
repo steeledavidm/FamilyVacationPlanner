@@ -60,6 +60,10 @@ struct LocationSetUpView: View {
                 TextField("Notes", text: $notes )
             }
             
+            Section("Location Type") {
+                Text("Catagory: \(String(describing: locationFromMap.item.pointOfInterestCategory))")
+            }
+            
             Section("Date Arrive") {
                 Text("\(viewModel.dayFromDayIndex)")
             }
@@ -74,6 +78,7 @@ struct LocationSetUpView: View {
                 location.title = address
                 location.latitude = locationFromMap.item.placemark.coordinate.latitude
                 location.longitude = locationFromMap.item.placemark.coordinate.longitude
+                location.setCategory(from: locationFromMap.item)
                 if locationType == LocationType.startLocation {
                     location.startLocation = true
                     location.dateLeave = trip.startDate

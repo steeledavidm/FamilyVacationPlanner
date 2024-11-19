@@ -95,49 +95,16 @@ struct DaySegmentsView: View {
                                                         .padding()
                                                 }
                                                 HStack {
-                                                    VStack(alignment: .leading, spacing: 8) {
-                                                        Label(Duration.seconds(segment.time ?? 0).formatted(.time(pattern: .hourMinute)),
-                                                              systemImage: "clock")
-                                                        .font(.subheadline)
-                                                        Label(
-                                                            title: { Text("\(Measurement(value: segment.distance ?? 0, unit: UnitLength.meters).converted(to: .miles).value, specifier: "%.0f") mi")
-                                                                .font(.subheadline) },
-                                                            icon: { Image(systemName: "point.topleft.down.curvedto.point.bottomright.up") }
-                                                        )
-                                                    }
-                                                    .frame(alignment: .leading)
                                                     HStack {
                                                         if !contentForTabView.comprehensive {
                                                             Button {
                                                                 selectedLocation = segment.endLocation
                                                                 print(segment.endLocation?.name ?? "no segment selected")
                                                             } label: {
-                                                                Text(segment.endLocation?.name ?? "")
+                                                                Label(segment.endLocation?.name ?? "", systemImage: "flag.pattern.checkered")
                                                             }
                                                             Spacer()
-                                                            Button(action:  {
-                                                                let latitude = segment.endLocation?.latitude ?? 0.0
-                                                                let longitude = segment.endLocation?.longitude ?? 0.0
-                                                                let url = URL(string: "maps://?saddr=&daddr=\(latitude),\(longitude)")
-                                                                if UIApplication.shared.canOpenURL(url!) {
-                                                                    UIApplication.shared.open(url!, options: [:], completionHandler: nil)
-                                                                }
-                                                            }
-                                                            ) {
-                                                                Text("GO")
-                                                                    .font(.title2)
-                                                                    .fontWeight(.bold)
-                                                                    .foregroundColor(.white)
-                                                                    .padding(.vertical, 10)
-                                                                    .padding(.horizontal, 8)
-                                                                    .background(RoundedRectangle(cornerRadius: 10)
-                                                                        .fill(Color.green)
-                                                                        .shadow(color: Color.green.opacity(0.3), radius: 10, x: 0, y: 5)
-                                                                    )
-                                                                
-                                                            }
-                                                            .contentShape(Rectangle())
-                                                            .buttonStyle(PlainButtonStyle())
+                                                            
                                                         } else {
                                                             VStack(alignment: .leading) {
                                                                 Label(title: {Text(segment.endLocation?.name ?? "") .font(.headline)}, icon: { Image(systemName: "bed.double")
@@ -149,6 +116,40 @@ struct DaySegmentsView: View {
                                                             })
                                                             Spacer()
                                                         }
+                                                        VStack(alignment: .leading, spacing: 8) {
+                                                            Label(Duration.seconds(segment.time ?? 0).formatted(.time(pattern: .hourMinute)),
+                                                                  systemImage: "clock")
+                                                            .font(.subheadline)
+                                                            Label(
+                                                                title: { Text("\(Measurement(value: segment.distance ?? 0, unit: UnitLength.meters).converted(to: .miles).value, specifier: "%.0f") mi")
+                                                                    .font(.subheadline) },
+                                                                icon: { Image(systemName: "point.topleft.down.curvedto.point.bottomright.up") }
+                                                            )
+                                                        }
+                                                        .frame(alignment: .leading)
+                                                        Button(action:  {
+                                                            let latitude = segment.endLocation?.latitude ?? 0.0
+                                                            let longitude = segment.endLocation?.longitude ?? 0.0
+                                                            let url = URL(string: "maps://?saddr=&daddr=\(latitude),\(longitude)")
+                                                            if UIApplication.shared.canOpenURL(url!) {
+                                                                UIApplication.shared.open(url!, options: [:], completionHandler: nil)
+                                                            }
+                                                        }
+                                                        ) {
+                                                            Text("GO")
+                                                                .font(.title2)
+                                                                .fontWeight(.bold)
+                                                                .foregroundColor(.white)
+                                                                .padding(.vertical, 10)
+                                                                .padding(.horizontal, 8)
+                                                                .background(RoundedRectangle(cornerRadius: 10)
+                                                                    .fill(Color.green)
+                                                                    .shadow(color: Color.green.opacity(0.3), radius: 10, x: 0, y: 5)
+                                                                )
+                                                            
+                                                        }
+                                                        .contentShape(Rectangle())
+                                                        .buttonStyle(PlainButtonStyle())
                                                     }
                                                 }
                                             }
@@ -181,6 +182,7 @@ struct DaySegmentsView: View {
                                         }
                                     }
                                 }
+                            if !contentForTabView.comprehensive{
                                 Button("Add Location") {
                                     globalVars.locationType = .pointOfInterest
                                     print("selected Tab Index: \(selectedTabIndex)")
@@ -199,6 +201,7 @@ struct DaySegmentsView: View {
                                     }
                                     globalVars.showSearchLocationSheet = true
                                 }
+                            }
                             }
                                 //.environment(\.editMode, .constant(.active))
                                 .animation(.easeInOut, value: comprehensiveAndDailySegments)

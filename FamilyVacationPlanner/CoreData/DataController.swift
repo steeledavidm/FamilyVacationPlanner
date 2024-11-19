@@ -124,6 +124,7 @@ extension DataController {
         location1.longitude = -92.0
         location1.locationIndex = 0
         location1.numberOfNights = 0
+        location1.categoryRawValue = "airport"
         
         let location2 = Location(context: moc)
         location2.name = "Over night stop"
@@ -133,9 +134,10 @@ extension DataController {
         location2.dateLeave = Date() + 86400 // leave tomorrow
         location2.dateArrive = Date()  // arrive today
         location2.latitude = 42.0
-        location2.longitude = -130.0
+        location2.longitude = -100.0
         location2.locationIndex = 99
-        location1.numberOfNights = 2
+        location2.numberOfNights = 2
+        location1.categoryRawValue = "swimming"
         
         let location3 = Location(context: moc)
         location3.name = "Day trip"
@@ -144,10 +146,10 @@ extension DataController {
         location3.startLocation = false
         location3.dateLeave = Date() + 86400 // leave tomorrow
         location3.dateArrive = Date() + 86400 //arrive tomorrow
-        location3.latitude = 20.0
-        location3.longitude = -130.0
+        location3.latitude = 30.0
+        location3.longitude = -100.0
         location3.locationIndex = 1
-        location1.numberOfNights = 0
+        location2.numberOfNights = 0
         
         let trip1 = Trip(context: moc)
         trip1.tripName = "Trip 1"

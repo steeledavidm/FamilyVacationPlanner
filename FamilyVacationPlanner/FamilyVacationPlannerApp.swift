@@ -9,6 +9,7 @@
 import SwiftUI
 
 
+@available(iOS 18.0, *)
 @main
 struct FamilyVacationPlannerApp: App {
     let dataController = DataController.shared

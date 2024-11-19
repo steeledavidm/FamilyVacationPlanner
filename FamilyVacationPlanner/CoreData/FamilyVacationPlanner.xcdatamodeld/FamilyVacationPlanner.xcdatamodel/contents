@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="24B83" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="DayTrip" representedClassName="DayTrip" syncable="YES" codeGenerationType="class"/>
     <entity name="Location" representedClassName="Location" syncable="YES" codeGenerationType="class">
+        <attribute name="categoryRawValue" optional="YES" attributeType="String"/>
         <attribute name="dateArrive" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dateLeave" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>

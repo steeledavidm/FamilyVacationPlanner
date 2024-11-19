@@ -11,6 +11,7 @@ import MapKit
 import SwiftUI
 import Foundation
 
+@available(iOS 18.0, *)
 struct ContentView: View {
     @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVars
@@ -38,7 +39,11 @@ struct ContentView: View {
             MapReader { proxy in
                 Map(position: $position, selection: $selectedMarker) {
                     ForEach(dataModel.allMapInfo) {mapInfo in
-                        Marker(mapInfo.markerLabelStart, coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D())
+                        Marker(coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D()) {
+                            CustomMapMarkerView(category: mapInfo.startCategory,
+                                                 title: mapInfo.markerLabelStart
+                            )
+                        }
                         Marker(mapInfo.markerLabelEnd, coordinate: mapInfo.endingPoint ?? CLLocationCoordinate2D())
                         MapPolyline(mapInfo.route ?? MKPolyline())
                             .stroke(.blue, lineWidth: 5)
@@ -185,9 +190,13 @@ struct ContentView: View {
     }
 }
 #Preview {
-    ContentView()
-        .environment(\.managedObjectContext, DataController.preview)
-        .environment(DataModel())
-        .environment(GlobalVariables())
-        .environment(LocationManager())
+    if #available(iOS 18.0, *) {
+        ContentView()
+            .environment(\.managedObjectContext, DataController.preview)
+            .environment(DataModel())
+            .environment(GlobalVariables())
+            .environment(LocationManager())
+    } else {
+        // Fallback on earlier versions
+    }
 }

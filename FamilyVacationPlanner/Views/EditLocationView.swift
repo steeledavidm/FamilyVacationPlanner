@@ -16,6 +16,7 @@ struct EditLocationView: View {
     
     var body: some View {
         List {
+            Text("Category: \(String(describing: location.poiCategory))")
             Text("Date Arrived: \(location.dateArrive ?? Date(), style: .date))")
             Text("Date Leave: \(location.dateLeave ?? Date(), style: .date))")
             TextField("Name", text: $location.name.toUnwrapped(defaultValue: ""))
