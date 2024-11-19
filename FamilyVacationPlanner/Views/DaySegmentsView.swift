@@ -101,7 +101,18 @@ struct DaySegmentsView: View {
                                                                 selectedLocation = segment.endLocation
                                                                 print(segment.endLocation?.name ?? "no segment selected")
                                                             } label: {
-                                                                Label(segment.endLocation?.name ?? "", systemImage: "flag.pattern.checkered")
+                                                                if let image = segment.poiIconEnd.poiSymbol {
+                                                                    HStack {
+                                                                        Image(systemName: image)
+                                                                            .foregroundStyle(segment.poiIconEnd.poiColor)
+                                                                            .font(.headline)
+                                                                        Text(segment.endLocation?.name ?? "")
+                                                                            .foregroundStyle(.black)
+                                                                            .font(.headline)
+                                                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                                                    }
+                                                                    .labelStyle(.titleAndIcon)
+                                                                }
                                                             }
                                                             Spacer()
                                                             

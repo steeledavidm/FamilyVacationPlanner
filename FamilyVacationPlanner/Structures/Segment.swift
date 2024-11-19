@@ -15,6 +15,10 @@ struct Segment: Identifiable, Hashable {
     var startLocation: Location?
     var endLocation: Location?
     var placeholder: Bool = false
+    var distance: CLLocationDistance?
+    var time: TimeInterval?
+    var polyline: MKPolyline?
+    
     var segmentComplete: Bool {
         if startLocation != nil && endLocation != nil {
             return true
@@ -22,13 +26,12 @@ struct Segment: Identifiable, Hashable {
             return false
         }
     }
-    var distance: CLLocationDistance? // {
-//        route?.distance
-//    }
-    var time: TimeInterval? //{
-//        route?.expectedTravelTime
-//    }
-    var polyline: MKPolyline? //{
-//        route?.polyline
-//    }
+    
+    var poiIconStart: LocationIcon {
+        LocationIcon(poiCategory: startLocation?.poiCategory)
+    }
+    var poiIconEnd: LocationIcon {
+        LocationIcon(poiCategory: endLocation?.poiCategory)
+    }
+
 }
