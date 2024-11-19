@@ -164,7 +164,6 @@
 		5573954A2C7A28FE0006DEE5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5557F5FF2CEC2F830085D0BB /* CustomMapMarkerView.swift */,
 				5558E7962C24867300CE6991 /* ContentView.swift */,
 				55510B812C87897C000CA28D /* DaySegmentsView.swift */,
 				55510B832C8B898C000CA28D /* LocationSetUpView.swift */,
@@ -173,6 +172,7 @@
 				551A58372C2DAAA000E6DA03 /* EditTripView.swift */,
 				5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */,
 				55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */,
+				5557F5FF2CEC2F830085D0BB /* CustomMapMarkerView.swift */,
 				5558E7A42C248E3200CE6991 /* ClearButton.swift */,
 			);
 			path = Views;

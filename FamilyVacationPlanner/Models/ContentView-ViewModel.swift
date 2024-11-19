@@ -47,14 +47,14 @@ extension ContentView {
                 print("filling MapInfo")
                 let locationfromMap = globalVars.locationFromMap
                 allMapInfo = []
-                allMapInfo.append(MapInfo(locationid: UUID(), dateLeave: Date(), markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0), endingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0)))
+                allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0), endingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0)))
             }
 
             print("allMapInfo: \(String(describing: allMapInfo.count))")
                 
             if allMapInfo.count == 0 {
                 plotCurrentLocation = true
-                allMapInfo.append(MapInfo(locationid: UUID(), dateLeave: Date(), markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude), endingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude)))
+                allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude), endingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude)))
                 print(currentLocation)
             }
             // Calculate the bounding box for all annotations
