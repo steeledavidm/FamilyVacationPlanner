@@ -10,8 +10,6 @@ import MapKit
 
 struct MapInfo: Identifiable {
     let id: UUID = UUID()
-    let locationid: UUID
-    let dateLeave: Date
     var markerLabelStart: String
     var markerLabelEnd: String
     var startingPoint: CLLocationCoordinate2D?

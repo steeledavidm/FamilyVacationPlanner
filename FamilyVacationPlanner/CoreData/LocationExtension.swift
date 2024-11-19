@@ -7,6 +7,7 @@
 
 import CoreData
 import MapKit
+import SwiftUI
 
 extension Location {
     // Computed property to convert between MKPointOfInterestCategory and String
