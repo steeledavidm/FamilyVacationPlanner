@@ -17,7 +17,6 @@
 		55510B822C87897C000CA28D /* DaySegmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55510B812C87897C000CA28D /* DaySegmentsView.swift */; };
 		55510B842C8B898C000CA28D /* LocationSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55510B832C8B898C000CA28D /* LocationSetUpView.swift */; };
 		55559C572C5D7D2F00149F8C /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55559C562C5D7D2F00149F8C /* DataModel.swift */; };
-		5557F6002CEC2F830085D0BB /* CustomMapMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5557F5FF2CEC2F830085D0BB /* CustomMapMarkerView.swift */; };
 		5558E7952C24867300CE6991 /* FamilyVacationPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */; };
 		5558E7972C24867300CE6991 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7962C24867300CE6991 /* ContentView.swift */; };
 		5558E7992C24867500CE6991 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5558E7982C24867500CE6991 /* Assets.xcassets */; };
@@ -55,7 +54,6 @@
 		55510B812C87897C000CA28D /* DaySegmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaySegmentsView.swift; sourceTree = "<group>"; };
 		55510B832C8B898C000CA28D /* LocationSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSetUpView.swift; sourceTree = "<group>"; };
 		55559C562C5D7D2F00149F8C /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
-		5557F5FF2CEC2F830085D0BB /* CustomMapMarkerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapMarkerView.swift; sourceTree = "<group>"; };
 		5558E7912C24867300CE6991 /* FamilyVacationPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FamilyVacationPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5558E7942C24867300CE6991 /* FamilyVacationPlannerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyVacationPlannerApp.swift; sourceTree = "<group>"; };
 		5558E7962C24867300CE6991 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -175,7 +173,6 @@
 				551A58372C2DAAA000E6DA03 /* EditTripView.swift */,
 				5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */,
 				55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */,
-				5557F5FF2CEC2F830085D0BB /* CustomMapMarkerView.swift */,
 				5558E7A42C248E3200CE6991 /* ClearButton.swift */,
 			);
 			path = Views;
@@ -268,7 +265,6 @@
 			files = (
 				553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */,
 				55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */,
-				5557F6002CEC2F830085D0BB /* CustomMapMarkerView.swift in Sources */,
 				557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */,
 				55510B822C87897C000CA28D /* DaySegmentsView.swift in Sources */,
 				55F69FF72C7E509300CAF2DB /* ContentView-ViewModel.swift in Sources */,

@@ -38,17 +38,18 @@ struct ContentView: View {
             MapReader { proxy in
                 Map(position: $position, selection: $selectedMarker) {
                     ForEach(dataModel.allMapInfo) {mapInfo in
-//                        Marker(coordinate: mapInfo.startingPoint ?? CLLocationCoordinate2D()) {
-//                            CustomMapMarkerView(category: mapInfo.startCategory,
-//                                                 title: mapInfo.markerLabelStart
-//                            )
-//                        }
-//                        Marker(coordinate: mapInfo.endingPoint ?? CLLocationCoordinate2D()) {
-//                            CustomMapMarkerView(category: mapInfo.endCategory,
-//                                                 title: mapInfo.markerLabelEnd
-//                            )
-//                        }
-                        
+                        if let coordinate = mapInfo.startingPoint {
+                            Marker(mapInfo.markerLabelStart,
+                                   systemImage: mapInfo.startIcon?.poiSymbol ?? "",
+                                   coordinate: coordinate)
+                            .tint(mapInfo.startIcon?.poiColor ?? .red)
+                        }
+                        if let coordinate = mapInfo.endingPoint {
+                            Marker(mapInfo.markerLabelEnd,
+                                   systemImage: mapInfo.endIcon?.poiSymbol ?? "",
+                                   coordinate: coordinate)
+                            .tint(mapInfo.endIcon?.poiColor ?? .red)
+                        }
                         MapPolyline(mapInfo.route ?? MKPolyline())
                             .stroke(.blue, lineWidth: 5)
                     }

@@ -11,7 +11,7 @@ import SwiftUI
 
 struct LocationIcon: Identifiable, Hashable {
     let id: UUID = UUID()
-    let poiCategory: MKPointOfInterestCategory
+    let poiCategory: MKPointOfInterestCategory?
     
     var poiSymbol: String? {
         

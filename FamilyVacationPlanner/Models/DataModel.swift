@@ -47,13 +47,13 @@ import SwiftUI
                 let segmentStart = segment.startLocation ?? Location(context: moc)
                 let startLocation = CLLocationCoordinate2D(latitude: segmentStart.latitude, longitude: segmentStart.longitude)
                 let markerLabelStart = segmentStart.name ?? "Unknown Name"
-                let startCategory = segment.startLocation?.poiCategory
+                let startIcon = LocationIcon(poiCategory: segment.startLocation?.poiCategory)
                 let segmentEnd = segment.endLocation ?? Location(context: moc)
                 let endLocation = CLLocationCoordinate2D(latitude: segmentEnd.latitude, longitude: segmentEnd.longitude)
                 let markerLabelEnd = segmentEnd.name ?? "Uknown Name"
-                let endCategory = segment.endLocation?.poiCategory
+                let endIcon = LocationIcon(poiCategory: segment.endLocation?.poiCategory)
                 let route = segment.polyline
-                allMapInfo.append(MapInfo(markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation, startCategory: startCategory, endCategory: endCategory, route: route))
+                allMapInfo.append(MapInfo(markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation, startIcon: startIcon, endIcon: endIcon, route: route))
             }
         }
     }
