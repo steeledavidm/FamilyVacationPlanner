@@ -10,7 +10,6 @@ import Foundation
 import MapKit
 import SwiftUI
 
-@available(iOS 18.0, *)
 extension ContentView {
     @Observable class ViewModel {
         var position: MapCameraPosition = .automatic

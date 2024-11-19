@@ -11,7 +11,6 @@ import MapKit
 import SwiftUI
 import Foundation
 
-@available(iOS 18.0, *)
 struct ContentView: View {
     @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVars
@@ -190,13 +189,9 @@ struct ContentView: View {
     }
 }
 #Preview {
-    if #available(iOS 18.0, *) {
-        ContentView()
-            .environment(\.managedObjectContext, DataController.preview)
-            .environment(DataModel())
-            .environment(GlobalVariables())
-            .environment(LocationManager())
-    } else {
-        // Fallback on earlier versions
-    }
+    ContentView()
+        .environment(\.managedObjectContext, DataController.preview)
+        .environment(DataModel())
+        .environment(GlobalVariables())
+        .environment(LocationManager())
 }

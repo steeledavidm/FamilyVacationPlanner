@@ -8,7 +8,6 @@
 import MapKit
 import SwiftUI
 
-@available(iOS 18.0, *)
 struct CustomMapMarkerView: View {
 
     let category: MKPointOfInterestCategory?
@@ -239,10 +238,6 @@ struct CustomMapMarkerView: View {
 }
 
 #Preview {
-    if #available(iOS 18.0, *) {
-        CustomMapMarkerView(category: .restaurant, title: "marker Name")
-    } else {
-        // Fallback on earlier versions
-    }
+    CustomMapMarkerView(category: .restaurant)
 }
 
