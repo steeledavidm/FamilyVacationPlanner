@@ -31,6 +31,7 @@ struct ContentView: View {
     @State private var showSearchLocationSheet = false
     @State private var viewModel: ViewModel = ViewModel(selectedTabIndex: 0, selectedDetent: .fraction(0.5))
     @State private var comprehensiveAndDailySegments: [DaySegments] = []
+    @State private var locationMOC: Location?
     
 
     var body: some View {
@@ -172,6 +173,11 @@ struct ContentView: View {
                 print("Location Placemark changed")
                 print(dataModel.locationPlacemark?.thoroughfare ?? "No street!!!")
             }
+            .onChange(of: selectedLocation) {oldValue, newValue in
+                if let selectedLocation = selectedLocation {
+                    locationMOC = dataModel.generateLocation(selectedLocation: selectedLocation, locationType: globalVars.locationType ?? LocationType.pointOfInterest)
+                }
+            }
         }
         .sheet(isPresented: $showSheet) {
             TripSetUpView()
@@ -185,8 +191,8 @@ struct ContentView: View {
                         .onDisappear(perform: {
                             globalVars.showSearchLocationSheet = false
                         })
-                        .sheet(item: $selectedLocation) { selectedItem in
-                            LocationSetUpView(locationFromMap: selectedItem)
+                        .sheet(item: $locationMOC) { locationMOC in
+                            LocationSetUpView(locationMOC: locationMOC)
                             .presentationBackgroundInteraction(.enabled)
                             .presentationDetents([.fraction(0.5), .fraction(0.9), .fraction(0.1)], selection: $locationSetupDetent)
                         }

@@ -41,7 +41,6 @@
 		55F69FF92C7E55D000CAF2DB /* FamilyVacationPlanner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7D82C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodeld */; };
 		55FD9B3B2C2F30BD000EB3FA /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */; };
 		55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */; };
-		55FEFCC12CDD789900407DBB /* EditLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FEFCC02CDD789900407DBB /* EditLocationView.swift */; };
 		55FEFCF72CE9365400407DBB /* TripSetUpView-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FEFCF62CE9365400407DBB /* TripSetUpView-ViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -83,7 +82,6 @@
 		55F69FF62C7E509300CAF2DB /* ContentView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ContentView-ViewModel.swift"; path = "FamilyVacationPlanner/Models/ContentView-ViewModel.swift"; sourceTree = SOURCE_ROOT; };
 		55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		55FD9B3C2C2FBDC4000EB3FA /* AnnotatedMapItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatedMapItem.swift; sourceTree = "<group>"; };
-		55FEFCC02CDD789900407DBB /* EditLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationView.swift; sourceTree = "<group>"; };
 		55FEFCF62CE9365400407DBB /* TripSetUpView-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TripSetUpView-ViewModel.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -173,7 +171,6 @@
 				5558E7962C24867300CE6991 /* ContentView.swift */,
 				55510B812C87897C000CA28D /* DaySegmentsView.swift */,
 				55510B832C8B898C000CA28D /* LocationSetUpView.swift */,
-				55FEFCC02CDD789900407DBB /* EditLocationView.swift */,
 				5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */,
 				551A58372C2DAAA000E6DA03 /* EditTripView.swift */,
 				5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */,
@@ -286,7 +283,6 @@
 				5558E7DC2C25E02900CE6991 /* DataController.swift in Sources */,
 				555AAE4F2CEE7D400097135E /* POIPickerView.swift in Sources */,
 				55FEFCF72CE9365400407DBB /* TripSetUpView-ViewModel.swift in Sources */,
-				55FEFCC12CDD789900407DBB /* EditLocationView.swift in Sources */,
 				550B8FD32C9DBCD9008648DC /* MapDisplayState.swift in Sources */,
 				5558E7E52C260FB800CE6991 /* SearchDestinationView.swift in Sources */,
 				557395482C7A27D30006DEE5 /* RecentLocations.swift in Sources */,

@@ -49,7 +49,15 @@ struct DaySegmentsView: View {
                         List {
                             if contentForTabView.startLocationSet {
                                 HStack {
-                                    Label(contentForTabView.segments?.first?.startLocation?.name ?? "Unknown", systemImage: "arrow.up.circle")
+                                    HStack{
+                                        Image(systemName: "arrow.up.circle.fill")
+                                            .foregroundStyle(.green)
+                                            .font(.headline)
+                                        Text(contentForTabView.segments?.first?.startLocation?.name ?? "Unknown")
+                                            .foregroundStyle(.black)
+                                            .font(.headline)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
                                     Spacer()
                                     if !contentForTabView.comprehensive {
                                         Button(action:  {
@@ -118,7 +126,7 @@ struct DaySegmentsView: View {
                                                             
                                                         } else {
                                                             VStack(alignment: .leading) {
-                                                                Label(title: {Text(segment.endLocation?.name ?? "") .font(.headline)}, icon: { Image(systemName: "bed.double")
+                                                                Label(title: {Text(segment.endLocation?.name ?? "") .font(.headline)}, icon: { Image(systemName: "bed.double.fill")
                                                                 })
                                                             }
                                                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -214,7 +222,7 @@ struct DaySegmentsView: View {
                                 }
                             }
                             }
-                                //.environment(\.editMode, .constant(.active))
+                                .environment(\.editMode, .constant(.active))
                                 .animation(.easeInOut, value: comprehensiveAndDailySegments)
                         })
                     }
@@ -252,7 +260,7 @@ struct DaySegmentsView: View {
                 comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
             }
             .sheet(item: $selectedLocation) { location in
-                EditLocationView(location: location)
+                LocationSetUpView(locationMOC: location)
                     .environment(\.managedObjectContext, dataModel.moc)
             }
         }

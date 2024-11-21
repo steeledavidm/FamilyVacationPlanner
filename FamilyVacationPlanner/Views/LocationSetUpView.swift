@@ -15,7 +15,7 @@ struct LocationSetUpView: View {
     @Environment(GlobalVariables.self) var globalVars
     @Environment(DataModel.self) var dataModel
     @Environment(\.dismiss) var dismiss
-    let locationFromMap: AnnotatedMapItem
+    let locationMOC: Location
     @State private var placemark: MKPlacemark = MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
     @State private var locationType: LocationType = LocationType.pointOfInterest
     @State private var leaveDate: Date = Date()
@@ -37,7 +37,7 @@ struct LocationSetUpView: View {
                 TextField("Location name", text: $locationName )
             }
             Section("Address"){
-                Text(address)
+                Text(locationMOC.title ?? "Address is not known")
             }
             if viewModel.numberOfNightsLeft > 0 {
                 Toggle("Overnight Stop", isOn: $overnightStop)
@@ -84,38 +84,36 @@ struct LocationSetUpView: View {
             Section("Date Leave") {
                 DatePicker("Date Leave", selection: $leaveDate, displayedComponents: [.date])
             }
+            
+            Section("Location Index") {
+                Text("\(locationMOC.locationIndex)")
+            }
             Button("Save") {
-                let location = Location(context: dataModel.moc)
                 guard let trip = globalVars.selectedTrip else { return }
-                location.id = UUID()
-                location.name = locationName
-                location.title = address
-                location.latitude = locationFromMap.item.placemark.coordinate.latitude
-                location.longitude = locationFromMap.item.placemark.coordinate.longitude
-                location.poiCategory = locationPOI?.poiCategory
+                locationMOC.name = locationName
+                locationMOC.title = address
+                locationMOC.poiCategory = locationPOI?.poiCategory
                 if locationType == LocationType.startLocation {
-                    location.startLocation = true
-                    location.dateLeave = trip.startDate
+                    locationMOC.dateLeave = trip.startDate
                     if !trip.oneWay {
-                        location.dateArrive = trip.endDate
+                        locationMOC.dateArrive = trip.endDate
                     }
                 }
                 if overnightStop {
                     locationType = LocationType.overNightStop
                 }
                 if locationType == LocationType.overNightStop {
-                    location.overNightStop = true
-                    location.dateArrive = viewModel.dayFromDayIndex
-                    location.numberOfNights = Int16(numberOfNights)
-                    location.dateLeave = leaveDate
+                    locationMOC.overNightStop = true
+                    locationMOC.dateArrive = viewModel.dayFromDayIndex
+                    locationMOC.numberOfNights = Int16(numberOfNights)
+                    locationMOC.dateLeave = leaveDate
                 }
                 if locationType == LocationType.pointOfInterest {
-                    location.dateArrive = viewModel.dayFromDayIndex
-                    location.dateLeave = viewModel.dayFromDayIndex
+                    locationMOC.dateArrive = viewModel.dayFromDayIndex
+                    locationMOC.dateLeave = viewModel.dayFromDayIndex
                 }
-                trip.addToLocation(location)
-                viewModel.getLocationIndex(location: location, dayIndex: dayIndex, locationIndex: locationIndex)
-                globalVars.locationAdded.toggle()
+                trip.addToLocation(locationMOC)
+                viewModel.getLocationIndex(location: locationMOC, dayIndex: dayIndex, locationIndex: locationIndex)
                 globalVars.showSearchLocationSheet = false
                 dismiss()
             }
@@ -123,13 +121,14 @@ struct LocationSetUpView: View {
 
         .onAppear() {
             print("view appeared")
+            locationName = locationMOC.name ?? ""
+            notes = locationMOC.notes ?? ""
+            locationPOI = LocationIcon(poiCategory: locationMOC.poiCategory)
+            if locationMOC.startLocation {
+                locationType = LocationType.startLocation
+            }
             globalVars.selectedDetent = .fraction(0.5)
-            locationName = locationFromMap.item.name ?? ""
-            placemark = locationFromMap.item.placemark
-            address = placemark.title ?? ""
-            locationType = globalVars.locationType ?? LocationType.pointOfInterest
             locationIndex = globalVars.locationIndex
-            locationPOI = LocationIcon(poiCategory: locationFromMap.item.pointOfInterestCategory)
             dayIndex = globalVars.selectedTabIndex - 1
             if let trip = globalVars.selectedTrip {
                 viewModel.getDates(trip: trip, dayIndex: dayIndex)
@@ -152,11 +151,33 @@ struct LocationSetUpView: View {
     }
 }
 
+
 #Preview {
-    let locationFromMap = AnnotatedMapItem(item: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 42, longitude: -92))))
-    locationFromMap.item.pointOfInterestCategory = .brewery
-    return LocationSetUpView(locationFromMap: locationFromMap)
-        .environment(DataModel())
-        .environment(GlobalVariables())
+    // Get the preview context with mock data already populated
+    let context = DataController.preview
     
+    // Fetch the first trip from the mock data
+    let request: NSFetchRequest<Location> = Location.fetchRequest()
+    var previewLocation: Location?
+    
+    do {
+        let locations = try context.fetch(request)
+        if let firstLocation = locations.first {
+            previewLocation = firstLocation
+        }
+    } catch {
+        fatalError("Failed to fetch preview location: \(error.localizedDescription)")
+    }
+    
+    // Create DaySegmentsView with the fetched trip
+    return Group {
+        if let locationMOC = previewLocation {
+            LocationSetUpView(locationMOC: locationMOC)
+                .environment(\.managedObjectContext, context)
+                .environment(DataModel())
+                .environment(GlobalVariables())
+        } else {
+            Text("Failed to load preview location")
+        }
+    }
 }

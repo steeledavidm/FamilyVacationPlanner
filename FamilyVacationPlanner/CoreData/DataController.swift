@@ -92,6 +92,7 @@ extension DataController {
         mockLocation11.status = ""
         mockLocation11.subtitle = ""
         mockLocation11.title = "6827 S 52nd St, Lincoln, NE  68516, United States"
+        mockLocation11.poiCategory = .hotel
 
         let mockLocation12 = Location(context: moc)
         mockLocation12.dateArrive = dateFormatter.date(from: "Optional(2024-11-17 06:00:00 +0000)")
