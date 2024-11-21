@@ -5,6 +5,17 @@
 //  Created by David Steele on 11/19/24.
 //
 
+// 1. MKMapItem.MKPointOfInterestCategory from selected item on Map.
+// 2. LocationSetUpView
+//  a. Shows current poiCategory,icon and color from selected item
+//  b. Option to change the poiCategory from list of possibilities
+//  c. Save to Location.categoryRawValue
+// 3. ContentView
+//  a. Converts Location.categoryRawValue to icon,color.
+//  b. Loads MapInfo and displays on Map.
+// 4. DaySegmentsView
+//  a. 
+
 import Foundation
 import MapKit
 import SwiftUI
@@ -17,10 +28,14 @@ struct LocationIcon: Identifiable, Hashable {
         
         switch poiCategory {
             // Lodging
-        case .hotel, .campground:
+        case .hotel:
             return "bed.double.fill"
-        case .restaurant, .bakery:
+        case .campground:
+            return "tent.fill"
+        case .restaurant:
             return "fork.knife"
+        case .bakery:
+            return "birthday.cake.fill"
         case .cafe:
             return "cup.and.saucer.fill"
         case .brewery, .winery:
@@ -29,20 +44,26 @@ struct LocationIcon: Identifiable, Hashable {
             return "cart.fill"
             
             // Culture and Entertainment
-        case .museum, .theater, .movieTheater:
+        case .museum:
             return "building.columns.fill"
+        case .theater:
+            return "theatermasks.fill"
+        case .movieTheater:
+            return "movieclapper.fill"
         case .library:
             return "books.vertical.fill"
         case .nightlife:
             return "moon.stars.fill"
             
             // Nature and Parks
-        case .park, .nationalPark:
-            return "leaf.fill"
+        case .park:
+            return "tree.fill"
+        case .nationalPark:
+            return "mountain.2.fill"
         case .beach:
             return "umbrella.fill"
         case .marina:
-            return "boat.fill"
+            return "sailboat.fill"
             
             // Sports and Recreation
         case .fitnessCenter:
@@ -152,6 +173,73 @@ struct LocationIcon: Identifiable, Hashable {
             
         default:
             return .secondary
+        }
+    }
+    // Readable name for the category
+    var poiDisplayName: String {
+        switch poiCategory {
+        // Lodging
+        case .hotel: return "Hotel"
+        case .campground: return "Campground"
+        
+        // Culture and Entertainment
+        case .museum: return "Museum"
+        case .theater: return "Theater"
+        case .movieTheater: return "Movie Theater"
+        case .library: return "Library"
+        case .nightlife: return "Nightlife"
+        
+        // Nature and Parks
+        case .park: return "Park"
+        case .nationalPark: return "National Park"
+        case .beach: return "Beach"
+        case .marina: return "Marina"
+        
+        // Sports and Recreation
+        case .fitnessCenter: return "Fitness Center"
+        
+        // Transportation
+        case .airport: return "Airport"
+        case .parking: return "Parking"
+        case .publicTransport: return "Public Transport"
+        case .carRental: return "Car Rental"
+        case .evCharger: return "EV Charger"
+        
+        // Shopping and Services
+        case .restaurant: return "Restaurant"
+        case .cafe: return "Cafe"
+        case .bakery: return "Bakery"
+        case .brewery: return "Brewery"
+        case .winery: return "Winery"
+        case .foodMarket: return "Food Market"
+        case .store: return "Store"
+        case .bank: return "Bank"
+        case .atm: return "ATM"
+        case .gasStation: return "Gas Station"
+        case .pharmacy: return "Pharmacy"
+        case .laundry: return "Laundry"
+        
+        // Education and Institutions
+        case .school: return "School"
+        case .university: return "University"
+        
+        // Emergency Services
+        case .hospital: return "Hospital"
+        case .police: return "Police"
+        case .fireStation: return "Fire Station"
+        
+        // Attractions
+        case .aquarium: return "Aquarium"
+        case .zoo: return "Zoo"
+        
+        // Post and Mail
+        case .postOffice: return "Post Office"
+        
+        // Other
+        case .restroom: return "Restroom"
+        case .stadium: return "Stadium"
+        case .none: return ""
+        case .some(_): return ""
         }
     }
 }

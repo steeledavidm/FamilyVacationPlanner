@@ -28,6 +28,8 @@
 		5558E7DC2C25E02900CE6991 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7DB2C25E02800CE6991 /* DataController.swift */; };
 		5558E7E52C260FB800CE6991 /* SearchDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */; };
 		5558E7F52C28BA4B00CE6991 /* TripSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */; };
+		555AAE4D2CEE662E0097135E /* LocationCategoryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AAE4C2CEE662E0097135E /* LocationCategoryGroup.swift */; };
+		555AAE4F2CEE7D400097135E /* POIPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AAE4E2CEE7D400097135E /* POIPickerView.swift */; };
 		55651C7D2C45EFD10042D020 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55651C7C2C45EFD10042D020 /* Segment.swift */; };
 		556F58302C7111E600234FED /* BackLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556F582F2C7111E600234FED /* BackLog.swift */; };
 		557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557395452C7A24E70006DEE5 /* LocationManager.swift */; };
@@ -69,6 +71,8 @@
 		5558E7DF2C25FA5100CE6991 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDestinationView.swift; sourceTree = "<group>"; };
 		5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSetUpView.swift; sourceTree = "<group>"; };
+		555AAE4C2CEE662E0097135E /* LocationCategoryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCategoryGroup.swift; sourceTree = "<group>"; };
+		555AAE4E2CEE7D400097135E /* POIPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIPickerView.swift; sourceTree = "<group>"; };
 		55651C7C2C45EFD10042D020 /* Segment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
 		556F582F2C7111E600234FED /* BackLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackLog.swift; sourceTree = "<group>"; };
 		557395452C7A24E70006DEE5 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -158,6 +162,7 @@
 				557395472C7A27D30006DEE5 /* RecentLocations.swift */,
 				55651C7C2C45EFD10042D020 /* Segment.swift */,
 				55E6509B2CECD462004B7F26 /* LocationIcon.swift */,
+				555AAE4C2CEE662E0097135E /* LocationCategoryGroup.swift */,
 			);
 			path = Structures;
 			sourceTree = "<group>";
@@ -174,6 +179,7 @@
 				5558E7E42C260FB800CE6991 /* SearchDestinationView.swift */,
 				55FD9B3A2C2F30BD000EB3FA /* SectionHeaderView.swift */,
 				5558E7A42C248E3200CE6991 /* ClearButton.swift */,
+				555AAE4E2CEE7D400097135E /* POIPickerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -263,6 +269,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				555AAE4D2CEE662E0097135E /* LocationCategoryGroup.swift in Sources */,
 				553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */,
 				55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */,
 				557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */,
@@ -277,6 +284,7 @@
 				5558E7A92C24918900CE6991 /* AddressResult.swift in Sources */,
 				5558E7F52C28BA4B00CE6991 /* TripSetUpView.swift in Sources */,
 				5558E7DC2C25E02900CE6991 /* DataController.swift in Sources */,
+				555AAE4F2CEE7D400097135E /* POIPickerView.swift in Sources */,
 				55FEFCF72CE9365400407DBB /* TripSetUpView-ViewModel.swift in Sources */,
 				55FEFCC12CDD789900407DBB /* EditLocationView.swift in Sources */,
 				550B8FD32C9DBCD9008648DC /* MapDisplayState.swift in Sources */,

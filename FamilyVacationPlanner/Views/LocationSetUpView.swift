@@ -27,6 +27,9 @@ struct LocationSetUpView: View {
     @State private var numberOfNights: Int = 0
     @State private var locationIndex: Int = 0
     @State private var dayIndex: Int = 0
+    @State private var locationPOI: LocationIcon?
+    @State private var selectedPOI: LocationIcon?
+    @State private var showPOISheet = false
     
     var body: some View {
         Form {
@@ -60,8 +63,19 @@ struct LocationSetUpView: View {
                 TextField("Notes", text: $notes )
             }
             
-            Section("Location Type") {
-                Text("Catagory: \(String(describing: locationFromMap.item.pointOfInterestCategory))")
+            Section("Location Category") {
+                Button(action: {
+                    showPOISheet = true
+                }
+                ) {
+                    HStack {
+                        Image(systemName: locationPOI?.poiSymbol ?? "map.marker")
+                            .foregroundStyle(locationPOI?.poiColor ?? .black)
+                        Text(locationPOI?.poiDisplayName ?? "No Location")
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
             }
             
             Section("Date Arrive") {
@@ -78,7 +92,7 @@ struct LocationSetUpView: View {
                 location.title = address
                 location.latitude = locationFromMap.item.placemark.coordinate.latitude
                 location.longitude = locationFromMap.item.placemark.coordinate.longitude
-                location.setCategory(from: locationFromMap.item)
+                location.poiCategory = locationPOI?.poiCategory
                 if locationType == LocationType.startLocation {
                     location.startLocation = true
                     location.dateLeave = trip.startDate
@@ -115,18 +129,33 @@ struct LocationSetUpView: View {
             address = placemark.title ?? ""
             locationType = globalVars.locationType ?? LocationType.pointOfInterest
             locationIndex = globalVars.locationIndex
+            locationPOI = LocationIcon(poiCategory: locationFromMap.item.pointOfInterestCategory)
             dayIndex = globalVars.selectedTabIndex - 1
             if let trip = globalVars.selectedTrip {
                 viewModel.getDates(trip: trip, dayIndex: dayIndex)
             }
             leaveDate = viewModel.dayFromDayIndex + TimeInterval(numberOfNights * 60 * 60 * 24)
         }
+        .onChange (of: selectedPOI) {
+            locationPOI = selectedPOI
+        }
+        .sheet(isPresented: $showPOISheet) {
+            NavigationStack {
+                List(CategoryGroup.allCases, id: \.self) { group in
+                    NavigationLink(destination: POIPickerView(group: group, selectedCategory: $selectedPOI, showPOISheet: $showPOISheet)) {
+                        Text(group.rawValue)
+                    }
+                }
+                .navigationTitle("Select Group")
+            }
+        }
     }
 }
 
 #Preview {
     let locationFromMap = AnnotatedMapItem(item: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 42, longitude: -92))))
-    LocationSetUpView(locationFromMap: locationFromMap)
+    locationFromMap.item.pointOfInterestCategory = .brewery
+    return LocationSetUpView(locationFromMap: locationFromMap)
         .environment(DataModel())
         .environment(GlobalVariables())
     
