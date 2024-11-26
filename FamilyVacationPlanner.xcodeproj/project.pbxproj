@@ -30,6 +30,7 @@
 		5558E7F52C28BA4B00CE6991 /* TripSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */; };
 		555AAE4D2CEE662E0097135E /* LocationCategoryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AAE4C2CEE662E0097135E /* LocationCategoryGroup.swift */; };
 		555AAE4F2CEE7D400097135E /* POIPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AAE4E2CEE7D400097135E /* POIPickerView.swift */; };
+		555AAE512CF054350097135E /* LocationEditModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AAE502CF054350097135E /* LocationEditModel.swift */; };
 		55651C7D2C45EFD10042D020 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55651C7C2C45EFD10042D020 /* Segment.swift */; };
 		556F58302C7111E600234FED /* BackLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556F582F2C7111E600234FED /* BackLog.swift */; };
 		557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557395452C7A24E70006DEE5 /* LocationManager.swift */; };
@@ -72,6 +73,7 @@
 		5558E7F42C28BA4B00CE6991 /* TripSetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSetUpView.swift; sourceTree = "<group>"; };
 		555AAE4C2CEE662E0097135E /* LocationCategoryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCategoryGroup.swift; sourceTree = "<group>"; };
 		555AAE4E2CEE7D400097135E /* POIPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POIPickerView.swift; sourceTree = "<group>"; };
+		555AAE502CF054350097135E /* LocationEditModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEditModel.swift; sourceTree = "<group>"; };
 		55651C7C2C45EFD10042D020 /* Segment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
 		556F582F2C7111E600234FED /* BackLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackLog.swift; sourceTree = "<group>"; };
 		557395452C7A24E70006DEE5 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				553588F92C415F540014D48C /* GlobalVariables.swift */,
 				557395452C7A24E70006DEE5 /* LocationManager.swift */,
 				5558E7A22C2486CF00CE6991 /* SearchModel.swift */,
+				555AAE502CF054350097135E /* LocationEditModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 				5558E7E52C260FB800CE6991 /* SearchDestinationView.swift in Sources */,
 				557395482C7A27D30006DEE5 /* RecentLocations.swift in Sources */,
 				5558E7972C24867300CE6991 /* ContentView.swift in Sources */,
+				555AAE512CF054350097135E /* LocationEditModel.swift in Sources */,
 				55C5895D2CEBEC6F0026B20E /* LocationExtension.swift in Sources */,
 				5558E7952C24867300CE6991 /* FamilyVacationPlannerApp.swift in Sources */,
 				55E6509C2CECD462004B7F26 /* LocationIcon.swift in Sources */,

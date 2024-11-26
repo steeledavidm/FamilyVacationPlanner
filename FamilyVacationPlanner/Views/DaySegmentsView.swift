@@ -13,7 +13,7 @@ struct DaySegmentsView: View {
     @Environment(DataModel.self) private var dataModel
     @State private var comprehensiveAndDailySegments: [DaySegments] = []
     @State private var selectedTabIndex: Int = 0
-    @ObservedObject var trip: Trip
+    var trip: Trip
     @State private var viewModel: ViewModel = ViewModel()
     @State private var states = [true, true, false, true, false]
     @State private var selectedLocation: Location?
@@ -222,7 +222,7 @@ struct DaySegmentsView: View {
                                 }
                             }
                             }
-                                .environment(\.editMode, .constant(.active))
+                                //.environment(\.editMode, .constant(.active))
                                 .animation(.easeInOut, value: comprehensiveAndDailySegments)
                         })
                     }
@@ -260,8 +260,7 @@ struct DaySegmentsView: View {
                 comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
             }
             .sheet(item: $selectedLocation) { location in
-                LocationSetUpView(locationMOC: location)
-                    .environment(\.managedObjectContext, dataModel.moc)
+                LocationSetUpView(location: location)
             }
         }
     }

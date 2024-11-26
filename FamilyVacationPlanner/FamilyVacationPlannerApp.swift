@@ -16,6 +16,7 @@ struct FamilyVacationPlannerApp: App {
     @State private var globalVariables = GlobalVariables()
     @State private var dataModel = DataModel()
     @State private var locationManager = LocationManager()
+    @State private var locationEditModel = LocationEditModel()
     
     var body: some Scene {
         WindowGroup {
@@ -24,6 +25,7 @@ struct FamilyVacationPlannerApp: App {
                 .environment(globalVariables)
                 .environment(dataModel)
                 .environment(locationManager)
+                .environment(locationEditModel)
         }
     }
 }

@@ -12,17 +12,17 @@ import SwiftUI
 struct LocationSetUpView: View {
     
     @State private var viewModel: ViewModel = ViewModel()
+    @State private var locationEditModel: LocationEditModel
     @Environment(GlobalVariables.self) var globalVars
-    @Environment(DataModel.self) var dataModel
     @Environment(\.dismiss) var dismiss
-    let locationMOC: Location
     @State private var placemark: MKPlacemark = MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
     @State private var locationType: LocationType = LocationType.pointOfInterest
-    @State private var leaveDate: Date = Date()
+    @State private var leaveDate: Date
     @State private var locationName: String = ""
     @State private var address: String = ""
     @State private var notes: String = ""
-    @State private var overnightStop: Bool = false
+    @State private var overNightStop: Bool = false
+    @State private var startLocation: Bool = false
     @State private var overnightsListSize: Int = 0
     @State private var numberOfNights: Int = 0
     @State private var locationIndex: Int = 0
@@ -30,6 +30,20 @@ struct LocationSetUpView: View {
     @State private var locationPOI: LocationIcon?
     @State private var selectedPOI: LocationIcon?
     @State private var showPOISheet = false
+    @State private var trip: Trip?
+    
+    // Init for editing
+    init(location: Location) {
+        _locationEditModel = State(wrappedValue: LocationEditModel(location: location))
+        _leaveDate = State(initialValue: location.dateLeave ?? Date())
+    }
+    
+    init(annotatedMapItem: AnnotatedMapItem, trip: Trip) {
+        print("LocationSetUpView init with annotatedMapItem")
+        _locationEditModel = State(wrappedValue: LocationEditModel(annotatedMapItem: annotatedMapItem, trip: trip))
+        _leaveDate = State(initialValue: trip.startDate ?? Date())
+        print("LocationEditModel name: \(LocationEditModel(annotatedMapItem: annotatedMapItem, trip: trip).name)")
+    }
     
     var body: some View {
         Form {
@@ -37,12 +51,12 @@ struct LocationSetUpView: View {
                 TextField("Location name", text: $locationName )
             }
             Section("Address"){
-                Text(locationMOC.title ?? "Address is not known")
+                Text(locationEditModel.title)
             }
             if viewModel.numberOfNightsLeft > 0 {
-                Toggle("Overnight Stop", isOn: $overnightStop)
+                Toggle("Overnight Stop", isOn: $overNightStop)
                     .toggleStyle(.switch)
-                if overnightStop {
+                if overNightStop {
                     Picker("Leave", selection: $numberOfNights, content: {
                         ForEach(1..<viewModel.numberOfNightsLeft + 1, id: \.self) {
                             if $0 != 1 {
@@ -64,14 +78,24 @@ struct LocationSetUpView: View {
             }
             
             Section("Location Category") {
-                Button(action: {
-                    showPOISheet = true
-                }
-                ) {
+                if !startLocation {
+                    Button(action: {
+                        showPOISheet = true
+                    }
+                    ) {
+                        HStack {
+                            Image(systemName: locationPOI?.poiSymbol ?? "map.marker")
+                                .foregroundStyle(locationPOI?.poiColor ?? .black)
+                            Text(locationPOI?.poiDisplayName ?? "No Location")
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                } else {
                     HStack {
-                        Image(systemName: locationPOI?.poiSymbol ?? "map.marker")
+                        Image(systemName: "arrow.up.circle.fill")
                             .foregroundStyle(locationPOI?.poiColor ?? .black)
-                        Text(locationPOI?.poiDisplayName ?? "No Location")
+                        Text("Start Location")
                             .foregroundStyle(.black)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -86,45 +110,58 @@ struct LocationSetUpView: View {
             }
             
             Section("Location Index") {
-                Text("\(locationMOC.locationIndex)")
+                Text("\(locationEditModel.locationIndex)")
             }
             Button("Save") {
                 guard let trip = globalVars.selectedTrip else { return }
-                locationMOC.name = locationName
-                locationMOC.title = address
-                locationMOC.poiCategory = locationPOI?.poiCategory
+                locationEditModel.name = locationName
+                locationEditModel.title = address
+                if let poiCategory = locationPOI?.poiCategory {
+                    locationEditModel.poiCategory = poiCategory
+                }
                 if locationType == LocationType.startLocation {
-                    locationMOC.dateLeave = trip.startDate
+                    locationEditModel.startLocation = true
+                    if let startDate = trip.startDate {
+                        locationEditModel.dateLeave = startDate
+                    }
                     if !trip.oneWay {
-                        locationMOC.dateArrive = trip.endDate
+                        if let endDate = trip.endDate {
+                            locationEditModel.dateArrive = endDate
+                        }
                     }
                 }
-                if overnightStop {
+                if overNightStop {
                     locationType = LocationType.overNightStop
                 }
                 if locationType == LocationType.overNightStop {
-                    locationMOC.overNightStop = true
-                    locationMOC.dateArrive = viewModel.dayFromDayIndex
-                    locationMOC.numberOfNights = Int16(numberOfNights)
-                    locationMOC.dateLeave = leaveDate
+                    locationEditModel.overNightStop = true
+                    locationEditModel.dateArrive = viewModel.dayFromDayIndex
+                    locationEditModel.numberOfNights = Int16(numberOfNights)
+                    locationEditModel.dateLeave = leaveDate
                 }
                 if locationType == LocationType.pointOfInterest {
-                    locationMOC.dateArrive = viewModel.dayFromDayIndex
-                    locationMOC.dateLeave = viewModel.dayFromDayIndex
+                    locationEditModel.dateArrive = viewModel.dayFromDayIndex
+                    locationEditModel.dateLeave = viewModel.dayFromDayIndex
                 }
-                trip.addToLocation(locationMOC)
-                viewModel.getLocationIndex(location: locationMOC, dayIndex: dayIndex, locationIndex: locationIndex)
+                locationEditModel.locationIndex = viewModel.getLocationIndex(startLocation: startLocation, overNightStop: overNightStop, dayIndex: dayIndex, locationIndex: locationIndex)
                 globalVars.showSearchLocationSheet = false
-                dismiss()
+                do {
+                    try locationEditModel.save()
+                    globalVars.locationUpdated.toggle()
+                    dismiss()
+                } catch {
+                    print("error saving location: \(error)")
+                }
             }
         }
+ 
 
         .onAppear() {
             print("view appeared")
-            locationName = locationMOC.name ?? ""
-            notes = locationMOC.notes ?? ""
-            locationPOI = LocationIcon(poiCategory: locationMOC.poiCategory)
-            if locationMOC.startLocation {
+            locationName = locationEditModel.name
+            notes = locationEditModel.notes
+            locationPOI = LocationIcon(poiCategory: locationEditModel.poiCategory)
+            if locationEditModel.startLocation {
                 locationType = LocationType.startLocation
             }
             globalVars.selectedDetent = .fraction(0.5)
@@ -170,9 +207,9 @@ struct LocationSetUpView: View {
     }
     
     // Create DaySegmentsView with the fetched trip
-    return Group {
-        if let locationMOC = previewLocation {
-            LocationSetUpView(locationMOC: locationMOC)
+   return Group {
+        if let location = previewLocation {
+            LocationSetUpView(location: location)
                 .environment(\.managedObjectContext, context)
                 .environment(DataModel())
                 .environment(GlobalVariables())

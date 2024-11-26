@@ -10,32 +10,26 @@ import Foundation
 
 extension LocationSetUpView {
 
-
     @Observable class ViewModel {
-        let moc: NSManagedObjectContext = DataController.shared.container.viewContext
         var dayFromDayIndex: Date = Date()
         var numberOfNightsLeft: Int = 0
-        
 
-        
-        func getLocationIndex(location: Location, dayIndex: Int, locationIndex: Int) {
+        func getLocationIndex(startLocation: Bool, overNightStop: Bool, dayIndex: Int, locationIndex: Int) -> Int16 {
             print("dayIndex: \(dayIndex)")
             print("locationIndex: \(locationIndex)")
-            if location.startLocation {
-                location.locationIndex = Int16(dayIndex) * Int16(100)
+            var newLocationIndex: Int16 = 0
+            if startLocation {
+                newLocationIndex = Int16(dayIndex) * Int16(100)
             }
             
             if locationIndex > 0  {
-                location.locationIndex = Int16(dayIndex) * Int16(100) + Int16(locationIndex)
+                newLocationIndex = Int16(dayIndex) * Int16(100) + Int16(locationIndex)
             }
             
-            if location.overNightStop {
-                location.locationIndex = Int16(dayIndex) * Int16(100) + Int16(99)
+            if overNightStop {
+                newLocationIndex = Int16(dayIndex) * Int16(100) + Int16(99)
             }
-            
-            do {
-                try? moc.save()
-            }
+            return newLocationIndex
         }
         
         func getDates(trip: Trip, dayIndex: Int) {

@@ -182,7 +182,7 @@ extension DaySegmentsView {
              var totalTime: TimeInterval = 0
              var totalDistance: CLLocationDistance = 0
              for tripSegment in tripSegments {
-                 daySegmentsAccumulator.append(Segment(segmentIndex: tripSegment.dayIndex, dayDate: tripSegment.dayDate ?? Date(), startLocation: tripSegment.segments?.first?.startLocation, endLocation: tripSegment.segments?[(tripSegment.segments?.count ?? 2) - 2].endLocation, placeholder: false, distance: tripSegment.totalDistance, time: tripSegment.totalTime, polyline: tripSegment.totalPolyline))
+                 daySegmentsAccumulator.append(Segment(segmentIndex: tripSegment.dayIndex, dayDate: tripSegment.dayDate ?? Date(), startLocation: tripSegment.segments?.first?.startLocation, endLocation: tripSegment.segments?[(tripSegment.segments?.count ?? 1) - 1].endLocation, placeholder: false, distance: tripSegment.totalDistance, time: tripSegment.totalTime, polyline: tripSegment.totalPolyline))
                  totalTime += tripSegment.totalTime
                  totalDistance += tripSegment.totalDistance
              }

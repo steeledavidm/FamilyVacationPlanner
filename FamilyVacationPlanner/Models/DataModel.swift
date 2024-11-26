@@ -122,28 +122,6 @@ import SwiftUI
             return recentList
         }
     
-    func generateLocation(selectedLocation: AnnotatedMapItem, locationType: LocationType) -> Location {
-        let location = Location(context: moc)
-        location.id = UUID()
-        location.name = selectedLocation.item.name
-        location.title = selectedLocation.item.placemark.title
-        location.subtitle = selectedLocation.item.placemark.subtitle
-        location.latitude = selectedLocation.item.placemark.coordinate.latitude
-        location.longitude = selectedLocation.item.placemark.coordinate.longitude
-        location.poiCategory = selectedLocation.item.pointOfInterestCategory
-        if locationType == .startLocation {
-            location.startLocation = true
-        }
-        
-        do {
-            try moc.save()
-        } catch {
-            print("Error saving location: \(error)")
-        }
-        
-        return location
-    }
-    
     func getPlace(from address: AddressResult) async throws {
         let request = MKLocalSearch.Request()
         let title = address.title
