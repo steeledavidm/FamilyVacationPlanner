@@ -21,7 +21,7 @@ extension ContentView {
             self.selectedTabIndex = selectedTabIndex
             self.selectedDetent = selectedDetent
         }
-
+        
         func updateMapCameraPosition(currentLocation: CLLocation, dataModel: DataModel, globalVars: GlobalVariables) {
             print("Function 3")
             let screenWidth = UIScreen.main.bounds.width
@@ -35,11 +35,11 @@ extension ContentView {
                 print("I'm here")
                 if globalVars.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].startLocation == globalVars.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].endLocation {
                     singleLocation = true
+                    print("single location = true")
                 } else {
                     singleLocation = false
+                    print("single location = false")
                 }
-            } else {
-                print("I'm actually here")
             }
             
             if globalVars.locationFromMap != nil {
@@ -48,9 +48,9 @@ extension ContentView {
                 allMapInfo = []
                 allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0), endingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0)))
             }
-
+            
             print("allMapInfo: \(String(describing: allMapInfo.count))")
-                
+            
             if allMapInfo.count == 0 {
                 plotCurrentLocation = true
                 allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude), endingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude)))
@@ -108,35 +108,94 @@ extension ContentView {
             print("showSearchSheet: \(globalVars.showSearchLocationSheet)")
             print("plotRecentItems: \(dataModel.plotRecentItems)")
             print("marker Selected: \(globalVars.markerSelected)")
-            var positionSetter = 0
-            if selectedDetent == .fraction(0.1)  {
+            
+            if plotCurrentLocation  || allMapInfo.count == 0 || singleLocation {
+                singleLocation = true
+            } else {
+                singleLocation = false
+            }
+            
+            
+            enum Span: Double {
+                case wideSpan = 0.1
+                case narrowSpan = 0.005
+                
+                var value: Double {
+                    return self.rawValue
+                }
+            }
+            var span: Span
+            
+            if singleLocation {
+                span = .narrowSpan
+            } else {
+                span = .wideSpan
+            }
+            
+            let centerLatAdjustmentForDetent = span.value/2
+            var lat: Double = 0
+            var lon: Double = 0
+            var latDelta: Double = 0
+            var lonDelta: Double = 0
+            
+            if selectedDetent == .fraction(0.1) && !singleLocation {
                 position = .automatic
-                positionSetter = 1
-                if singleLocation {
-                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
-                        positionSetter = 2
-                    }
-                } else {
-                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: adjustedSpanLat, longitudeDelta: adjustedSpanLon)))
-                    positionSetter = 3
-                    if singleLocation {
-                        position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
-                        positionSetter = 4
-                    }
-                }
-            if plotCurrentLocation || allMapInfo.count == 1 && singleLocation {
-                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 0.1/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
-                positionSetter = 5
-                }
-            if globalVars.showSearchLocationSheet && dataModel.plotRecentItems {
-                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
-                positionSetter = 6
+                return
             }
-            print("positionSetter: \(positionSetter)")
+            
+            if selectedDetent == .fraction(0.1) && singleLocation {
+                lat = centerLat
+                lon = centerLon
+                latDelta = span.value
+                lonDelta = span.value
+            }
+            
+            if selectedDetent != .fraction(0.1) && !singleLocation {
+                lat = adjustedCenterLat
+                lon = centerLon
+                latDelta = adjustedSpanLat
+                lonDelta = adjustedSpanLon
+            }
+            
+            if selectedDetent != .fraction(0.1) && singleLocation {
+                lat = centerLat - centerLatAdjustmentForDetent
+                lon = centerLon
+                latDelta = span.value
+                lonDelta = span.value
+            }
+            position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: lon), span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)))
+            
+            
+            
+            //            var positionSetter = 0
+            //            if selectedDetent == .fraction(0.1)  {
+            //                position = .automatic
+            //                positionSetter = 1
+            //                if singleLocation {
+            //                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
+            //                        positionSetter = 2
+            //                    }
+            //                } else {
+            //                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: adjustedSpanLat, longitudeDelta: adjustedSpanLon)))
+            //                    positionSetter = 3
+            //                    if singleLocation {
+            //                        position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
+            //                        positionSetter = 4
+            //                    }
+            //                }
+            //            if plotCurrentLocation || allMapInfo.count == 1 && singleLocation {
+            //                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 0.1/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
+            //                positionSetter = 5
+            //                }
+            //            if globalVars.showSearchLocationSheet && dataModel.plotRecentItems {
+            //                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
+            //                positionSetter = 6
+            //            }
+            
             print(position)
-            }
         }
     }
+}
     
 
 

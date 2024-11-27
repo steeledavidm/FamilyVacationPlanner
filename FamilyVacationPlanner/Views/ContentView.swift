@@ -92,6 +92,7 @@ struct ContentView: View {
                             viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                             position = viewModel.position
                             globalVars.markerSelected = false
+                            globalVars.locationFromMap = nil
                         }
                     //}
                 })
@@ -131,6 +132,7 @@ struct ContentView: View {
             }
             .onChange(of: globalVars.showSearchLocationSheet) {
                 showSearchLocationSheet = globalVars.showSearchLocationSheet
+                selectedMarker = nil
                 print("showSearchLocationSheet: \(globalVars.showSearchLocationSheet)")
             }
             .onChange(of: globalVars.comprehensiveAndDailySegments) {

@@ -234,7 +234,9 @@ struct DaySegmentsView: View {
             .onAppear() {
                 print("Number of Locations: \(locations.count)")
                 viewModel.locations = Array(locations)
-                globalVars.selectedTabIndex = 0
+                if viewModel.locations.isEmpty {
+                    selectedTabIndex = 1
+                }
                 globalVars.selectTrip(trip)
                 viewModel.setup(trip: trip)
                 Task {
