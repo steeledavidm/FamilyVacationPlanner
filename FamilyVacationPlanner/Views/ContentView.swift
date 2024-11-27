@@ -137,7 +137,7 @@ struct ContentView: View {
                 print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
                 comprehensiveAndDailySegments = globalVars.comprehensiveAndDailySegments
                 dataModel.getMapInfo(selectedTabIndex: selectedTabIndex, comprehensiveAndDailySegments: comprehensiveAndDailySegments)
-                viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
+                //viewModel.updateMapCameraPosition(currentLocation: currentLocation, dataModel: dataModel, globalVars: globalVars)
                 position = viewModel.position
                 dataModel.mapCameraRegion = position.region ?? MKCoordinateRegion()
                 //dataModel.getRoute()

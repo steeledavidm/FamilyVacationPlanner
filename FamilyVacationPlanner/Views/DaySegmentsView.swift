@@ -107,6 +107,7 @@ struct DaySegmentsView: View {
                                                         if !contentForTabView.comprehensive {
                                                             Button {
                                                                 selectedLocation = segment.endLocation
+                                                                globalVars.locationIndex = -99 // set to -99 to identify this was set from an existing location.
                                                                 print(segment.endLocation?.name ?? "no segment selected")
                                                             } label: {
                                                                 if let image = segment.poiIconEnd.poiSymbol {
@@ -210,7 +211,7 @@ struct DaySegmentsView: View {
                                             if let endLocation = segmentIndex.endLocation {
                                                 let overNightStopSet = endLocation.overNightStop
                                                 if !overNightStopSet{
-                                                    globalVars.locationIndex = segmentIndex.segmentIndex
+                                                    globalVars.locationIndex = segmentIndex.segmentIndex + 1
                                                     globalVars.locationType = .pointOfInterest
                                                 } else {
                                                     globalVars.locationType = .endLocation
@@ -232,25 +233,24 @@ struct DaySegmentsView: View {
             .tabViewStyle(.page)
             .onAppear() {
                 print("Number of Locations: \(locations.count)")
+                viewModel.locations = Array(locations)
                 globalVars.selectedTabIndex = 0
                 globalVars.selectTrip(trip)
                 viewModel.setup(trip: trip)
                 Task {
-                    await viewModel.updateLocations(Array(locations))
-                    comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
+                    await viewModel.updateLocations()
+                }
+            }
+            .onChange(of: globalVars.locationUpdated) {
+                print("updating locations")
+                viewModel.locations = Array(locations)
+                Task {
+                    await viewModel.updateLocations()
                 }
             }
             .onChange(of: selectedTabIndex) {
                 print("selectedTabIndex changed to: \(selectedTabIndex)")
                 globalVars.selectedTabIndex = selectedTabIndex
-            }
-            .onChange(of: Array(locations)) { oldValue, newLocations in
-                Task {
-                    print("updating locations")
-                    await viewModel.updateLocations(Array(locations))
-                    comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
-                    print("locations updated")
-                }
             }
             .onChange(of: comprehensiveAndDailySegments) {
                 globalVars.comprehensiveAndDailySegments = comprehensiveAndDailySegments

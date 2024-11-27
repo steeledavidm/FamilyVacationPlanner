@@ -147,7 +147,9 @@ struct LocationSetUpView: View {
                 globalVars.showSearchLocationSheet = false
                 do {
                     try locationEditModel.save()
+                    print("Save try complete")
                     globalVars.locationUpdated.toggle()
+                    print("globalVars toggled")
                     dismiss()
                 } catch {
                     print("error saving location: \(error)")
@@ -165,7 +167,11 @@ struct LocationSetUpView: View {
                 locationType = LocationType.startLocation
             }
             globalVars.selectedDetent = .fraction(0.5)
-            locationIndex = globalVars.locationIndex
+            if globalVars.locationIndex != -99 {
+                locationIndex = globalVars.locationIndex
+            } else {
+                locationIndex = Int(locationEditModel.locationIndex)
+            }
             dayIndex = globalVars.selectedTabIndex - 1
             if let trip = globalVars.selectedTrip {
                 viewModel.getDates(trip: trip, dayIndex: dayIndex)

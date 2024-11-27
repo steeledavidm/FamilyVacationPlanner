@@ -18,7 +18,7 @@ class LocationEditModel {
     var trip: Trip?
     var name: String = ""
     var title: String = ""
-    var poiCategory: MKPointOfInterestCategory = .hotel
+    var poiCategory: MKPointOfInterestCategory = .airport
     var dateLeave: Date = Date()
     var dateArrive: Date = Date()
     var overNightStop: Bool = false
@@ -54,7 +54,7 @@ class LocationEditModel {
         self.name = location.name ?? ""
         self.title = location.title ?? ""
         self.subtitle = location.subtitle ?? ""
-        self.poiCategory = location.poiCategory ?? .hotel
+        self.poiCategory = location.poiCategory ?? .gasStation
         self.dateLeave = location.dateLeave ?? Date()
         self.dateArrive = location.dateArrive ?? Date()
         self.overNightStop = location.overNightStop
@@ -72,7 +72,7 @@ class LocationEditModel {
         self.subtitle = mapItem.item.placemark.subtitle ?? ""
         self.latitude = mapItem.item.placemark.coordinate.latitude
         self.longitude = mapItem.item.placemark.coordinate.longitude
-        self.poiCategory = mapItem.item.pointOfInterestCategory ?? .hotel
+        self.poiCategory = mapItem.item.pointOfInterestCategory ?? .beach
         
         // Initialize default values for new location
         self.dateArrive = trip.startDate ?? Date()
@@ -92,6 +92,8 @@ class LocationEditModel {
     }
     
     func save() throws {
+        
+        print("Save started")
         if location == nil {
             // Create new location
             location = Location(context: moc)
@@ -124,6 +126,7 @@ class LocationEditModel {
         
         if moc.hasChanges {
             try moc.save()
+            print("Save completed")
         }
     }
 }

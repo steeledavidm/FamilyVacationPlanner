@@ -24,9 +24,8 @@ extension DaySegmentsView {
             self.trip = trip
         }
         
-        func updateLocations(_ newLocations: [Location]) async {
+        func updateLocations() async {
             guard let trip = trip else { return }
-            locations = newLocations
             await setUpDailySegments(trip: trip)
             setUpTripComprehensiveView()
         }
