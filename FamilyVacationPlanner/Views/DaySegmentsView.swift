@@ -11,7 +11,6 @@ import SwiftUI
 struct DaySegmentsView: View {
     @Environment(GlobalVariables.self) private var globalVars
     @Environment(DataModel.self) private var dataModel
-    @State private var comprehensiveAndDailySegments: [DaySegments] = []
     @State private var selectedTabIndex: Int = 0
     var trip: Trip
     @State private var viewModel: ViewModel = ViewModel()
@@ -28,7 +27,7 @@ struct DaySegmentsView: View {
     
     var body: some View {
         TabView(selection: $selectedTabIndex) {
-            ForEach(comprehensiveAndDailySegments, id: \.id) { contentForTabView in
+            ForEach(viewModel.comprehensiveAndDailySegments, id: \.id) { contentForTabView in
                 VStack {
                     Section(header:
                         VStack {
@@ -180,9 +179,9 @@ struct DaySegmentsView: View {
                                 //.onDelete(perform: viewModel.removeSegment)
                                     .onMove { indices, newOffset in
                                         var startLocation: Location?
-                                        if var segments = comprehensiveAndDailySegments[selectedTabIndex].segments {
+                                        if var segments = viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments {
                                             // Get start location
-                                            if comprehensiveAndDailySegments[selectedTabIndex].startLocationSet {
+                                            if viewModel.comprehensiveAndDailySegments[selectedTabIndex].startLocationSet {
                                                 startLocation = segments[0].startLocation
                                             }
                                             
@@ -194,7 +193,7 @@ struct DaySegmentsView: View {
                                                 if let startLocation = startLocation {
                                                     segments[0].startLocation = startLocation
                                                 }
-                                                comprehensiveAndDailySegments[selectedTabIndex].segments = segments
+                                                viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments = segments
                                                 Task {
                                                     try? await viewModel.saveLocationIndex(segments: segments, dayIndex: selectedTabIndex, trip: trip)
                                                 }
@@ -224,7 +223,7 @@ struct DaySegmentsView: View {
                             }
                             }
                                 //.environment(\.editMode, .constant(.active))
-                                .animation(.easeInOut, value: comprehensiveAndDailySegments)
+                        .animation(.easeInOut, value: viewModel.comprehensiveAndDailySegments)
                         })
                     }
                     .tag(contentForTabView.dayIndex)
@@ -253,13 +252,6 @@ struct DaySegmentsView: View {
             .onChange(of: selectedTabIndex) {
                 print("selectedTabIndex changed to: \(selectedTabIndex)")
                 globalVars.selectedTabIndex = selectedTabIndex
-            }
-            .onChange(of: comprehensiveAndDailySegments) {
-                globalVars.comprehensiveAndDailySegments = comprehensiveAndDailySegments
-            }
-            .onChange(of: viewModel.comprehensiveAndDailySegments) {
-                print("in change of viewModel.comprehensiveAndDailySegments")
-                comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
             }
             .sheet(item: $selectedLocation) { location in
                 LocationSetUpView(location: location)
