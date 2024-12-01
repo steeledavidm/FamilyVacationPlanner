@@ -13,23 +13,20 @@ import SwiftUI
 extension ContentView {
     @Observable class ViewModel {
         var position: MapCameraPosition = .automatic
-        var singleLocation = false
-        var selectedTabIndex: Int
-        var selectedDetent: PresentationDetent
         
-        init(selectedTabIndex: Int, selectedDetent: PresentationDetent) {
-            self.selectedTabIndex = selectedTabIndex
-            self.selectedDetent = selectedDetent
-        }
-        
-        func updateMapCameraPosition(currentLocation: CLLocation, dataModel: DataModel, globalVars: GlobalVariables) {
+        func updateMapCameraPosition(dataModel: DataModel, globalVars: GlobalVariables) {
             print("Function 3")
+            let selectedDetent: PresentationDetent = globalVars.selectedDetent
+            let selectedTabIndex: Int = globalVars.selectedTabIndex
             let screenWidth = UIScreen.main.bounds.width
             let screenHeight = UIScreen.main.bounds.height
             var allMapInfo = dataModel.allMapInfo
+            let currentLocation = dataModel.currentLocation
             let currentLatitude: Double = currentLocation.coordinate.latitude
             let currentLongitude: Double = currentLocation.coordinate.longitude
             var plotCurrentLocation = false
+            var singleLocation: Bool = false
+            
             print(allMapInfo.count)
             if !globalVars.comprehensiveAndDailySegments.isEmpty {
                 print("I'm here")

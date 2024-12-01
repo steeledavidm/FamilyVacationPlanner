@@ -58,11 +58,10 @@ import SwiftUI
         }
     }
     
-    func getCurrentLocation(locationManager: LocationManager) async throws -> CLLocation {
+    func getCurrentLocation(locationManager: LocationManager) async throws {
         print("get current location")
         locationManager.checkLocationAuthorization()
         currentLocation = locationManager.lastKnownLocation ?? CLLocation()
-        return currentLocation
     }
     
     func getLocationPlacemark(location: CLLocation) async throws {

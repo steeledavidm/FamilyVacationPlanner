@@ -8,21 +8,19 @@
 
 import SwiftUI
 
-
-@available(iOS 18.0, *)
 @main
 struct FamilyVacationPlannerApp: App {
     let dataController = DataController.shared
-    @State private var globalVariables = GlobalVariables()
-    @State private var dataModel = DataModel()
-    @State private var locationManager = LocationManager()
-    @State private var locationEditModel = LocationEditModel()
+    private var globalVars = GlobalVariables()
+    private var dataModel = DataModel()
+    private var locationManager = LocationManager()
+    private var locationEditModel = LocationEditModel()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, dataController.container.viewContext)
-                .environment(globalVariables)
+                .environment(globalVars)
                 .environment(dataModel)
                 .environment(locationManager)
                 .environment(locationEditModel)
