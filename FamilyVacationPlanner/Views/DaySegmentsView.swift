@@ -240,6 +240,7 @@ struct DaySegmentsView: View {
                 viewModel.setup(trip: trip)
                 Task {
                     await viewModel.updateLocations()
+                    globalVars.comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
                 }
             }
             .onChange(of: globalVars.locationUpdated) {
@@ -247,6 +248,7 @@ struct DaySegmentsView: View {
                 viewModel.locations = Array(locations)
                 Task {
                     await viewModel.updateLocations()
+                    globalVars.comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
                 }
             }
             .onChange(of: selectedTabIndex) {

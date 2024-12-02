@@ -177,6 +177,9 @@ struct LocationSetUpView: View {
                 viewModel.getDates(trip: trip, dayIndex: dayIndex)
             }
             leaveDate = viewModel.dayFromDayIndex + TimeInterval(numberOfNights * 60 * 60 * 24)
+            if globalVars.locationType == .startLocation {
+                startLocation = true
+            }
         }
         .onChange (of: selectedPOI) {
             locationPOI = selectedPOI

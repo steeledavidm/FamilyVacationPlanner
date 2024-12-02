@@ -11,7 +11,7 @@ import MapKit
 import SwiftUI
 
 extension DaySegmentsView {
-    @Observable class ViewModel {
+    @Observable @MainActor class ViewModel {
         let moc: NSManagedObjectContext = DataController.shared.container.viewContext
         var locations: [Location] = []
         var trip: Trip?

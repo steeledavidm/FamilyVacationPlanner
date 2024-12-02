@@ -11,13 +11,12 @@ import MapKit
 import SwiftUI
 
 extension ContentView {
-    @Observable class ViewModel {
+    @Observable @MainActor class ViewModel {
         var position: MapCameraPosition = .automatic
         
         func updateMapCameraPosition(dataModel: DataModel, globalVars: GlobalVariables) {
             print("Function 3")
             let selectedDetent: PresentationDetent = globalVars.selectedDetent
-            let selectedTabIndex: Int = globalVars.selectedTabIndex
             let screenWidth = UIScreen.main.bounds.width
             let screenHeight = UIScreen.main.bounds.height
             var allMapInfo = dataModel.allMapInfo
@@ -30,7 +29,7 @@ extension ContentView {
             print(allMapInfo.count)
             if !globalVars.comprehensiveAndDailySegments.isEmpty {
                 print("I'm here")
-                if globalVars.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].startLocation == globalVars.comprehensiveAndDailySegments[selectedTabIndex].segments?[0].endLocation {
+                if globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].startLocation == globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].endLocation {
                     singleLocation = true
                     print("single location = true")
                 } else {
@@ -47,12 +46,27 @@ extension ContentView {
             }
             
             print("allMapInfo: \(String(describing: allMapInfo.count))")
-            
+            var seedAllMapInfo = false
             if allMapInfo.count == 0 {
                 plotCurrentLocation = true
-                allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude), endingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude)))
-                print(currentLocation)
+                //Check if start location is set and if so use that location else use currentLocation.
+                if !globalVars.comprehensiveAndDailySegments.isEmpty {
+                    if globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].startLocationSet {
+                        let startLocation = globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].startLocation
+                        allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: startLocation?.latitude ?? currentLatitude, longitude: startLocation?.longitude ?? currentLongitude), endingPoint: CLLocationCoordinate2D(latitude: startLocation?.latitude ?? currentLatitude, longitude: startLocation?.longitude ?? currentLongitude) ))
+                        print(currentLocation)
+                    } else {
+                        seedAllMapInfo = true
+                    }
+                } else {
+                    seedAllMapInfo = true
+                }
             }
+            if seedAllMapInfo {
+                allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude), endingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude)))
+            }
+            
+            
             // Calculate the bounding box for all annotations
             let latitudesEndPoint = allMapInfo.map { Double($0.endingPoint?.latitude ?? 0)}
             let latitudesStartPoint = allMapInfo.map { Double($0.startingPoint?.latitude ?? 0)}
@@ -161,35 +175,7 @@ extension ContentView {
                 lonDelta = span.value
             }
             position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: lon), span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)))
-            
-            
-            
-            //            var positionSetter = 0
-            //            if selectedDetent == .fraction(0.1)  {
-            //                position = .automatic
-            //                positionSetter = 1
-            //                if singleLocation {
-            //                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
-            //                        positionSetter = 2
-            //                    }
-            //                } else {
-            //                    position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: adjustedSpanLat, longitudeDelta: adjustedSpanLon)))
-            //                    positionSetter = 3
-            //                    if singleLocation {
-            //                        position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
-            //                        positionSetter = 4
-            //                    }
-            //                }
-            //            if plotCurrentLocation || allMapInfo.count == 1 && singleLocation {
-            //                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: adjustedCenterLat - 0.1/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
-            //                positionSetter = 5
-            //                }
-            //            if globalVars.showSearchLocationSheet && dataModel.plotRecentItems {
-            //                position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLat - 0.005/2, longitude: centerLon), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)))
-            //                positionSetter = 6
-            //            }
-            
-            print(position)
+
         }
     }
 }

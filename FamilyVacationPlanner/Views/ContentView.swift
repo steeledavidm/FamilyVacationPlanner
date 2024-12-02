@@ -97,8 +97,6 @@ struct ContentView: View {
                 Task {
                     try await dataModel.getCurrentLocation(locationManager: locationManager)
                     try await dataModel.getLocationPlacemark(location: dataModel.currentLocation)
-                    viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                    print(dataModel.locationPlacemark?.thoroughfare ?? "no street")
                 }
             }
             .onChange(of: selectedDetent) {
@@ -110,21 +108,30 @@ struct ContentView: View {
                 print("detent Changed")
             }
             .onChange(of: globalVars.selectedTabIndex) {
-                print("tab Changed")
-                dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
-                viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
+                Task {
+                    print("tab Changed")
+                    selectedMarker = nil
+                    dataModel.results = []
+                    dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
+                    viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+                    dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
+                }
             }
             .onChange(of: globalVars.showSearchLocationSheet) {
                 showSearchLocationSheet = globalVars.showSearchLocationSheet
-                selectedMarker = nil
+                if globalVars.showSearchLocationSheet == false {
+                    selectedMarker = nil
+                    dataModel.results = []
+                }
                 print("showSearchLocationSheet: \(globalVars.showSearchLocationSheet)")
             }
             .onChange(of: globalVars.comprehensiveAndDailySegments) {
-                print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
-                dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
-                viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
+                Task {
+                    print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
+                    dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
+                    viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+                    dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
+                }
             }
             .onChange(of: dataModel.results) {
                 print("resultscount \(dataModel.results.count)")
@@ -144,7 +151,7 @@ struct ContentView: View {
                     globalVars.markerSelected = false
                 }
                 print("selectedLocationchanged: \(globalVars.markerSelected)")
-                
+                //selectedMarker = nil
             }
             .onChange(of: viewModel.position) {
                 print("position Changed")

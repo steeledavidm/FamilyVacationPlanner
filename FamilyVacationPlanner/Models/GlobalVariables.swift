@@ -9,7 +9,7 @@ import Foundation
 import MapKit
 import SwiftUI
 
-@Observable
+@Observable @MainActor
 
 class GlobalVariables {
     var selectedTrip: Trip?

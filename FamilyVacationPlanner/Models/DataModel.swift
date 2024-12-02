@@ -10,7 +10,7 @@ import Foundation
 import MapKit
 import SwiftUI
 
-@Observable class DataModel {
+@Observable @MainActor class DataModel {
     
     let moc: NSManagedObjectContext = DataController.shared.container.viewContext
     var locations: [Location] = []
@@ -55,6 +55,13 @@ import SwiftUI
                 let route = segment.polyline
                 allMapInfo.append(MapInfo(markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation, startIcon: startIcon, endIcon: endIcon, route: route))
             }
+//            if !segment.segmentComplete && segment.startLocation != nil && !segment.placeholder  {
+//                let segmentStart = segment.startLocation ?? Location(context: moc)
+//                let startLocation = CLLocationCoordinate2D(latitude: segmentStart.latitude, longitude: segmentStart.longitude)
+//                let markerLabelStart = segmentStart.name ?? "Unknown Name"
+//                let startIcon = LocationIcon(poiCategory: segment.startLocation?.poiCategory)
+//                allMapInfo.append(MapInfo(markerLabelStart: markerLabelStart, markerLabelEnd: "", startingPoint: startLocation, startIcon: startIcon))
+//            }
         }
     }
     

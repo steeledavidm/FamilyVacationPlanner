@@ -91,7 +91,7 @@ struct TripSetUpView: View {
                     EditTripView(editMode: $editMode, newTrip: $newTrip, path: $path, trip: trip)
                 } else {
                     DaySegmentsView(trip: trip)
-                        .toolbar(.hidden, for: .navigationBar)
+                        //.toolbar(.hidden, for: .navigationBar)
                 }
             })
         }

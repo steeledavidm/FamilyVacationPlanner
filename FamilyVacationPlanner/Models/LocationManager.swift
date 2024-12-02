@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-@Observable 
+@Observable
 class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     
     var lastKnownLocation: CLLocation?

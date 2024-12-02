@@ -122,7 +122,7 @@ struct LocationIcon: Identifiable, Hashable {
             return "building.2.fill"
             
         default:
-            return "mappin.circle.fill"
+            return "arrow.up.circle.fill"
         }
     }
     var poiColor: Color {
@@ -172,7 +172,7 @@ struct LocationIcon: Identifiable, Hashable {
             return .gray
             
         default:
-            return .secondary
+            return .green
         }
     }
     // Readable name for the category

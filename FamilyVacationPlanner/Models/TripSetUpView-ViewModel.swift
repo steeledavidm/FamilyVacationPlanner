@@ -11,7 +11,7 @@ import Foundation
 extension TripSetUpView {
 
 
-    @Observable class ViewModel {
+    @Observable @MainActor class ViewModel {
         let moc: NSManagedObjectContext = DataController.shared.container.viewContext
         
         func generateMockData() {

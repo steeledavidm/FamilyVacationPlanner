@@ -10,7 +10,7 @@ import Foundation
 import MapKit
 import SwiftUI
 
-@Observable
+@Observable @MainActor
 class LocationEditModel {
     let moc: NSManagedObjectContext
     var location: Location?

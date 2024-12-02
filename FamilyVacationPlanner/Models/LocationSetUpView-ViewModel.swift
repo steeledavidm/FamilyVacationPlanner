@@ -10,7 +10,7 @@ import Foundation
 
 extension LocationSetUpView {
 
-    @Observable class ViewModel {
+    @Observable @MainActor class ViewModel {
         var dayFromDayIndex: Date = Date()
         var numberOfNightsLeft: Int = 0
 
