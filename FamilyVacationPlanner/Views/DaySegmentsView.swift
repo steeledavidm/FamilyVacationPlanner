@@ -17,6 +17,7 @@ struct DaySegmentsView: View {
     @State private var states = [true, true, false, true, false]
     @State private var selectedLocation: Location?
     
+    
     @FetchRequest(sortDescriptors: [SortDescriptor(\.dateLeave)])
         var locations: FetchedResults<Location>
     

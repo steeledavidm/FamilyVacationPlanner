@@ -149,26 +149,26 @@ extension ContentView {
             var latDelta: Double = 0
             var lonDelta: Double = 0
             
-            if selectedDetent == .fraction(0.1) && !singleLocation {
+            if selectedDetent == .fraction(0.12) && !singleLocation {
                 position = .automatic
                 return
             }
             
-            if selectedDetent == .fraction(0.1) && singleLocation {
+            if selectedDetent == .fraction(0.12) && singleLocation {
                 lat = centerLat
                 lon = centerLon
                 latDelta = span.value
                 lonDelta = span.value
             }
             
-            if selectedDetent != .fraction(0.1) && !singleLocation {
+            if selectedDetent != .fraction(0.12) && !singleLocation {
                 lat = adjustedCenterLat
                 lon = centerLon
                 latDelta = adjustedSpanLat
                 lonDelta = adjustedSpanLon
             }
             
-            if selectedDetent != .fraction(0.1) && singleLocation {
+            if selectedDetent != .fraction(0.12) && singleLocation {
                 lat = centerLat - centerLatAdjustmentForDetent
                 lon = centerLon
                 latDelta = span.value
