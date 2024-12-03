@@ -163,8 +163,24 @@ struct ContentView: View {
             TripSetUpView()
                 .interactiveDismissDisabled()
             // Bug if the detent is < 0.12 that cause the the tabview to reset to tabSelected = 0
-                .presentationDetents([.fraction(0.12), .fraction(0.5), .large], selection: $selectedDetent)
+                .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $selectedDetent)
                 .presentationBackgroundInteraction(.enabled)
+                .sheet(isPresented: $showSearchLocationSheet) {
+                    SearchDestinationView()
+                        .presentationBackgroundInteraction(.enabled)
+                        .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $selectedDetent)
+                        .onDisappear(perform: {
+                            globalVars.showSearchLocationSheet = false
+                        })
+                        .sheet(item: $selectedLocation) { location in
+                            if let trip = globalVars.selectedTrip {
+                                LocationSetUpView(annotatedMapItem: location, trip: trip)
+                                    .presentationBackgroundInteraction(.enabled)
+                                    .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large],
+                                                       selection: $locationSetupDetent)
+                            }
+                        }
+                }
         }
     }
 }
