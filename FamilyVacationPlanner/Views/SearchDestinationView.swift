@@ -25,11 +25,12 @@ struct SearchDestinationView : View {
     @State private var showLocationSetUpView = false
     @State private var searchText: String = ""
     @State private var currentLocation: CLPlacemark?
-    @State private var recentList: [Location] = []
+    //@State private var recentList: [Location] = []
     @State private var overNightStop: Bool = false
     @State private var startLocation: Bool = false
     @State private var locationType: LocationType = .startLocation
     @State private var daySegments: [Segment]?
+    @State private var selectedLocation: Location?
     
     var body: some View {
         NavigationStack {
@@ -71,7 +72,7 @@ struct SearchDestinationView : View {
                     }
                     .background(backgroundColor)
                 } else {
-                    List(recentList) { recentLocation in
+                    List(dataModel.recentList) { recentLocation in
                         VStack(alignment: .leading) {
                             Text(recentLocation.name ?? "")
                                 .font(.title3)
@@ -79,7 +80,7 @@ struct SearchDestinationView : View {
                         }
                         .onTapGesture {
                             if recentLocation.name == "Current Location" {
-                                
+                                selectedLocation = recentLocation
                             }
                             else {
                                 var location = Location(context: dataModel.moc)
@@ -102,9 +103,15 @@ struct SearchDestinationView : View {
                 }
             }
         }
+        .onDisappear() {
+            print("onDisappear")
+            globalVars.displaySearchedLocations = false
+        }
         .onAppear() {
+            //recentList = dataModel.recentList
             locationType = globalVars.locationType ?? .startLocation
             dataModel.plotRecentItems = true
+            globalVars.displaySearchedLocations = true
             
             switch locationType {
             case .startLocation:
@@ -129,12 +136,15 @@ struct SearchDestinationView : View {
             
             Task {
                 guard let trip = globalVars.selectedTrip else { return }
-                recentList = try await dataModel.populateRecentList(trip: trip)
+                try await dataModel.populateRecentList(trip: trip)
                 var annotationForMap: [AnnotationItem] = []
-                for item in recentList {
+                for item in dataModel.recentList {
                     annotationForMap.append(AnnotationItem(name: item.name ?? "", title: item.title ?? "", subtitle: item.subtitle ?? "", latitude: item.latitude, longitude: item.longitude))
                 }
             }
+        }
+        .sheet(item: $selectedLocation) { location in
+            LocationSetUpView(location: location)
         }
     }
 }

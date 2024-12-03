@@ -87,7 +87,7 @@ import SwiftUI
         }
     }
     
-    func populateRecentList(trip: Trip) async throws -> [Location] {
+    func populateRecentList(trip: Trip) async throws {
         print("populate Recent List")
         recentList = []
         let request: NSFetchRequest<Location> = Location.fetchRequest()
@@ -96,37 +96,39 @@ import SwiftUI
             locations = try moc.fetch(request)
         } catch {
         }
-        
-        let currentLoc = Location(context: moc)
-        currentLoc.name = "Current Location"
-        currentLoc.title = "\(locationPlacemark?.name ?? ""), \(locationPlacemark?.locality ?? ""), \(locationPlacemark?.administrativeArea ?? "")  \(locationPlacemark?.postalCode ?? "") \(locationPlacemark?.country ?? "")"
-        currentLoc.latitude = locationPlacemark?.location?.coordinate.latitude ?? 0.0
-        currentLoc.longitude = locationPlacemark?.location?.coordinate.longitude ?? 0.0
-
-        recentList.append(currentLoc)
-        
-        for location in locations {
-            if location.overNightStop {
-                recentList.append(location)
+        Task {
+            try await getLocationPlacemark(location: currentLocation)
+            let currentLoc = Location(context: moc)
+            currentLoc.name = "Current Location"
+            currentLoc.title = "\(locationPlacemark?.name ?? ""), \(locationPlacemark?.locality ?? ""), \(locationPlacemark?.administrativeArea ?? "")  \(locationPlacemark?.postalCode ?? "") \(locationPlacemark?.country ?? "")"
+            currentLoc.latitude = locationPlacemark?.location?.coordinate.latitude ?? 0.0
+            currentLoc.longitude = locationPlacemark?.location?.coordinate.longitude ?? 0.0
+            
+            recentList.append(currentLoc)
+            
+            for location in locations {
+                if location.overNightStop {
+                    recentList.append(location)
+                }
+            }
+            for location in locations {
+                if location.startLocation {
+                    recentList.append(location)
+                }
+            }
+            
+            results = []
+            for item in recentList {
+                try await getLocationPlacemark(location: CLLocation(latitude: item.latitude, longitude: item.longitude))
+                if let placemark = locationPlacemark {
+                    let mapItem: MKMapItem = MKMapItem(placemark: placemark)
+                    mapItem.name = item.name
+                    results.append(AnnotatedMapItem(item: mapItem))
+                    print("results: \(results.count)")
+                }
             }
         }
-        for location in locations {
-            if location.startLocation {
-                recentList.append(location)
-            }
-        }
-        results = []
-        for item in recentList {
-            try await getLocationPlacemark(location: CLLocation(latitude: item.latitude, longitude: item.longitude))
-            if let placemark = locationPlacemark {
-                let mapItem: MKMapItem = MKMapItem(placemark: placemark)
-                mapItem.name = item.name
-                results.append(AnnotatedMapItem(item: mapItem))
-                print("results: \(results.count)")
-            }
-        }
-            return recentList
-        }
+    }
     
     func getPlace(from address: AddressResult) async throws {
         let request = MKLocalSearch.Request()

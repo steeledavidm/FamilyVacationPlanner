@@ -18,7 +18,7 @@ struct ContentView: View {
     
     @State private var currentLocationPlacemark: CLPlacemark?
     @State private var locationFromMap: AnnotationItem?
-    @State private var locationSetupDetent: PresentationDetent = .fraction(0.5)
+    //@State private var locationSetupDetent: PresentationDetent = .fraction(0.5)
     @State private var selectedDetent: PresentationDetent = .fraction(0.5)
     @State private var selectedLocation: AnnotatedMapItem?
     @State private var selectedMarker: AnnotatedMapItem?
@@ -61,7 +61,7 @@ struct ContentView: View {
                 
                 .onTapGesture(perform: { screenposition in
                     print("markerSelected: \(globalVars.markerSelected)")
-                    //if !globalVars.displaySearchedLocations {
+                    if globalVars.displaySearchedLocations {
                         if let coordinate = proxy.convert(screenposition, from: .local) {
                             print("TapGesture")
                             let latitude = coordinate.latitude
@@ -87,16 +87,15 @@ struct ContentView: View {
                             dataModel.plotRecentItems = true
                             viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
                             globalVars.markerSelected = false
-                            globalVars.locationFromMap = nil
                         }
-                    //}
+                    }
                 })
             }
             .onAppear {
                 print("on Appear")
                 Task {
                     try await dataModel.getCurrentLocation(locationManager: locationManager)
-                    try await dataModel.getLocationPlacemark(location: dataModel.currentLocation)
+                    print(dataModel.currentLocation)
                 }
             }
             .onChange(of: selectedDetent) {
@@ -177,7 +176,7 @@ struct ContentView: View {
                                 LocationSetUpView(annotatedMapItem: location, trip: trip)
                                     .presentationBackgroundInteraction(.enabled)
                                     .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large],
-                                                       selection: $locationSetupDetent)
+                                                         selection: $selectedDetent)
                             }
                         }
                 }

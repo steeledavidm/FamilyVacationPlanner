@@ -116,6 +116,8 @@ struct LocationSetUpView: View {
                 guard let trip = globalVars.selectedTrip else { return }
                 locationEditModel.name = locationName
                 locationEditModel.title = address
+                globalVars.locationFromMap = nil
+                globalVars.selectedDetent = .fraction(0.5)
                 if let poiCategory = locationPOI?.poiCategory {
                     locationEditModel.poiCategory = poiCategory
                 }

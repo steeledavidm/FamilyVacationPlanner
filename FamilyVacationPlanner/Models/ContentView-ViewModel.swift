@@ -20,29 +20,38 @@ extension ContentView {
             let screenWidth = UIScreen.main.bounds.width
             let screenHeight = UIScreen.main.bounds.height
             var allMapInfo = dataModel.allMapInfo
+            let locationFromMap = globalVars.locationFromMap
+            let locationFromMapLat: Double = locationFromMap?.coordinate.latitude ?? 0.0
+            let locationFromMapLon: Double = locationFromMap?.coordinate.longitude ?? 0.0
             let currentLocation = dataModel.currentLocation
-            let currentLatitude: Double = currentLocation.coordinate.latitude
-            let currentLongitude: Double = currentLocation.coordinate.longitude
+            let currentLocationLat: Double = currentLocation.coordinate.latitude
+            let currentLocationLon: Double = currentLocation.coordinate.longitude
             var plotCurrentLocation = false
             var singleLocation: Bool = false
             
             print(allMapInfo.count)
-            if !globalVars.comprehensiveAndDailySegments.isEmpty {
-                print("I'm here")
-                if globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].startLocation == globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].endLocation {
-                    singleLocation = true
-                    print("single location = true")
-                } else {
-                    singleLocation = false
-                    print("single location = false")
+            // force tab index 0 (comprehensive view) to be treated as multiple locations
+            if globalVars.selectedTabIndex == 0 {
+                singleLocation = false
+            } else {
+                if !globalVars.comprehensiveAndDailySegments.isEmpty {
+                    print("I'm here")
+                    if globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].startLocation == globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].endLocation {
+                        singleLocation = true
+                        print("single location = true")
+                    } else {
+                        singleLocation = false
+                        print("single location = false")
+                    }
                 }
             }
             
-            if globalVars.locationFromMap != nil {
+            if locationFromMap != nil {
                 print("filling MapInfo")
-                let locationfromMap = globalVars.locationFromMap
+                plotCurrentLocation = true
+                singleLocation = true
                 allMapInfo = []
-                allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0), endingPoint: CLLocationCoordinate2D(latitude: locationfromMap?.latitude ?? 0.0 , longitude: locationfromMap?.longitude ?? 0.0)))
+                allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: locationFromMapLat , longitude: locationFromMapLon), endingPoint: CLLocationCoordinate2D(latitude: locationFromMapLat, longitude: locationFromMapLon)))
             }
             
             print("allMapInfo: \(String(describing: allMapInfo.count))")
@@ -53,8 +62,7 @@ extension ContentView {
                 if !globalVars.comprehensiveAndDailySegments.isEmpty {
                     if globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].startLocationSet {
                         let startLocation = globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].startLocation
-                        allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: startLocation?.latitude ?? currentLatitude, longitude: startLocation?.longitude ?? currentLongitude), endingPoint: CLLocationCoordinate2D(latitude: startLocation?.latitude ?? currentLatitude, longitude: startLocation?.longitude ?? currentLongitude) ))
-                        print(currentLocation)
+                        allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: startLocation?.latitude ?? 0.0, longitude: startLocation?.longitude ?? 0.0), endingPoint: CLLocationCoordinate2D(latitude: startLocation?.latitude ?? 0.0, longitude: startLocation?.longitude ?? 0.0) ))
                     } else {
                         seedAllMapInfo = true
                     }
@@ -63,7 +71,7 @@ extension ContentView {
                 }
             }
             if seedAllMapInfo {
-                allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude), endingPoint: CLLocationCoordinate2D(latitude: currentLatitude, longitude: currentLongitude)))
+                allMapInfo.append(MapInfo(markerLabelStart: "", markerLabelEnd: "", startingPoint: CLLocationCoordinate2D(latitude: currentLocationLat, longitude: currentLocationLon), endingPoint: CLLocationCoordinate2D(latitude: currentLocationLat, longitude: currentLocationLon)))
             }
             
             
@@ -100,17 +108,19 @@ extension ContentView {
             }
             
             var adjustedCenterLat = centerLat
-            var adjustedSpanLon = spanLon * 1.5
-            var adjustedSpanLat = spanLat * 1.5
+            var adjustedSpanLon = spanLon
+            var adjustedSpanLat = spanLat
             
             if spanLon >= spanLat {
                 let screenSpanLat = spanLon * screenHeight/screenWidth
-                adjustedCenterLat = centerLat - screenSpanLat / 2 * 0.6
+                adjustedCenterLat = centerLat - (screenSpanLat / 2) * 0.5
+                adjustedSpanLon = spanLon * 1.5
+                adjustedSpanLat = spanLat * 1.5
             }
             if spanLon < spanLat {
-                adjustedCenterLat = centerLat - spanLat / 1.5
-                adjustedSpanLon = spanLon / 0.4
-                adjustedSpanLat = spanLat / 0.4
+                adjustedCenterLat = centerLat - (spanLat / 2)
+                adjustedSpanLon = spanLon / 0.5
+                adjustedSpanLat = spanLat / 0.5
             }
             print("selectedDetent: \(selectedDetent)")
             print("singleLocation: \(singleLocation)")
@@ -120,7 +130,7 @@ extension ContentView {
             print("plotRecentItems: \(dataModel.plotRecentItems)")
             print("marker Selected: \(globalVars.markerSelected)")
             
-            if plotCurrentLocation  || allMapInfo.count == 0 || singleLocation {
+            if plotCurrentLocation || singleLocation {
                 singleLocation = true
             } else {
                 singleLocation = false
@@ -150,8 +160,13 @@ extension ContentView {
             var lonDelta: Double = 0
             
             if selectedDetent == .fraction(0.12) && !singleLocation {
-                position = .automatic
-                return
+                lat = centerLat
+                lon = centerLon
+                latDelta = adjustedSpanLat
+                lonDelta = adjustedSpanLon
+                
+                //position = .automatic
+                //return
             }
             
             if selectedDetent == .fraction(0.12) && singleLocation {
@@ -175,7 +190,7 @@ extension ContentView {
                 lonDelta = span.value
             }
             position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: lon), span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)))
-
+            print(position)
         }
     }
 }

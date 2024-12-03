@@ -239,9 +239,13 @@ struct DaySegmentsView: View {
                 }
                 globalVars.selectTrip(trip)
                 viewModel.setup(trip: trip)
+                globalVars.selectedTabIndex = selectedTabIndex
                 Task {
                     await viewModel.updateLocations()
                     globalVars.comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
+                    if viewModel.comprehensiveAndDailySegments.count == 2 {
+                        selectedTabIndex = 1
+                    }
                 }
             }
             .onChange(of: globalVars.locationUpdated) {
