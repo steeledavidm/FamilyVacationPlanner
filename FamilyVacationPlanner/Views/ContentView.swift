@@ -28,6 +28,10 @@ struct ContentView: View {
     @State private var showSearchLocationSheet = false
     @State private var viewModel: ViewModel = ViewModel()
     
+    var lineWidth: CGFloat = 5
+    var lineColor: Color = .blue
+    var outlineColor: Color = .black
+    var outlineWidth: CGFloat = 1
     
     var body: some View {
         ZStack {
@@ -47,7 +51,23 @@ struct ContentView: View {
                             .tint(mapInfo.endIcon?.poiColor ?? .red)
                         }
                         MapPolyline(mapInfo.route ?? MKPolyline())
-                            .stroke(.blue, lineWidth: 5)
+                            .stroke(
+                                outlineColor,
+                                style: StrokeStyle(
+                                    lineWidth: lineWidth + (outlineWidth * 2),
+                                    lineCap: .round,
+                                    lineJoin: .round
+                                )
+                            )
+                        MapPolyline(mapInfo.route ?? MKPolyline())
+                            .stroke(
+                                lineColor,
+                                style: StrokeStyle(
+                                    lineWidth: lineWidth,
+                                    lineCap: .round,
+                                    lineJoin: .round
+                                )
+                            )
                     }
                     ForEach(searchResults, id: \.self) { item in
                         Marker(item: item.item)
@@ -58,7 +78,6 @@ struct ContentView: View {
                 .animation(.easeInOut(duration: 1), value: selectedDetent)
                 .animation(.easeInOut(duration: 1), value: viewModel.position)
                 .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
-                
                 .onTapGesture(perform: { screenposition in
                     print("markerSelected: \(globalVars.markerSelected)")
                     if globalVars.displaySearchedLocations {
