@@ -35,6 +35,11 @@
 		556F58302C7111E600234FED /* BackLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556F582F2C7111E600234FED /* BackLog.swift */; };
 		557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557395452C7A24E70006DEE5 /* LocationManager.swift */; };
 		557395482C7A27D30006DEE5 /* RecentLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557395472C7A27D30006DEE5 /* RecentLocations.swift */; };
+		557A09792D02034D0079A0B2 /* CachedRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A09782D02034D0079A0B2 /* CachedRoute.swift */; };
+		557A097B2D02042F0079A0B2 /* RoutePoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A097A2D02042F0079A0B2 /* RoutePoint.swift */; };
+		557A097D2D0205080079A0B2 /* RouteStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A097C2D0205080079A0B2 /* RouteStep.swift */; };
+		557A097F2D02179A0079A0B2 /* RouteCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A097E2D02179A0079A0B2 /* RouteCacheManager.swift */; };
+		557A09812D023B560079A0B2 /* RouteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A09802D023B560079A0B2 /* RouteManager.swift */; };
 		55B5FC152C4B1AE80087D31B /* DaySegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B5FC142C4B1AE80087D31B /* DaySegments.swift */; };
 		55C5895D2CEBEC6F0026B20E /* LocationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C5895C2CEBEC6F0026B20E /* LocationExtension.swift */; };
 		55E6509C2CECD462004B7F26 /* LocationIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E6509B2CECD462004B7F26 /* LocationIcon.swift */; };
@@ -78,6 +83,11 @@
 		556F582F2C7111E600234FED /* BackLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackLog.swift; sourceTree = "<group>"; };
 		557395452C7A24E70006DEE5 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		557395472C7A27D30006DEE5 /* RecentLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentLocations.swift; sourceTree = "<group>"; };
+		557A09782D02034D0079A0B2 /* CachedRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedRoute.swift; sourceTree = "<group>"; };
+		557A097A2D02042F0079A0B2 /* RoutePoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutePoint.swift; sourceTree = "<group>"; };
+		557A097C2D0205080079A0B2 /* RouteStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteStep.swift; sourceTree = "<group>"; };
+		557A097E2D02179A0079A0B2 /* RouteCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteCacheManager.swift; sourceTree = "<group>"; };
+		557A09802D023B560079A0B2 /* RouteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteManager.swift; sourceTree = "<group>"; };
 		55B5FC142C4B1AE80087D31B /* DaySegments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaySegments.swift; sourceTree = "<group>"; };
 		55C5895C2CEBEC6F0026B20E /* LocationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationExtension.swift; sourceTree = "<group>"; };
 		55E6509B2CECD462004B7F26 /* LocationIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationIcon.swift; sourceTree = "<group>"; };
@@ -145,6 +155,7 @@
 				5558E7D82C25DEFE00CE6991 /* FamilyVacationPlanner.xcdatamodeld */,
 				5558E7DB2C25E02800CE6991 /* DataController.swift */,
 				55C5895C2CEBEC6F0026B20E /* LocationExtension.swift */,
+				557A097E2D02179A0079A0B2 /* RouteCacheManager.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -163,6 +174,9 @@
 				55651C7C2C45EFD10042D020 /* Segment.swift */,
 				55E6509B2CECD462004B7F26 /* LocationIcon.swift */,
 				555AAE4C2CEE662E0097135E /* LocationCategoryGroup.swift */,
+				557A09782D02034D0079A0B2 /* CachedRoute.swift */,
+				557A097C2D0205080079A0B2 /* RouteStep.swift */,
+				557A097A2D02042F0079A0B2 /* RoutePoint.swift */,
 			);
 			path = Structures;
 			sourceTree = "<group>";
@@ -195,6 +209,7 @@
 				557395452C7A24E70006DEE5 /* LocationManager.swift */,
 				5558E7A22C2486CF00CE6991 /* SearchModel.swift */,
 				555AAE502CF054350097135E /* LocationEditModel.swift */,
+				557A09802D023B560079A0B2 /* RouteManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -269,14 +284,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				557A097F2D02179A0079A0B2 /* RouteCacheManager.swift in Sources */,
 				555AAE4D2CEE662E0097135E /* LocationCategoryGroup.swift in Sources */,
 				553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */,
 				55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */,
 				557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */,
 				55510B822C87897C000CA28D /* DaySegmentsView.swift in Sources */,
+				557A09812D023B560079A0B2 /* RouteManager.swift in Sources */,
 				55F69FF72C7E509300CAF2DB /* ContentView-ViewModel.swift in Sources */,
 				5558E7A32C2486CF00CE6991 /* SearchModel.swift in Sources */,
 				5558E7AF2C24968A00CE6991 /* AnnotationItem.swift in Sources */,
+				557A097B2D02042F0079A0B2 /* RoutePoint.swift in Sources */,
 				55FD9B3B2C2F30BD000EB3FA /* SectionHeaderView.swift in Sources */,
 				550B8FD12C98C96A008648DC /* DaySegmentsView-ViewModel.swift in Sources */,
 				550B8FF12CA6F3F4008648DC /* LocationSetUpView-ViewModel.swift in Sources */,
@@ -299,9 +317,11 @@
 				55651C7D2C45EFD10042D020 /* Segment.swift in Sources */,
 				556F58302C7111E600234FED /* BackLog.swift in Sources */,
 				55F69FF92C7E55D000CAF2DB /* FamilyVacationPlanner.xcdatamodeld in Sources */,
+				557A097D2D0205080079A0B2 /* RouteStep.swift in Sources */,
 				551A58382C2DAAA000E6DA03 /* EditTripView.swift in Sources */,
 				5558E7A52C248E3200CE6991 /* ClearButton.swift in Sources */,
 				555014752C3C6EDA003DED29 /* MapInfo.swift in Sources */,
+				557A09792D02034D0079A0B2 /* CachedRoute.swift in Sources */,
 				55510B842C8B898C000CA28D /* LocationSetUpView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

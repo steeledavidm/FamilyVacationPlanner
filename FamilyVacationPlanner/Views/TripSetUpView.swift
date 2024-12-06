@@ -15,10 +15,9 @@ struct TripSetUpView: View {
 
     @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVars
-    
+    let routeManager: RouteManager = RouteManager()
     @FetchRequest(sortDescriptors: [SortDescriptor(\.tripName)])
     var trips: FetchedResults<Trip>
-    
     @State private var dateArrive: Date = Date()
     @State private var dateLeave: Date = Date()
     @State private var editMode: Bool = false
@@ -101,6 +100,8 @@ struct TripSetUpView: View {
         for index in offsets {
             let trip = trips[index]
             dataModel.moc.delete(trip)
+            // Remove all route stored locally in cache
+            routeManager.cleanCache(tripID: trip, activeSegments: [], tripDeleted: true)
         }
         do {
             try dataModel.moc.save()

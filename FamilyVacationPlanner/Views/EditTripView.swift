@@ -96,6 +96,9 @@ struct EditTripView: View {
                     trip.startDate = startDate
                     trip.endDate = endDate
                     trip.oneWay = oneWayToggle
+                    if trip.id == nil {
+                        trip.id = UUID()
+                    }
                     try? dataModel.moc.save()
                     editMode = false
                     newTrip = false

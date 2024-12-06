@@ -18,6 +18,7 @@ struct Segment: Identifiable, Hashable {
     var distance: CLLocationDistance?
     var time: TimeInterval?
     var polyline: MKPolyline?
+    var tripID: UUID
     
     var segmentComplete: Bool {
         if startLocation != nil && endLocation != nil {
@@ -32,6 +33,14 @@ struct Segment: Identifiable, Hashable {
     }
     var poiIconEnd: LocationIcon {
         LocationIcon(poiCategory: endLocation?.poiCategory)
+    }
+    var segmentRouteIdentifier: Double {
+        if let startLocation = startLocation {
+            if let endLocation = endLocation {
+                return startLocation.latitude + startLocation.longitude + endLocation.latitude + endLocation.longitude
+            }
+        }
+        return 0
     }
 
 }
