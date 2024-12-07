@@ -56,6 +56,7 @@ extension DataController {
         mockTrip1.endDate = dateFormatter.date(from: "Optional(2024-11-18 04:58:00 +0000)")
         mockTrip1.tripName = "Test"
         mockTrip1.oneWay = false
+        mockTrip1.id = UUID()
 
         let mockLocation10 = Location(context: moc)
         mockLocation10.dateArrive = dateFormatter.date(from: "Optional(2024-11-18 04:58:00 +0000)")
@@ -138,7 +139,7 @@ extension DataController {
         location2.longitude = -100.0
         location2.locationIndex = 99
         location2.numberOfNights = 2
-        location1.categoryRawValue = "swimming"
+        location2.categoryRawValue = "swimming"
         
         let location3 = Location(context: moc)
         location3.name = "Day trip"
@@ -150,7 +151,8 @@ extension DataController {
         location3.latitude = 30.0
         location3.longitude = -100.0
         location3.locationIndex = 1
-        location2.numberOfNights = 0
+        location3.numberOfNights = 0
+        location2.categoryRawValue = "park"
         
         let trip1 = Trip(context: moc)
         trip1.tripName = "Trip 1"
@@ -158,6 +160,7 @@ extension DataController {
         trip1.startDate = Date()
         trip1.endDate = Date() + 86400 * 2 // 2 days in the future
         trip1.location = [location1, location2, location3]
+        trip1.id = UUID()
         
         let trip2 = Trip(context: moc)
         trip2.tripName = "Trip 2"
@@ -165,6 +168,7 @@ extension DataController {
         trip2.startDate = Date()  + 86400 * 10 // 10 days in the future
         trip2.endDate = Date() + 86400 * 20 // 20 days in the future
         trip2.location = [location1, location2, location3]
+        trip2.id = UUID()
         
 //        let mockTrip0 = Trip(context: moc)
 //        mockTrip0.startDate = dateFormatter.date(from: "Optional(2024-07-19 17:09:00 +0000)")
