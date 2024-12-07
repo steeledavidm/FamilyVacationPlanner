@@ -13,10 +13,14 @@ class RouteManager {
     private let cacheManager = RouteCacheManager.shared
     
     func fetchAndCacheRoute(segment: Segment) async -> CachedRoute? {
-        // Check cache first
-        if cacheManager.doesCacheExist(for: segment.segmentRouteIdentifier) {
+        
+        // Create folder for trip if needed
+        cacheManager.createTripFolder(trip: segment.tripID)
+        // Check cache
+        if cacheManager.doesCacheExist(for: segment) {
+            print("Cache exists for \(segment.tripID.hashValue).\(segment.segmentRouteIdentifier)")
             do {
-                let cachedRoute = try cacheManager.loadCachedRoute(withIdentifier: segment.segmentRouteIdentifier)
+                let cachedRoute = try cacheManager.loadCachedRoute(withIdentifier: segment)
                 // Check if cache is recent
                 if Date().timeIntervalSince(cachedRoute.lastUpdated) < 3600 {
                     // Convert cached route to MKRoute equivalent
@@ -31,6 +35,7 @@ class RouteManager {
                 print("Error loading cached route: \(error)")
             }
         }
+        print("Cache does not exist for \(segment.tripID.hashValue).\(segment.segmentRouteIdentifier)")
         return try? await fetchFreshRoute(segment: segment)
     }
     
@@ -50,7 +55,7 @@ class RouteManager {
             }
             
             // Cache the new route
-            try cacheManager.cacheRoute(route, withIdentifier: segment.segmentRouteIdentifier, trip: segment.tripID)
+            try cacheManager.cacheRoute(route, withIdentifier: segment, trip: segment.tripID)
             
             return CachedRoute(from: route, identifier: segment.segmentRouteIdentifier, trip: segment.tripID)
         } catch {
@@ -58,7 +63,17 @@ class RouteManager {
         }
     }
     
-    func cleanCache(tripID: Trip, activeSegments: [Segment], tripDeleted: Bool) {
+    func cleanCache(trip: Trip, activeSegments: [Segment]? = nil, tripDeleted: Bool) {
+        if let tripID = trip.id{
+            if tripDeleted {
+                try? cacheManager.removeTripFromCache(trip: tripID)
+            } else {
+                guard let segments = activeSegments else { return }
+                for segment in segments{
+                    cacheManager.cleanCachedRoutes(trip: tripID, segment: segment)
+                }
+            }
+        }
         cacheManager.showContents()
     }
 }

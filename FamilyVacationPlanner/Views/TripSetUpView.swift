@@ -101,7 +101,7 @@ struct TripSetUpView: View {
             let trip = trips[index]
             dataModel.moc.delete(trip)
             // Remove all route stored locally in cache
-            routeManager.cleanCache(tripID: trip, activeSegments: [], tripDeleted: true)
+            routeManager.cleanCache(trip: trip, tripDeleted: true)
         }
         do {
             try dataModel.moc.save()

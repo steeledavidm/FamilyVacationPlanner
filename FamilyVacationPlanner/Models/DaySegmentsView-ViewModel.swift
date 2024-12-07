@@ -191,7 +191,7 @@ extension DaySegmentsView {
              let daySegmentforComprehensive: DaySegments = DaySegments(dayIndex: 0, formattedDateString: "Trip Overview", segments: daySegmentsAccumulator, startLocationSet: true, endLocationSet: true, comprehensive: true, totalTime: totalTime, totalDistance: totalDistance)
              comprehensiveAndDailySegments.append(daySegmentforComprehensive)
              comprehensiveAndDailySegments.append(contentsOf: tripSegments)
-             routeManager.cleanCache(tripID: trip, activeSegments: daySegmentsAccumulator, tripDeleted: false)
+            routeManager.cleanCache(trip: trip, activeSegments: daySegmentsAccumulator, tripDeleted: false)
          }
         
         func saveLocationIndex(segments: [Segment], dayIndex: Int, trip: Trip) async throws {
