@@ -34,6 +34,7 @@ struct LocationSetUpView: View {
     
     // Init for editing
     init(location: Location) {
+        print("in the Location initializer")
         _locationEditModel = State(wrappedValue: LocationEditModel(location: location))
         _leaveDate = State(initialValue: location.dateLeave ?? Date())
     }

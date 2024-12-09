@@ -38,9 +38,10 @@ class LocationEditModel {
     
     // Initialize for editing existing location
     init(location: Location) {
-        self.moc = location.managedObjectContext ?? DataController.shared.container.viewContext
+        self.moc = DataController.shared.container.viewContext
         self.location = location
         loadFromLocation(location)
+        print("in LocationEditModel Location initializer")
     }
         
         // Init for creating new from map item
@@ -54,7 +55,7 @@ class LocationEditModel {
         self.name = location.name ?? ""
         self.title = location.title ?? ""
         self.subtitle = location.subtitle ?? ""
-        self.poiCategory = location.poiCategory ?? .gasStation
+        self.poiCategory = location.poiCategory ?? .hotel
         self.dateLeave = location.dateLeave ?? Date()
         self.dateArrive = location.dateArrive ?? Date()
         self.overNightStop = location.overNightStop
@@ -64,6 +65,12 @@ class LocationEditModel {
         self.startLocation = location.startLocation
         self.latitude = location.latitude
         self.longitude = location.longitude
+        
+        print("LoadFromLocationItem:")
+        print("Name: \(self.name)")
+        print("Title: \(self.title)")
+        print("POI Category: \(self.poiCategory)")
+        print("Dates: \(self.dateArrive) - \(self.dateLeave)")
     }
     
     func loadFromMapItem(_ mapItem: AnnotatedMapItem, _ trip: Trip) {
@@ -98,6 +105,7 @@ class LocationEditModel {
             // Create new location
             location = Location(context: moc)
             location?.id = UUID()
+            print("create new location")
         }
         
         guard let location = location else {
@@ -124,9 +132,12 @@ class LocationEditModel {
             trip.addToLocation(location)
         }
         
+        print("moc has changes: \(moc.hasChanges)")
         if moc.hasChanges {
             try moc.save()
-            print("Save completed")
+            print("#################Save completed###############")
+            print(location.name ?? "no name")
+            print(location.trip)
         }
     }
 }

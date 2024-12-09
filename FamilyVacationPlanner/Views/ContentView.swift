@@ -27,7 +27,10 @@ struct ContentView: View {
     @State private var showSheet = true
     @State private var showSearchLocationSheet = false
     @State private var viewModel: ViewModel = ViewModel()
-    
+    @State private var selectedFeature: MapFeature?
+    @State private var showMapForSearchResultMarkers: Bool = false
+    @State private var showTappedLocation: Bool = false
+
     var lineWidth: CGFloat = 5
     var lineColor: Color = .blue
     var outlineColor: Color = .black
@@ -35,147 +38,210 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            MapReader { proxy in
-                Map(position: $viewModel.position, selection: $selectedMarker) {
-                    ForEach(dataModel.allMapInfo) {mapInfo in
-                        if let coordinate = mapInfo.startingPoint {
-                            Marker(mapInfo.markerLabelStart,
-                                   systemImage: mapInfo.startIcon?.poiSymbol ?? "",
-                                   coordinate: coordinate)
-                            .tint(mapInfo.startIcon?.poiColor ?? .red)
-                        }
-                        if let coordinate = mapInfo.endingPoint {
-                            Marker(mapInfo.markerLabelEnd,
-                                   systemImage: mapInfo.endIcon?.poiSymbol ?? "",
-                                   coordinate: coordinate)
-                            .tint(mapInfo.endIcon?.poiColor ?? .red)
-                        }
-                        MapPolyline(mapInfo.route ?? MKPolyline())
-                            .stroke(
-                                outlineColor,
-                                style: StrokeStyle(
-                                    lineWidth: lineWidth + (outlineWidth * 2),
-                                    lineCap: .round,
-                                    lineJoin: .round
-                                )
-                            )
-                        MapPolyline(mapInfo.route ?? MKPolyline())
-                            .stroke(
-                                lineColor,
-                                style: StrokeStyle(
-                                    lineWidth: lineWidth,
-                                    lineCap: .round,
-                                    lineJoin: .round
-                                )
-                            )
-                    }
-                    ForEach(searchResults, id: \.self) { item in
-                        Marker(item: item.item)
-                    }
-                    //show current location on map
-                    UserAnnotation()
-                }
-                .animation(.easeInOut(duration: 1), value: selectedDetent)
-                .animation(.easeInOut(duration: 1), value: viewModel.position)
-                .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
-                .onTapGesture(perform: { screenposition in
-                    print("markerSelected: \(globalVars.markerSelected)")
-                    if globalVars.displaySearchedLocations {
-                        if let coordinate = proxy.convert(screenposition, from: .local) {
-                            print("TapGesture")
-                            let latitude = coordinate.latitude
-                            let longitude = coordinate.longitude
-                            //print("\(latitude), \(longitude)")
-                            Task {
-                                try await dataModel.getLocationPlacemark(location: CLLocation(latitude: latitude, longitude: longitude))
-                                if !globalVars.markerSelected {
-                                    searchResults = []
-                                    selectedLocation = dataModel.mapAnnotation
-                                    print("selectedLocation from tapGesture: \(globalVars.markerSelected)")
-                                    
-                                    if let unWrappedLocation = selectedLocation {
-                                        searchResults.append(unWrappedLocation)
-                                        print("location is selected")
-                                    }
-                                } else {
-                                    selectedLocation = selectedMarker
-                                    print("selectedLocation updated in else")
+            if !showMapForSearchResultMarkers {
+                VStack {
+                    Text("Feature Selectable Map")
+                    MapReader { proxy in
+                        Map(position: $viewModel.position, selection: $selectedFeature) {
+                            ForEach(dataModel.allMapInfo) {mapInfo in
+                                if let coordinate = mapInfo.startingPoint {
+                                    Marker(mapInfo.markerLabelStart,
+                                           systemImage: mapInfo.startIcon?.poiSymbol ?? "",
+                                           coordinate: coordinate)
+                                    .tint(mapInfo.startIcon?.poiColor ?? .red)
+                                }
+                                if let coordinate = mapInfo.endingPoint {
+                                    Marker(mapInfo.markerLabelEnd,
+                                           systemImage: mapInfo.endIcon?.poiSymbol ?? "",
+                                           coordinate: coordinate)
+                                    .tint(mapInfo.endIcon?.poiColor ?? .red)
+                                }
+                                MapPolyline(mapInfo.route ?? MKPolyline())
+                                    .stroke(
+                                        outlineColor,
+                                        style: StrokeStyle(
+                                            lineWidth: lineWidth + (outlineWidth * 2),
+                                            lineCap: .round,
+                                            lineJoin: .round
+                                        )
+                                    )
+                                MapPolyline(mapInfo.route ?? MKPolyline())
+                                    .stroke(
+                                        lineColor,
+                                        style: StrokeStyle(
+                                            lineWidth: lineWidth,
+                                            lineCap: .round,
+                                            lineJoin: .round
+                                        )
+                                    )
+                            }
+                            
+                            //show current location on map
+                            UserAnnotation()
+                            if showTappedLocation {
+                                ForEach(searchResults, id: \.self) { item in
+                                    Marker(item: item.item)
                                 }
                             }
-                            globalVars.locationFromMap = AnnotationItem(name: "", title: "", subtitle: "", latitude: latitude, longitude: longitude)
-                            dataModel.plotRecentItems = true
-                            viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                            globalVars.markerSelected = false
                         }
+                        .animation(.easeInOut(duration: 1), value: selectedDetent)
+                        .animation(.easeInOut(duration: 1), value: viewModel.position)
+                        .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true))
+                        .onDisappear() {
+                            showTappedLocation = false
+                            selectedFeature = nil
+                        }
+                        .onTapGesture(perform: { screenposition in
+                            print("markerSelected: \(globalVars.markerSelected)")
+                            showTappedLocation = true
+                            if globalVars.displaySearchedLocations {
+                                if let coordinate = proxy.convert(screenposition, from: .local) {
+                                    print("TapGesture")
+                                    let latitude = coordinate.latitude
+                                    let longitude = coordinate.longitude
+                                    //print("\(latitude), \(longitude)")
+                                    Task {
+                                        try await dataModel.getLocationPlacemark(location: CLLocation(latitude: latitude, longitude: longitude))
+                                        if !globalVars.markerSelected {
+                                            searchResults = []
+                                            selectedLocation = dataModel.mapAnnotation
+                                            print("selectedLocation from tapGesture: \(globalVars.markerSelected)")
+    
+                                            if let unWrappedLocation = selectedLocation {
+                                                searchResults.append(unWrappedLocation)
+                                                print("location is selected")
+                                            }
+                                        } else {
+                                            selectedLocation = selectedMarker
+                                            print("selectedLocation updated in else")
+                                        }
+                                    }
+                                    globalVars.locationFromMap = AnnotationItem(name: "", title: "", subtitle: "", latitude: latitude, longitude: longitude)
+                                    dataModel.plotRecentItems = true
+                                    viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+                                    globalVars.markerSelected = false
+                                }
+                            }
+                        })
                     }
-                })
-            }
-            .onAppear {
-                print("on Appear")
-                Task {
-                    try await dataModel.getCurrentLocation(locationManager: locationManager)
-                    print(dataModel.currentLocation)
+                }
+            } else {
+                VStack {
+                    Text("Marker Selectable Map")
+                    Map(position: $viewModel.position, selection: $selectedMarker) {
+                        ForEach(searchResults, id: \.self) { item in
+                            Marker(item: item.item)
+                        }
+                        ForEach(dataModel.allMapInfo) {mapInfo in
+                            if let coordinate = mapInfo.startingPoint {
+                                Marker(mapInfo.markerLabelStart,
+                                       systemImage: mapInfo.startIcon?.poiSymbol ?? "",
+                                       coordinate: coordinate)
+                                .tint(mapInfo.startIcon?.poiColor ?? .red)
+                            }
+                            if let coordinate = mapInfo.endingPoint {
+                                Marker(mapInfo.markerLabelEnd,
+                                       systemImage: mapInfo.endIcon?.poiSymbol ?? "",
+                                       coordinate: coordinate)
+                                .tint(mapInfo.endIcon?.poiColor ?? .red)
+                            }
+                            MapPolyline(mapInfo.route ?? MKPolyline())
+                                .stroke(
+                                    outlineColor,
+                                    style: StrokeStyle(
+                                        lineWidth: lineWidth + (outlineWidth * 2),
+                                        lineCap: .round,
+                                        lineJoin: .round
+                                    )
+                                )
+                            MapPolyline(mapInfo.route ?? MKPolyline())
+                                .stroke(
+                                    lineColor,
+                                    style: StrokeStyle(
+                                        lineWidth: lineWidth,
+                                        lineCap: .round,
+                                        lineJoin: .round
+                                    )
+                                )
+                        }
+                        //show current location on map
+                        UserAnnotation()
+                    }
                 }
             }
-            .onChange(of: selectedDetent) {
-                print("detent Changed")
-                globalVars.selectedDetent = selectedDetent
+        }
+        .onAppear {
+            print("on Appear")
+            Task {
+                try await dataModel.getCurrentLocation(locationManager: locationManager)
+                print(dataModel.currentLocation)
             }
-            .onChange(of: globalVars.selectedDetent) {
-                selectedDetent = globalVars.selectedDetent
+        }
+        .onChange(of: selectedDetent) {
+            print("detent Changed")
+            globalVars.selectedDetent = selectedDetent
+        }
+        .onChange(of: globalVars.selectedDetent) {
+            selectedDetent = globalVars.selectedDetent
+            viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+            print("detent Changed")
+        }
+        .onChange(of: globalVars.selectedTabIndex) {
+            Task {
+                print("tab Changed")
+                selectedMarker = nil
+                dataModel.results = []
+                dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
                 viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                print("detent Changed")
-            }
-            .onChange(of: globalVars.selectedTabIndex) {
-                Task {
-                    print("tab Changed")
-                    selectedMarker = nil
-                    dataModel.results = []
-                    dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
-                    viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                    dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
-                }
-            }
-            .onChange(of: globalVars.showSearchLocationSheet) {
-                showSearchLocationSheet = globalVars.showSearchLocationSheet
-                if globalVars.showSearchLocationSheet == false {
-                    selectedMarker = nil
-                    dataModel.results = []
-                }
-                print("showSearchLocationSheet: \(globalVars.showSearchLocationSheet)")
-            }
-            .onChange(of: globalVars.comprehensiveAndDailySegments) {
-                Task {
-                    print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
-                    dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
-                    viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                    dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
-                }
-            }
-            .onChange(of: dataModel.results) {
-                print("resultscount \(dataModel.results.count)")
-                searchResults = dataModel.results
-                print("data model result changed")
-                viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-            }
-
-            .onChange(of: selectedMarker) {
-                print("marker changed: \(globalVars.markerSelected)")
-                if let marker = selectedMarker {
-                    searchResults = []
-                    searchResults.append(marker)
-                    globalVars.markerSelected = true
-                    dataModel.plotRecentItems = false
-                } else {
-                    globalVars.markerSelected = false
-                }
-                print("selectedLocationchanged: \(globalVars.markerSelected)")
-                //selectedMarker = nil
-            }
-            .onChange(of: viewModel.position) {
-                print("position Changed")
                 dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
             }
+        }
+        .onChange(of: globalVars.showSearchLocationSheet) {
+            showSearchLocationSheet = globalVars.showSearchLocationSheet
+            if globalVars.showSearchLocationSheet == false {
+                selectedMarker = nil
+                dataModel.results = []
+            } else {
+                selectedDetent = .fraction(0.12)
+            }
+            print("showSearchLocationSheet: \(globalVars.showSearchLocationSheet)")
+        }
+        .onChange(of: globalVars.comprehensiveAndDailySegments) {
+            Task {
+                print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
+                dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
+                viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+                dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
+            }
+        }
+        .onChange(of: dataModel.results) {
+            print("resultscount \(dataModel.results.count)")
+            if dataModel.results.count > 1 {
+                showMapForSearchResultMarkers = true
+            } else {
+                showMapForSearchResultMarkers = false
+            }
+            searchResults = dataModel.results
+            print("data model result changed")
+            viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+        }
+
+        .onChange(of: selectedMarker) {
+            print("marker changed: \(globalVars.markerSelected)")
+            if let marker = selectedMarker {
+                searchResults = []
+                searchResults.append(marker)
+                globalVars.markerSelected = true
+                dataModel.plotRecentItems = false
+            } else {
+                globalVars.markerSelected = false
+            }
+            print("selectedLocationchanged: \(globalVars.markerSelected)")
+            //selectedMarker = nil
+        }
+        .onChange(of: viewModel.position) {
+            print("position Changed")
+            dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
         }
         .sheet(isPresented: $showSheet) {
             TripSetUpView()

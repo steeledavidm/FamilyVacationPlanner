@@ -25,7 +25,6 @@ struct SearchDestinationView : View {
     @State private var showLocationSetUpView = false
     @State private var searchText: String = ""
     @State private var currentLocation: CLPlacemark?
-    //@State private var recentList: [Location] = []
     @State private var overNightStop: Bool = false
     @State private var startLocation: Bool = false
     @State private var locationType: LocationType = .startLocation
@@ -108,7 +107,6 @@ struct SearchDestinationView : View {
             globalVars.displaySearchedLocations = false
         }
         .onAppear() {
-            //recentList = dataModel.recentList
             locationType = globalVars.locationType ?? .startLocation
             dataModel.plotRecentItems = true
             globalVars.displaySearchedLocations = true

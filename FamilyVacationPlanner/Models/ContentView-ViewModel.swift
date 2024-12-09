@@ -36,7 +36,7 @@ extension ContentView {
             } else {
                 if !globalVars.comprehensiveAndDailySegments.isEmpty {
                     print("I'm here")
-                    if globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].startLocation == globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].endLocation {
+                    if globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].startLocation == globalVars.comprehensiveAndDailySegments[globalVars.selectedTabIndex].segments?[0].endLocation || dataModel.results.count == 1 {
                         singleLocation = true
                         print("single location = true")
                     } else {

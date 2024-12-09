@@ -75,7 +75,7 @@ extension DaySegmentsView {
                     if location.locationIndex == dayNumber * 100 {
                         dayStartLocation = location
                         // set first segment for the day to have start location
-                        tripSegments[dayNumber].segments?[0] = Segment(segmentIndex: 0, dayDate: dateOfDay,  startLocation: dayStartLocation, placeholder: true, tripID: trip.id!)
+                        tripSegments[dayNumber].segments?[0] = Segment(segmentIndex: 0, dayDate: dateOfDay,  startLocation: dayStartLocation, placeholder: false, tripID: trip.id!)
                         tripSegments[dayNumber].startLocationSet = true
                     } else {
                         // know that location is either a end location or a point of interest

@@ -32,7 +32,7 @@ import SwiftUI
         print("Function 2")
         allMapInfo = []
         if comprehensiveAndDailySegments.count > selectedTabIndex {
-            if let daySegments = comprehensiveAndDailySegments[selectedTabIndex].segments, !daySegments.isEmpty {
+            if let daySegments = comprehensiveAndDailySegments[selectedTabIndex].segments { //}, !daySegments.isEmpty {
                 daySegmentsForFunction = daySegments
                 print("day Segment count: \(daySegmentsForFunction.count)")
             } else {
@@ -55,13 +55,6 @@ import SwiftUI
                 let route = segment.polyline
                 allMapInfo.append(MapInfo(markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation, startIcon: startIcon, endIcon: endIcon, route: route))
             }
-//            if !segment.segmentComplete && segment.startLocation != nil && !segment.placeholder  {
-//                let segmentStart = segment.startLocation ?? Location(context: moc)
-//                let startLocation = CLLocationCoordinate2D(latitude: segmentStart.latitude, longitude: segmentStart.longitude)
-//                let markerLabelStart = segmentStart.name ?? "Unknown Name"
-//                let startIcon = LocationIcon(poiCategory: segment.startLocation?.poiCategory)
-//                allMapInfo.append(MapInfo(markerLabelStart: markerLabelStart, markerLabelEnd: "", startingPoint: startLocation, startIcon: startIcon))
-//            }
         }
     }
     
@@ -103,6 +96,7 @@ import SwiftUI
             currentLoc.title = "\(locationPlacemark?.name ?? ""), \(locationPlacemark?.locality ?? ""), \(locationPlacemark?.administrativeArea ?? "")  \(locationPlacemark?.postalCode ?? "") \(locationPlacemark?.country ?? "")"
             currentLoc.latitude = locationPlacemark?.location?.coordinate.latitude ?? 0.0
             currentLoc.longitude = locationPlacemark?.location?.coordinate.longitude ?? 0.0
+            trip.addToLocation(currentLoc)
             
             recentList.append(currentLoc)
             
@@ -150,11 +144,5 @@ import SwiftUI
                 results.append(AnnotatedMapItem(item: result))
             }
         }
-        
     }
-    
-    
-    
-    
-    
 }
