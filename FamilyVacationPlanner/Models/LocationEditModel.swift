@@ -29,6 +29,8 @@ class LocationEditModel {
     var latitude: Double = 0.0
     var longitude: Double = 0.0
     var subtitle: String = ""
+    var poiImage: Image?
+    var poiColor: Color?
     
     init() {
         self.moc = DataController.shared.container.viewContext
@@ -45,10 +47,10 @@ class LocationEditModel {
     }
         
         // Init for creating new from map item
-    init(annotatedMapItem: AnnotatedMapItem, context: NSManagedObjectContext = DataController.shared.container.viewContext, trip: Trip) {
+    init(locationSetUp: LocationSetUp, context: NSManagedObjectContext = DataController.shared.container.viewContext, trip: Trip) {
         self.moc = context
         self.trip = trip
-        loadFromMapItem(annotatedMapItem, trip)
+        loadFromMapItem(locationSetUp, trip)
     }
         
     func loadFromLocation(_ location: Location) {
@@ -73,13 +75,15 @@ class LocationEditModel {
         print("Dates: \(self.dateArrive) - \(self.dateLeave)")
     }
     
-    func loadFromMapItem(_ mapItem: AnnotatedMapItem, _ trip: Trip) {
-        self.name = mapItem.item.name ?? ""
-        self.title = mapItem.item.placemark.title ?? ""
-        self.subtitle = mapItem.item.placemark.subtitle ?? ""
-        self.latitude = mapItem.item.placemark.coordinate.latitude
-        self.longitude = mapItem.item.placemark.coordinate.longitude
-        self.poiCategory = mapItem.item.pointOfInterestCategory ?? .beach
+    func loadFromMapItem(_ locationSetUp: LocationSetUp, _ trip: Trip) {
+        self.name = locationSetUp.name
+        self.title = locationSetUp.title ?? ""
+        self.subtitle = locationSetUp.subtitle ?? ""
+        self.latitude = locationSetUp.latitude
+        self.longitude = locationSetUp.longitude
+        self.poiCategory = locationSetUp.poiCategory ?? .evCharger
+        self.poiImage = locationSetUp.poiImage
+        self.poiColor = locationSetUp.poiColor
         
         // Initialize default values for new location
         self.dateArrive = trip.startDate ?? Date()
@@ -135,9 +139,6 @@ class LocationEditModel {
         print("moc has changes: \(moc.hasChanges)")
         if moc.hasChanges {
             try moc.save()
-            print("#################Save completed###############")
-            print(location.name ?? "no name")
-            print(location.trip)
         }
     }
 }

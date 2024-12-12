@@ -40,6 +40,9 @@
 		557A097D2D0205080079A0B2 /* RouteStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A097C2D0205080079A0B2 /* RouteStep.swift */; };
 		557A097F2D02179A0079A0B2 /* RouteCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A097E2D02179A0079A0B2 /* RouteCacheManager.swift */; };
 		557A09812D023B560079A0B2 /* RouteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A09802D023B560079A0B2 /* RouteManager.swift */; };
+		557A09872D08D8390079A0B2 /* SelectedItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A09862D08D8390079A0B2 /* SelectedItemType.swift */; };
+		557A09892D08D8C60079A0B2 /* SelectedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A09882D08D8C60079A0B2 /* SelectedItem.swift */; };
+		557A098B2D0A4C000079A0B2 /* LocationSetUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A098A2D0A4C000079A0B2 /* LocationSetUp.swift */; };
 		55B5FC152C4B1AE80087D31B /* DaySegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B5FC142C4B1AE80087D31B /* DaySegments.swift */; };
 		55C5895D2CEBEC6F0026B20E /* LocationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C5895C2CEBEC6F0026B20E /* LocationExtension.swift */; };
 		55E6509C2CECD462004B7F26 /* LocationIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E6509B2CECD462004B7F26 /* LocationIcon.swift */; };
@@ -88,6 +91,9 @@
 		557A097C2D0205080079A0B2 /* RouteStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteStep.swift; sourceTree = "<group>"; };
 		557A097E2D02179A0079A0B2 /* RouteCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteCacheManager.swift; sourceTree = "<group>"; };
 		557A09802D023B560079A0B2 /* RouteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteManager.swift; sourceTree = "<group>"; };
+		557A09862D08D8390079A0B2 /* SelectedItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedItemType.swift; sourceTree = "<group>"; };
+		557A09882D08D8C60079A0B2 /* SelectedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedItem.swift; sourceTree = "<group>"; };
+		557A098A2D0A4C000079A0B2 /* LocationSetUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSetUp.swift; sourceTree = "<group>"; };
 		55B5FC142C4B1AE80087D31B /* DaySegments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaySegments.swift; sourceTree = "<group>"; };
 		55C5895C2CEBEC6F0026B20E /* LocationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationExtension.swift; sourceTree = "<group>"; };
 		55E6509B2CECD462004B7F26 /* LocationIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationIcon.swift; sourceTree = "<group>"; };
@@ -177,6 +183,9 @@
 				557A09782D02034D0079A0B2 /* CachedRoute.swift */,
 				557A097C2D0205080079A0B2 /* RouteStep.swift */,
 				557A097A2D02042F0079A0B2 /* RoutePoint.swift */,
+				557A09862D08D8390079A0B2 /* SelectedItemType.swift */,
+				557A09882D08D8C60079A0B2 /* SelectedItem.swift */,
+				557A098A2D0A4C000079A0B2 /* LocationSetUp.swift */,
 			);
 			path = Structures;
 			sourceTree = "<group>";
@@ -284,9 +293,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				557A09892D08D8C60079A0B2 /* SelectedItem.swift in Sources */,
 				557A097F2D02179A0079A0B2 /* RouteCacheManager.swift in Sources */,
 				555AAE4D2CEE662E0097135E /* LocationCategoryGroup.swift in Sources */,
 				553588FA2C415F540014D48C /* GlobalVariables.swift in Sources */,
+				557A098B2D0A4C000079A0B2 /* LocationSetUp.swift in Sources */,
 				55FD9B3D2C2FBDC4000EB3FA /* AnnotatedMapItem.swift in Sources */,
 				557395462C7A24E70006DEE5 /* LocationManager.swift in Sources */,
 				55510B822C87897C000CA28D /* DaySegmentsView.swift in Sources */,
@@ -311,6 +322,7 @@
 				555AAE512CF054350097135E /* LocationEditModel.swift in Sources */,
 				55C5895D2CEBEC6F0026B20E /* LocationExtension.swift in Sources */,
 				5558E7952C24867300CE6991 /* FamilyVacationPlannerApp.swift in Sources */,
+				557A09872D08D8390079A0B2 /* SelectedItemType.swift in Sources */,
 				55E6509C2CECD462004B7F26 /* LocationIcon.swift in Sources */,
 				55B5FC152C4B1AE80087D31B /* DaySegments.swift in Sources */,
 				553588FC2C42AB0C0014D48C /* LocationType.swift in Sources */,
@@ -469,7 +481,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -504,7 +516,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

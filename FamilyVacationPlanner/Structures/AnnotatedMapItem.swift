@@ -13,7 +13,7 @@ struct AnnotatedMapItem: Identifiable, Hashable {
     var item: MKMapItem
 
     init(item: MKMapItem) {
-      self.id = UUID().uuidString // Generate unique ID using UUID
-      self.item = item
+        self.id = UUID().uuidString // Generate unique ID using UUID
+        self.item = item
   }
 }

@@ -39,11 +39,10 @@ struct LocationSetUpView: View {
         _leaveDate = State(initialValue: location.dateLeave ?? Date())
     }
     
-    init(annotatedMapItem: AnnotatedMapItem, trip: Trip) {
-        print("LocationSetUpView init with annotatedMapItem")
-        _locationEditModel = State(wrappedValue: LocationEditModel(annotatedMapItem: annotatedMapItem, trip: trip))
+    init(locationSetUp: LocationSetUp, trip: Trip) {
+        print("LocationSetUpView init with locationSetUp")
+        _locationEditModel = State(wrappedValue: LocationEditModel(locationSetUp: locationSetUp, trip: trip))
         _leaveDate = State(initialValue: trip.startDate ?? Date())
-        print("LocationEditModel name: \(LocationEditModel(annotatedMapItem: annotatedMapItem, trip: trip).name)")
     }
     
     var body: some View {
