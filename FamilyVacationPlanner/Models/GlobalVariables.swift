@@ -13,7 +13,6 @@ import SwiftUI
 
 class GlobalVariables {
     var selectedTrip: Trip?
-    var displaySearchedLocations: Bool = false
     var locationFromMap: AnnotationItem?
     var locationType: LocationType?
     var selectedDetent: PresentationDetent = .fraction(0.5)

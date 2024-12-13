@@ -9,7 +9,7 @@ import Foundation
 import MapKit
 import SwiftUI
 
-struct LocationSetUp: Identifiable {
+struct LocationSetUp: Identifiable, Equatable {
     let id: UUID
     let name: String
     let title: String?
@@ -19,6 +19,16 @@ struct LocationSetUp: Identifiable {
     let poiCategory: MKPointOfInterestCategory?
     let poiImage: Image?
     let poiColor: Color?
+    
+    // Add Equatable conformance by implementing static == method
+    static func == (lhs: LocationSetUp, rhs: LocationSetUp) -> Bool {
+        return lhs.id == rhs.id &&
+               lhs.name == rhs.name &&
+               lhs.title == rhs.title &&
+               lhs.subtitle == rhs.subtitle &&
+               lhs.latitude == rhs.longitude &&
+               lhs.poiCategory == rhs.poiCategory
+    }
     
     init(from annotatedMapItem: AnnotatedMapItem) {
         self.id = UUID()

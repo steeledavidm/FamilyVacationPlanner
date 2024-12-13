@@ -12,22 +12,19 @@ import SwiftUI
 struct LocationSetUpView: View {
     
     @State private var viewModel: ViewModel = ViewModel()
-    @State private var locationEditModel: LocationEditModel
+    @Environment(LocationEditModel.self) private var locationEditModel
+    @Bindable private var bindableLocationEditModel: LocationEditModel
     @Environment(GlobalVariables.self) var globalVars
     @Environment(\.dismiss) var dismiss
     @State private var placemark: MKPlacemark = MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
     @State private var locationType: LocationType = LocationType.pointOfInterest
     @State private var leaveDate: Date
-    @State private var locationName: String = ""
-    @State private var address: String = ""
-    @State private var notes: String = ""
     @State private var overNightStop: Bool = false
     @State private var startLocation: Bool = false
     @State private var overnightsListSize: Int = 0
     @State private var numberOfNights: Int = 0
     @State private var locationIndex: Int = 0
     @State private var dayIndex: Int = 0
-    @State private var locationPOI: LocationIcon?
     @State private var selectedPOI: LocationIcon?
     @State private var showPOISheet = false
     @State private var trip: Trip?
@@ -35,20 +32,36 @@ struct LocationSetUpView: View {
     // Init for editing
     init(location: Location) {
         print("in the Location initializer")
-        _locationEditModel = State(wrappedValue: LocationEditModel(location: location))
-        _leaveDate = State(initialValue: location.dateLeave ?? Date())
+        let editModel = LocationEditModel(location: location)
+        self._leaveDate = State(initialValue: location.dateLeave ?? Date())
+        self._bindableLocationEditModel = Bindable(editModel)
     }
     
     init(locationSetUp: LocationSetUp, trip: Trip) {
         print("LocationSetUpView init with locationSetUp")
-        _locationEditModel = State(wrappedValue: LocationEditModel(locationSetUp: locationSetUp, trip: trip))
-        _leaveDate = State(initialValue: trip.startDate ?? Date())
+        let editModel = LocationEditModel(locationSetUp: locationSetUp, trip: trip)
+        self._leaveDate = State(initialValue: trip.startDate ?? Date())
+        self._bindableLocationEditModel = Bindable(editModel)
     }
     
     var body: some View {
+        //                            if let image = location.poiImage {
+        //                                VStack {
+        //                                    image
+        //                                        .resizable()
+        //                                        .aspectRatio(contentMode: .fit)
+        //                                        .frame(width: 200, height: 200)
+        //                                        .background(location.poiColor ?? .white)
+        //                                        .clipShape(RoundedRectangle(cornerRadius: 10)) // Rounded rectangle with 10-point corners
+        //                                        .shadow(radius: 5) // Optional: adds a subtle shadow
+        //
+        //                                    Text("color: \(String(describing: location.poiColor))")
+        //                                    Text("category: \(String(describing: location.poiCategory))")
+        //                                }
+        //                            }
         Form {
             Section("Location Name"){
-                TextField("Location name", text: $locationName )
+                TextField("Location name", text: $bindableLocationEditModel.name)
             }
             Section("Address"){
                 Text(locationEditModel.title)
@@ -74,7 +87,7 @@ struct LocationSetUpView: View {
             }
             
             Section("Notes") {
-                TextField("Notes", text: $notes )
+                TextField("Notes", text: $bindableLocationEditModel.notes )
             }
             
             Section("Location Category") {
@@ -84,9 +97,9 @@ struct LocationSetUpView: View {
                     }
                     ) {
                         HStack {
-                            Image(systemName: locationPOI?.poiSymbol ?? "map.marker")
-                                .foregroundStyle(locationPOI?.poiColor ?? .black)
-                            Text(locationPOI?.poiDisplayName ?? "No Location")
+                            Image(systemName: locationEditModel.locationPOI?.poiSymbol ?? "map.marker")
+                                .foregroundStyle(locationEditModel.locationPOI?.poiColor ?? .black)
+                            Text(locationEditModel.locationPOI?.poiDisplayName ?? "No Location")
                                 .foregroundStyle(.black)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
@@ -94,7 +107,7 @@ struct LocationSetUpView: View {
                 } else {
                     HStack {
                         Image(systemName: "arrow.up.circle.fill")
-                            .foregroundStyle(locationPOI?.poiColor ?? .black)
+                            .foregroundStyle(locationEditModel.locationPOI?.poiColor ?? .black)
                         Text("Start Location")
                             .foregroundStyle(.black)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -114,11 +127,9 @@ struct LocationSetUpView: View {
             }
             Button("Save") {
                 guard let trip = globalVars.selectedTrip else { return }
-                locationEditModel.name = locationName
-                locationEditModel.title = address
                 globalVars.locationFromMap = nil
                 globalVars.selectedDetent = .fraction(0.5)
-                if let poiCategory = locationPOI?.poiCategory {
+                if let poiCategory = locationEditModel.locationPOI?.poiCategory {
                     locationEditModel.poiCategory = poiCategory
                 }
                 if locationType == LocationType.startLocation {
@@ -162,9 +173,6 @@ struct LocationSetUpView: View {
 
         .onAppear() {
             print("view appeared")
-            locationName = locationEditModel.name
-            notes = locationEditModel.notes
-            locationPOI = LocationIcon(poiCategory: locationEditModel.poiCategory)
             if locationEditModel.startLocation {
                 locationType = LocationType.startLocation
             }
@@ -184,7 +192,7 @@ struct LocationSetUpView: View {
             }
         }
         .onChange (of: selectedPOI) {
-            locationPOI = selectedPOI
+            locationEditModel.locationPOI = selectedPOI
         }
         .sheet(isPresented: $showPOISheet) {
             NavigationStack {

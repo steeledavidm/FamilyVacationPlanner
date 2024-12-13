@@ -22,9 +22,9 @@ struct ContentView: View {
     @State private var searchResults: [AnnotatedMapItem] = []
     @State private var showSheet = true
     @State private var showSearchLocationSheet = false
+    @State private var showLocationSetUpView = false
     @State private var viewModel: ViewModel = ViewModel()
     @State private var mapSelection: MapSelection<AnnotatedMapItem>?
-    @State private var showMapForSearchResultMarkers: Bool = false
     
     @State private var coordinates: CLLocation?
     @State private var selectedItem: SelectedItem?
@@ -90,27 +90,30 @@ struct ContentView: View {
             // if there is a MapFeature or MKMapItem in the area tapped the LocationSetUpView will refresh when mapSelection updates
             // to show the additonal info provided by those features.
             .onTapGesture(perform: { screenposition in
-                if let coordinate = proxy.convert(screenposition, from: .local) {
-                    print("TapGesture")
-                    let latitude = coordinate.latitude
-                    let longitude = coordinate.longitude
-                    coordinates = CLLocation(latitude: latitude, longitude: longitude)
-                    if let coordinates = coordinates {
-                        selectedItemType = SelectedItemType.new(coordinates)
-                    }
-                    Task {
-                        try await dataModel.getLocationPlacemark(location: CLLocation(latitude: latitude, longitude: longitude))
-                        if !globalVars.markerSelected {
-                            if let mapAnnotation = dataModel.mapAnnotation {
-                                searchResults.append(mapAnnotation)
-                                selectedLocation = LocationSetUp(from: mapAnnotation)
+                if showSearchLocationSheet {
+                    if let coordinate = proxy.convert(screenposition, from: .local) {
+                        print("TapGesture")
+                        let latitude = coordinate.latitude
+                        let longitude = coordinate.longitude
+                        coordinates = CLLocation(latitude: latitude, longitude: longitude)
+                        if let coordinates = coordinates {
+                            selectedItemType = SelectedItemType.new(coordinates)
+                        }
+                        Task {
+                            try await dataModel.getLocationPlacemark(location: CLLocation(latitude: latitude, longitude: longitude))
+                            if !globalVars.markerSelected {
+                                if let mapAnnotation = dataModel.mapAnnotation {
+                                    dataModel.results = []
+                                    dataModel.results.append(mapAnnotation)
+                                    selectedLocation = LocationSetUp(from: mapAnnotation)
+                                }
                             }
                         }
+                        globalVars.locationFromMap = AnnotationItem(name: "", title: "", subtitle: "", latitude: latitude, longitude: longitude)
+                        dataModel.plotRecentItems = true
+                        viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+                        globalVars.markerSelected = false
                     }
-                    globalVars.locationFromMap = AnnotationItem(name: "", title: "", subtitle: "", latitude: latitude, longitude: longitude)
-                    dataModel.plotRecentItems = true
-                    viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                    globalVars.markerSelected = false
                 }
             })
         }
@@ -125,7 +128,6 @@ struct ContentView: View {
         // or a MKMapItem (Markers from search results and converted from the onTapGesture)
         // is selected and triggers the LocationSetupView
         .onChange(of: mapSelection) {
-            dataModel.results = []
             print("selected Map Feature Info")
             if let mapSelection = mapSelection {
                 selectedItemType = SelectedItemType.existing(mapSelection)
@@ -142,11 +144,6 @@ struct ContentView: View {
                             let title = mapAnnotation.item.placemark.title
                             let subtitle = mapAnnotation.item.placemark.subtitle
                             selectedLocation = LocationSetUp(from: mapFeature, title: title ?? "" , subtitle: subtitle ?? "" )
-                            print("selectedLocationName: \(selectedLocation?.name)")
-                            print("selectedLocationTitle: \(selectedLocation?.title)")
-                            print("selectedLocationSubtitle: \(selectedLocation?.subtitle)")
-                            print("selectedLocationLatitude: \(selectedLocation?.latitude)")
-                            print("selectedLocationLongitude: \(selectedLocation?.longitude)")
                         }
                     }
                 }
@@ -156,6 +153,12 @@ struct ContentView: View {
                 globalVars.markerSelected = false
             }
             print("selectedLocationchanged: \(globalVars.markerSelected)")
+        }
+        .onChange(of: selectedLocation) {
+            showLocationSetUpView = true
+            if mapSelection != nil {
+                searchResults = []
+            }
         }
         .onChange(of: selectedDetent) {
             print("detent Changed")
@@ -177,12 +180,9 @@ struct ContentView: View {
         }
         .onChange(of: globalVars.showSearchLocationSheet) {
             showSearchLocationSheet = globalVars.showSearchLocationSheet
-            if globalVars.showSearchLocationSheet == false {
-                dataModel.results = []
-            } else {
+            if showSearchLocationSheet {
                 selectedDetent = .fraction(0.12)
             }
-            print("showSearchLocationSheet: \(globalVars.showSearchLocationSheet)")
         }
         .onChange(of: globalVars.comprehensiveAndDailySegments) {
             Task {
@@ -211,14 +211,22 @@ struct ContentView: View {
                         .presentationBackgroundInteraction(.enabled)
                         .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $selectedDetent)
                         .onDisappear(perform: {
+                            print("searchDestinationView dissappears")
                             globalVars.showSearchLocationSheet = false
                         })
-                        .sheet(item: $selectedLocation) { location in
+                        .sheet(isPresented: $showLocationSetUpView) {
                             if let trip = globalVars.selectedTrip {
-                                LocationSetUpView(locationSetUp: location, trip: trip)
-                                    .presentationBackgroundInteraction(.enabled)
-                                    .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large],
-                                                         selection: $selectedDetent)
+                                if let location = selectedLocation {
+                                    LocationSetUpView(locationSetUp: location, trip: trip)
+                                        .environment(LocationEditModel(locationSetUp: location, trip: trip))
+                                        .presentationBackgroundInteraction(.enabled)
+                                        .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large],
+                                                             selection: $selectedDetent)
+                                        .onDisappear(perform: {
+                                            print("locationSetUpView Dissapeared")
+                                            mapSelection = nil
+                                        })
+                                }
                             }
                         }
                 }
@@ -233,3 +241,42 @@ struct ContentView: View {
         .environment(GlobalVariables())
         .environment(LocationManager())
 }
+
+/*
+ When to update Camera Position:
+ 
+ 1. onAppear
+    show the region bounded by the saved trips
+    Show region bounded by route polyline
+    balance scaling to maximize resolution
+    if no trips show region equivalent to "State" based on current location
+ 2. when selected tab changes
+    Show region bounded by route polyline
+    balance scaling to maximize resolution
+    if single location use .automatic or MKMapItem or a default span
+ 3. when LoccationSetUp sheet is shown
+    Will be a single location
+    Position determined by .automatic or MKMapItem or a default span
+ 4. When search results are shown
+    Position should be able to use .automatic
+ 5. When sheet detent changes
+    Capture region with "full screen" and adjust camera when sheet is exposed
+ 
+ When to clear mapSelection - Can be either a MapFeature or a AnnotatedMapItem
+    Clean when searchResults is > 0
+    Clear when LocationSetUpView sheet is dismissed
+    Clear when SearchDestinationView sheet is dismissed
+ 
+ When to clear searchResults - Shows MKMapItems as output of searchResults and when a location is selected with onTapGesture
+     There is a local version and a global version
+     When a mapSelection is made the local search results should be cleared
+     if LocationSetUpView sheet is closed the global search results should repopulate the local search results
+    Both search results should be cleared when SearchDestination View is closed
+ 
+ When to clear selectedLocation
+    LocationSetUpView sheet is dismissed
+    
+ 
+ When to clear selectedLocation
+ 
+ */

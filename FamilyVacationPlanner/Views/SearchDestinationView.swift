@@ -58,7 +58,6 @@ struct SearchDestinationView : View {
                         .onTapGesture {
                             isFocusedTextField = false
                             dataModel.plotRecentItems = false
-                            globalVars.displaySearchedLocations = true
                             addressResult = address
                             Task {
                                 do {
@@ -104,12 +103,10 @@ struct SearchDestinationView : View {
         }
         .onDisappear() {
             print("onDisappear")
-            globalVars.displaySearchedLocations = false
         }
         .onAppear() {
             locationType = globalVars.locationType ?? .startLocation
             dataModel.plotRecentItems = true
-            globalVars.displaySearchedLocations = true
             
             switch locationType {
             case .startLocation:

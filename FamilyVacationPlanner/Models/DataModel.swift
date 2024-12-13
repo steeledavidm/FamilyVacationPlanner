@@ -111,16 +111,16 @@ import SwiftUI
                 }
             }
             
-            results = []
-            for item in recentList {
-                try await getLocationPlacemark(location: CLLocation(latitude: item.latitude, longitude: item.longitude))
-                if let placemark = locationPlacemark {
-                    let mapItem: MKMapItem = MKMapItem(placemark: placemark)
-                    mapItem.name = item.name
-                    results.append(AnnotatedMapItem(item: mapItem))
-                    print("results: \(results.count)")
-                }
-            }
+//            results = []
+//            for item in recentList {
+//                try await getLocationPlacemark(location: CLLocation(latitude: item.latitude, longitude: item.longitude))
+//                if let placemark = locationPlacemark {
+//                    let mapItem: MKMapItem = MKMapItem(placemark: placemark)
+//                    mapItem.name = item.name
+//                    results.append(AnnotatedMapItem(item: mapItem))
+//                    print("results: \(results.count)")
+//                }
+//            }
         }
     }
     

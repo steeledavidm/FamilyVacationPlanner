@@ -12,7 +12,7 @@ import SwiftUI
 
 @Observable @MainActor
 class LocationEditModel {
-    let moc: NSManagedObjectContext
+    let moc: NSManagedObjectContext = DataController.shared.container.viewContext
     var location: Location?
     var annotatedMapItem: AnnotatedMapItem?
     var trip: Trip?
@@ -31,24 +31,25 @@ class LocationEditModel {
     var subtitle: String = ""
     var poiImage: Image?
     var poiColor: Color?
+    var locationPOI: LocationIcon?
+    
     
     init() {
-        self.moc = DataController.shared.container.viewContext
         self.location = nil
         self.trip = nil
     }
     
     // Initialize for editing existing location
     init(location: Location) {
-        self.moc = DataController.shared.container.viewContext
         self.location = location
         loadFromLocation(location)
         print("in LocationEditModel Location initializer")
     }
+    
+    
         
         // Init for creating new from map item
     init(locationSetUp: LocationSetUp, context: NSManagedObjectContext = DataController.shared.container.viewContext, trip: Trip) {
-        self.moc = context
         self.trip = trip
         loadFromMapItem(locationSetUp, trip)
     }
@@ -67,6 +68,7 @@ class LocationEditModel {
         self.startLocation = location.startLocation
         self.latitude = location.latitude
         self.longitude = location.longitude
+        self.locationPOI = LocationIcon(poiCategory: poiCategory)
         
         print("LoadFromLocationItem:")
         print("Name: \(self.name)")
@@ -84,6 +86,7 @@ class LocationEditModel {
         self.poiCategory = locationSetUp.poiCategory ?? .evCharger
         self.poiImage = locationSetUp.poiImage
         self.poiColor = locationSetUp.poiColor
+        self.locationPOI = LocationIcon(poiCategory: poiCategory)
         
         // Initialize default values for new location
         self.dateArrive = trip.startDate ?? Date()
