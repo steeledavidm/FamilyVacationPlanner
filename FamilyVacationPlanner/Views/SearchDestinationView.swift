@@ -20,7 +20,6 @@ struct SearchDestinationView : View {
     @State private var addressResult: AddressResult?
     @State private var results: [AnnotatedMapItem] = []
     @State private var selectedResult: MKMapItem?
-    @State private var region = MKCoordinateRegion()
     @State private var annotationItems: [AnnotationItem] = []
     @State private var showLocationSetUpView = false
     @State private var searchText: String = ""
@@ -41,6 +40,7 @@ struct SearchDestinationView : View {
                     .font(.title)
                     .onChange(of: searchModel.searchText) {
                         searchModel.completer.queryFragment = searchModel.searchText
+                        dataModel.results = []
                     }
                     .background(Color.init(uiColor: . systemBackground))
                     .overlay {

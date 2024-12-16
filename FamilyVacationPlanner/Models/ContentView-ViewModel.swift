@@ -13,6 +13,10 @@ import SwiftUI
 extension ContentView {
     @Observable @MainActor class ViewModel {
         var position: MapCameraPosition = .automatic
+        var selectedLocation: LocationSetUp?
+        func getLocationFromCoordinates(coordinates: CLLocation) {
+            
+        }
         
         func updateMapCameraPosition(dataModel: DataModel, globalVars: GlobalVariables) {
             print("Function 3")

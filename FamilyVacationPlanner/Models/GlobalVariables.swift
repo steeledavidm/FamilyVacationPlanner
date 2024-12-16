@@ -22,6 +22,7 @@ class GlobalVariables {
     var locationIndex: Int = 0
     var comprehensiveAndDailySegments: [DaySegments] = []
     var locationUpdated: Bool = false
+    var showLocationSetUpView = false
     
     func selectTrip(_ trip: Trip) {
         selectedTrip = trip

@@ -52,6 +52,7 @@ class LocationEditModel {
     init(locationSetUp: LocationSetUp, context: NSManagedObjectContext = DataController.shared.container.viewContext, trip: Trip) {
         self.trip = trip
         loadFromMapItem(locationSetUp, trip)
+        print("in locationSetUp initializer")
     }
         
     func loadFromLocation(_ location: Location) {

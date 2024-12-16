@@ -12,8 +12,8 @@ import SwiftUI
 struct LocationSetUpView: View {
     
     @State private var viewModel: ViewModel = ViewModel()
-    @Environment(LocationEditModel.self) private var locationEditModel
-    @Bindable private var bindableLocationEditModel: LocationEditModel
+    //@Environment(LocationEditModel.self) private var locationEditModel
+    @Bindable private var locationEditModel: LocationEditModel
     @Environment(GlobalVariables.self) var globalVars
     @Environment(\.dismiss) var dismiss
     @State private var placemark: MKPlacemark = MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
@@ -28,40 +28,29 @@ struct LocationSetUpView: View {
     @State private var selectedPOI: LocationIcon?
     @State private var showPOISheet = false
     @State private var trip: Trip?
+    @State private var localName: String
     
     // Init for editing
     init(location: Location) {
         print("in the Location initializer")
         let editModel = LocationEditModel(location: location)
         self._leaveDate = State(initialValue: location.dateLeave ?? Date())
-        self._bindableLocationEditModel = Bindable(editModel)
+        self._locationEditModel = Bindable(editModel)
+        self._localName = State(initialValue: editModel.name)
     }
     
     init(locationSetUp: LocationSetUp, trip: Trip) {
         print("LocationSetUpView init with locationSetUp")
         let editModel = LocationEditModel(locationSetUp: locationSetUp, trip: trip)
         self._leaveDate = State(initialValue: trip.startDate ?? Date())
-        self._bindableLocationEditModel = Bindable(editModel)
+        self._locationEditModel = Bindable(editModel)
+        self._localName = State(initialValue: editModel.name)
     }
     
     var body: some View {
-        //                            if let image = location.poiImage {
-        //                                VStack {
-        //                                    image
-        //                                        .resizable()
-        //                                        .aspectRatio(contentMode: .fit)
-        //                                        .frame(width: 200, height: 200)
-        //                                        .background(location.poiColor ?? .white)
-        //                                        .clipShape(RoundedRectangle(cornerRadius: 10)) // Rounded rectangle with 10-point corners
-        //                                        .shadow(radius: 5) // Optional: adds a subtle shadow
-        //
-        //                                    Text("color: \(String(describing: location.poiColor))")
-        //                                    Text("category: \(String(describing: location.poiCategory))")
-        //                                }
-        //                            }
         Form {
             Section("Location Name"){
-                TextField("Location name", text: $bindableLocationEditModel.name)
+                TextField("Location name", text: $localName)
             }
             Section("Address"){
                 Text(locationEditModel.title)
@@ -87,7 +76,7 @@ struct LocationSetUpView: View {
             }
             
             Section("Notes") {
-                TextField("Notes", text: $bindableLocationEditModel.notes )
+                TextField("Notes", text: $locationEditModel.notes )
             }
             
             Section("Location Category") {
@@ -129,6 +118,7 @@ struct LocationSetUpView: View {
                 guard let trip = globalVars.selectedTrip else { return }
                 globalVars.locationFromMap = nil
                 globalVars.selectedDetent = .fraction(0.5)
+                locationEditModel.name = localName
                 if let poiCategory = locationEditModel.locationPOI?.poiCategory {
                     locationEditModel.poiCategory = poiCategory
                 }
@@ -167,8 +157,23 @@ struct LocationSetUpView: View {
                 } catch {
                     print("error saving location: \(error)")
                 }
+                globalVars.showLocationSetUpView = false
             }
         }
+        //                            if let image = location.poiImage {
+        //                                VStack {
+        //                                    image
+        //                                        .resizable()
+        //                                        .aspectRatio(contentMode: .fit)
+        //                                        .frame(width: 200, height: 200)
+        //                                        .background(location.poiColor ?? .white)
+        //                                        .clipShape(RoundedRectangle(cornerRadius: 10)) // Rounded rectangle with 10-point corners
+        //                                        .shadow(radius: 5) // Optional: adds a subtle shadow
+        //
+        //                                    Text("color: \(String(describing: location.poiColor))")
+        //                                    Text("category: \(String(describing: location.poiCategory))")
+        //                                }
+        //                            }
  
 
         .onAppear() {
@@ -190,6 +195,9 @@ struct LocationSetUpView: View {
             if globalVars.locationType == .startLocation {
                 startLocation = true
             }
+        }
+        .onChange(of: locationEditModel.name) {
+            localName = locationEditModel.name
         }
         .onChange (of: selectedPOI) {
             locationEditModel.locationPOI = selectedPOI

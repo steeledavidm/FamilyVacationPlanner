@@ -129,19 +129,19 @@ import SwiftUI
         let title = address.title
         let subtitle = address.subtitle
         results = []
-        
-        request.region = mapCameraRegion
+        //request.region = mapCameraRegion
         print("in getPlace")
         print(request.region)
         request.naturalLanguageQuery = subtitle.contains(title)
         ? subtitle : title + ", " + subtitle
-
-        let response = try await MKLocalSearch(request: request).start()
-        await MainActor.run {
-            region = response.boundingRegion
-            let resultsMKMapItem = response.mapItems
-            for result in resultsMKMapItem {
-                results.append(AnnotatedMapItem(item: result))
+        Task {
+            let search = MKLocalSearch(request: request)
+            let response = try? await search.start()
+            let resultsMKMapItems = response?.mapItems
+            if let resultsMKMapItems = resultsMKMapItems {
+                for result in resultsMKMapItems {
+                    results.append(AnnotatedMapItem(item: result))
+                }
             }
         }
     }
