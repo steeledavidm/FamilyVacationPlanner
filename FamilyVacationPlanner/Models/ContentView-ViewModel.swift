@@ -14,11 +14,13 @@ extension ContentView {
     @Observable @MainActor class ViewModel {
         var position: MapCameraPosition = .automatic
         var selectedLocation: LocationSetUp?
-        func getLocationFromCoordinates(coordinates: CLLocation) {
-            
+
+        func cameraPosition(coordinateRange: CoordinateRange) {
+            position = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinateRange.focusLatitude, longitude: coordinateRange.focusLongitude), span: MKCoordinateSpan(latitudeDelta: coordinateRange.spanLat, longitudeDelta: coordinateRange.spanLon)))
         }
         
-        func updateMapCameraPosition(dataModel: DataModel, globalVars: GlobalVariables) {
+        
+        func updateMapCameraPositionOld(dataModel: DataModel, globalVars: GlobalVariables) {
             print("Function 3")
             let selectedDetent: PresentationDetent = globalVars.selectedDetent
             let screenWidth = UIScreen.main.bounds.width

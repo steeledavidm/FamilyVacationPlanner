@@ -16,17 +16,17 @@ import SwiftUI
     var locations: [Location] = []
     var allMapInfo: [MapInfo] = []
     var daySegmentsForFunction: [Segment] = []
-    var mapCameraRegion: MKCoordinateRegion = MKCoordinateRegion()
     var results: [AnnotatedMapItem] = []
     var region: MKCoordinateRegion = MKCoordinateRegion()
     var tripSegments: [DaySegments] = []
-    var daySegments: [Segment] = []
     var currentLocation: CLLocation = CLLocation()
     var locationPlacemark: MKPlacemark?
     var startLocationSet: Bool = false
     var plotRecentItems: Bool = true
     var recentList: [Location] = []
     var mapAnnotation: AnnotatedMapItem?
+    var coordinateRange: CoordinateRange?
+    var mapCameraRegion: MKCoordinateRegion = MKCoordinateRegion()
     
     func getMapInfo(selectedTabIndex: Int, comprehensiveAndDailySegments: [DaySegments]) {
         print("Function 2")
@@ -129,7 +129,7 @@ import SwiftUI
         let title = address.title
         let subtitle = address.subtitle
         results = []
-        //request.region = mapCameraRegion
+        request.region = MKCoordinateRegion(center: mapCameraRegion.center, span: MKCoordinateSpan(latitudeDelta: 0.7, longitudeDelta: 0.7))
         print("in getPlace")
         print(request.region)
         request.naturalLanguageQuery = subtitle.contains(title)
@@ -143,6 +143,11 @@ import SwiftUI
                     results.append(AnnotatedMapItem(item: result))
                 }
             }
+            print("number of results: \(results.count)")
+            if results.count > 0 {
+                coordinateRange = CoordinateRange(searchResults: results)
+            }
+            print(coordinateRange)
         }
     }
 }

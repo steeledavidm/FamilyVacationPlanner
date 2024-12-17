@@ -47,10 +47,10 @@ struct CoordinateRange: Hashable {
             let maxLon = longitudes.max() ?? 100
             let minLat = latitudes.min() ?? 100
             let minLon = longitudes.min() ?? 100
-            self.spanLat = maxLat - minLat
-            self.spanLon = maxLon - minLon
-            self.focusLatitude = (spanLat)/2 + minLat
-            self.focusLongitude = (spanLon)/2 + minLon
+            self.spanLat = .maximum(abs(maxLat - minLat), minSpan)
+            self.spanLon = .maximum(abs(maxLon - minLon), minSpan)
+            self.focusLatitude = (maxLat - minLat)/2 + minLat
+            self.focusLongitude = (maxLon - minLon)/2 + minLon
         }
     }
     
@@ -75,10 +75,10 @@ struct CoordinateRange: Hashable {
             let maxLon = longitudes.max() ?? 100
             let minLat = latitudes.min() ?? 100
             let minLon = longitudes.min() ?? 100
-            self.spanLat = maxLat - minLat
-            self.spanLon = maxLon - minLon
-            self.focusLatitude = (spanLat)/2 + minLat
-            self.focusLongitude = (spanLon)/2 + minLon
+            self.spanLat = .maximum(abs(maxLat - minLat), minSpan)
+            self.spanLon = .maximum(abs(maxLon - minLon), minSpan)
+            self.focusLatitude = (maxLat - minLat)/2 + minLat
+            self.focusLongitude = (maxLon - minLon)/2 + minLon
         }
     }
 }

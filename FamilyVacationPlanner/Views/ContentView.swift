@@ -17,8 +17,7 @@ struct ContentView: View {
     @Environment(LocationManager.self) private var locationManager
     
     @State private var viewModel: ViewModel = ViewModel()
-    
-    @State private var position: MapCameraPosition = .automatic
+
     @State private var mapSelection: MapSelection<AnnotatedMapItem>?
     @State private var mapItemSelected = false
     @State private var markerFromScreenTap:  AnnotatedMapItem?
@@ -170,8 +169,14 @@ struct ContentView: View {
             }
             .onChange(of: selectedLocation) {
                 print(" selected location Changed")
-                if let _ = selectedLocation {
+                if let selectedLocation = selectedLocation {
+                    dataModel.coordinateRange = CoordinateRange(selectedLocation: selectedLocation)
                     globalVars.showLocationSetUpView = true
+                }
+            }
+            .onChange(of: dataModel.coordinateRange) {
+                if let coordinateRange = dataModel.coordinateRange {
+                    viewModel.cameraPosition(coordinateRange: coordinateRange)
                 }
             }
             //        .onChange(of: selectedDetent) {
@@ -183,16 +188,17 @@ struct ContentView: View {
             //            viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
             //            print("detent Changed")
             //        }
-//            .onChange(of: globalVars.selectedTabIndex) {
-//                Task {
-//                    print("tab Changed")
-//                    dataModel.results = []
-//                    dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
-//                    //viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-//                    dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
-//                    print(dataModel.mapCameraRegion)
-//                }
-//            }
+            .onChange(of: globalVars.selectedTabIndex) {
+                Task {
+                    print("tab Changed")
+                    dataModel.results = []
+                    dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
+                    dataModel.coordinateRange = CoordinateRange(segments: dataModel.daySegmentsForFunction)
+                    //viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+                    dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
+                    print(dataModel.mapCameraRegion)
+                }
+            }
 //            .onChange(of: globalVars.showSearchLocationSheet) {
 //                if globalVars.showSearchLocationSheet {
 //                    selectedDetent = .fraction(0.12)
@@ -202,7 +208,7 @@ struct ContentView: View {
                 Task {
                     print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
                     dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
-                    viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+                    viewModel.updateMapCameraPositionOld(dataModel: dataModel, globalVars: globalVars)
                     dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
                 }
             }
