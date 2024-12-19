@@ -106,9 +106,10 @@ struct DaySegmentsView: View {
                                                     HStack {
                                                         if !contentForTabView.comprehensive {
                                                             Button {
-                                                                if let selectedLocation = segment.endLocation {
+                                                                if let endLocation = segment.endLocation {
+                                                                    selectedLocation = endLocation
                                                                     globalVars.locationIndex = -99 // set to -99 to identify this was set from an existing location.
-                                                                    dataModel.coordinateRange = CoordinateRange(location: selectedLocation)
+                                                                    dataModel.coordinateRange = CoordinateRange(location: endLocation)
                                                                     print(segment.endLocation?.name ?? "no segment selected")
                                                                 }
                                                             } label: {

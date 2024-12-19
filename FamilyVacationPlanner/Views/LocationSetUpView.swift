@@ -12,7 +12,6 @@ import SwiftUI
 struct LocationSetUpView: View {
     
     @State private var viewModel: ViewModel = ViewModel()
-    //@Environment(LocationEditModel.self) private var locationEditModel
     @Bindable private var locationEditModel: LocationEditModel
     @Environment(GlobalVariables.self) var globalVars
     @Environment(\.dismiss) var dismiss
@@ -216,6 +215,7 @@ struct LocationSetUpView: View {
                 }
                 .navigationTitle("Select Group")
             }
+            .presentationDetents([.fraction(0.98)])
         }
     }
 }

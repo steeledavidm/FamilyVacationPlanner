@@ -145,7 +145,6 @@ struct ContentView: View {
             if let mapSelection = mapSelection {
                 mapItemSelected = true
                 print("map Item Selected is true")
-                //dataModel.results = []
                 if let mapFeature = mapSelection.feature {
                     print(mapSelection.feature?.coordinate ?? "no title")
                     // Get Feature address info from coordinates
@@ -189,11 +188,6 @@ struct ContentView: View {
                 viewModel.cameraPosition(coordinateRange: coordinateRange)
             }
         }
-        //        .onChange(of: globalVars.selectedDetent) {
-        //            selectedDetent = globalVars.selectedDetent
-        //            viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-        //            print("detent Changed")
-        //        }
         .onChange(of: globalVars.selectedTabIndex) {
             Task {
                 print("tab Changed")
@@ -201,29 +195,17 @@ struct ContentView: View {
                 dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
             }
         }
-        //            .onChange(of: globalVars.showSearchLocationSheet) {
-        //                if globalVars.showSearchLocationSheet {
-        //                    selectedDetent = .fraction(0.12)
-        //                }
-        //            }
         .onChange(of: globalVars.comprehensiveAndDailySegments) {
             Task {
                 print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
                 dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
             }
         }
-        //            .onChange(of: dataModel.results) {
-        //                searchResults = dataModel.results
-        //                viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-        //            }
-        //            .onChange(of: viewModel.position) {
-        //                print("position Changed")
-        //                dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
-        //            }
         .sheet(isPresented: $showSheet) {
             TripSetUpView()
                 .interactiveDismissDisabled()
             // Bug if the detent is < 0.12 that cause the the tabview to reset to tabSelected = 0
+            // Bug if .large is used for detent app goes into infinite update of location.
                 .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.98)], selection: $viewModel.sheetDetent)
                 .presentationBackgroundInteraction(.enabled)
                 .sheet(isPresented: Binding(
