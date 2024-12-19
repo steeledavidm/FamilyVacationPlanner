@@ -17,7 +17,7 @@ struct ContentView: View {
     @Environment(LocationManager.self) private var locationManager
     
     @State private var viewModel: ViewModel = ViewModel()
-
+    
     @State private var mapSelection: MapSelection<AnnotatedMapItem>?
     @State private var mapItemSelected = false
     @State private var markerFromScreenTap:  AnnotatedMapItem?
@@ -25,9 +25,9 @@ struct ContentView: View {
     @State private var selectedLocation: LocationSetUp?
     @State private var searchDestinationSheetDetent: PresentationDetent = .fraction(0.5)
     @State private var selectedDetent: PresentationDetent = .fraction(0.5)
-
+    
     @State private var showSheet = true
-   
+    
     
     var lineWidth: CGFloat = 5
     var lineColor: Color = .blue
@@ -35,6 +35,8 @@ struct ContentView: View {
     var outlineWidth: CGFloat = 1
     
     var body: some View {
+        GeometryReader { geometry in
+            let safeAreaTop = geometry.safeAreaInsets.top
         MapReader { proxy in
             Map(position: $viewModel.position, selection: $mapSelection) {
                 ForEach(dataModel.allMapInfo) {mapInfo in
@@ -79,7 +81,7 @@ struct ContentView: View {
                 }
                 if let markerFromScreenTap = markerFromScreenTap {
                     Marker(item: markerFromScreenTap.item)
-                    .tag(MapSelection(markerFromScreenTap))
+                        .tag(MapSelection(markerFromScreenTap))
                 }
                 
             }
@@ -126,142 +128,144 @@ struct ContentView: View {
                     }
                 }
             })
-                    }
-            .onAppear {
-                print("on Appear")
-                Task {
-                    try await dataModel.getCurrentLocation(locationManager: locationManager)
-                    print(dataModel.currentLocation)
-                }
-            }
-            // This captures when a MapFeature(Apple built in markers shown on map)
-            // or a MKMapItem (Markers from search results and converted from the onTapGesture)
-            // is selected and triggers the LocationSetupView
-            .onChange(of: mapSelection) {
-                print("mapSelection Changed: \(Date().timeIntervalSince1970)")
-                if let mapSelection = mapSelection {
-                    mapItemSelected = true
-                    print("map Item Selected is true")
-                    //dataModel.results = []
-                    if let mapFeature = mapSelection.feature {
-                        print(mapSelection.feature?.coordinate ?? "no title")
-                        // Get Feature address info from coordinates
-                        Task {
-                            try await dataModel.getLocationPlacemark(location: CLLocation(latitude: mapFeature.coordinate.latitude, longitude: mapFeature.coordinate.longitude))
-                            if let mapAnnotation = dataModel.mapAnnotation {
-                                let title = mapAnnotation.item.placemark.title
-                                let subtitle = mapAnnotation.item.placemark.subtitle
-                                print("selectedLocation from MapFeature")
-                                selectedLocation = LocationSetUp(from: mapFeature, title: title ?? "" , subtitle: subtitle ?? "" )
-                            }
-                        }
-                    } else if let  mapItem = mapSelection.value {
-                        selectedLocation = LocationSetUp(from: mapItem)
-                        print("selectedLocation from MapItem")
-                    } else {
-                        mapItemSelected = false
-                    }
-                    
-                } else {
-                    mapItemSelected = false
-                    print("mapSelection is nil")
-                }
-            }
-            .onChange(of: selectedLocation) {
-                print(" selected location Changed")
-                if let selectedLocation = selectedLocation {
-                    dataModel.coordinateRange = CoordinateRange(selectedLocation: selectedLocation)
-                    globalVars.showLocationSetUpView = true
-                }
-            }
-            .onChange(of: dataModel.coordinateRange) {
-                if let coordinateRange = dataModel.coordinateRange {
-                    viewModel.cameraPosition(coordinateRange: coordinateRange)
-                }
-            }
-            //        .onChange(of: selectedDetent) {
-            //            print("detent Changed")
-            //            globalVars.selectedDetent = selectedDetent
-            //        }
-            //        .onChange(of: globalVars.selectedDetent) {
-            //            selectedDetent = globalVars.selectedDetent
-            //            viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-            //            print("detent Changed")
-            //        }
-            .onChange(of: globalVars.selectedTabIndex) {
-                Task {
-                    print("tab Changed")
-                    dataModel.results = []
-                    dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
-                    dataModel.coordinateRange = CoordinateRange(segments: dataModel.daySegmentsForFunction)
-                    //viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-                    dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
-                    print(dataModel.mapCameraRegion)
-                }
-            }
-//            .onChange(of: globalVars.showSearchLocationSheet) {
-//                if globalVars.showSearchLocationSheet {
-//                    selectedDetent = .fraction(0.12)
-//                }
-//            }
-            .onChange(of: globalVars.comprehensiveAndDailySegments) {
-                Task {
-                    print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
-                    dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
-                    viewModel.updateMapCameraPositionOld(dataModel: dataModel, globalVars: globalVars)
-                    dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
-                }
-            }
-//            .onChange(of: dataModel.results) {
-//                searchResults = dataModel.results
-//                viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
-//            }
-//            .onChange(of: viewModel.position) {
-//                print("position Changed")
-//                dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
-//            }
-            .sheet(isPresented: $showSheet) {
-                TripSetUpView()
-                    .interactiveDismissDisabled()
-                // Bug if the detent is < 0.12 that cause the the tabview to reset to tabSelected = 0
-                    .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $selectedDetent)
-                    .presentationBackgroundInteraction(.enabled)
-                    .sheet(isPresented: Binding(
-                        get: { globalVars.showSearchLocationSheet },
-                        set: { globalVars.showSearchLocationSheet = $0}
-                    )) {
-                        SearchDestinationView()
-                            .presentationBackgroundInteraction(.enabled)
-                            .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $selectedDetent)
-                            .onDisappear(perform: {
-                                print("searchDestinationView dissappears")
-                                globalVars.showSearchLocationSheet = false
-                                dataModel.results = []
-                            })
-                            .sheet(isPresented: Binding(
-                                get: { globalVars.showLocationSetUpView },
-                                set: { globalVars.showLocationSetUpView = $0 }
-                            )) {
-                                if let trip = globalVars.selectedTrip {
-                                    if let location = selectedLocation {
-                                        LocationSetUpView(locationSetUp: location, trip: trip)
-                                            .environment(LocationEditModel(locationSetUp: location, trip: trip))
-                                            .presentationBackgroundInteraction(.enabled)
-                                            .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large],
-                                                                 selection: $selectedDetent)
-                                            .onDisappear(perform: {
-                                                print("locationSetUpView Dissapeared")
-                                                mapSelection = nil
-                                                selectedLocation = nil
-                                                globalVars.showLocationSetUpView = false
-                                                markerFromScreenTap = nil
-                                            })
-                                    }
-                                }
-                            }
-                    }
+        }
+        .onAppear {
+            print("on Appear")
+            viewModel.safeAreaTop = safeAreaTop
+            Task {
+                try await dataModel.getCurrentLocation(locationManager: locationManager)
+                print(dataModel.currentLocation)
             }
         }
+        // This captures when a MapFeature(Apple built in markers shown on map)
+        // or a MKMapItem (Markers from search results and converted from the onTapGesture)
+        // is selected and triggers the LocationSetupView
+        .onChange(of: mapSelection) {
+            print("mapSelection Changed: \(Date().timeIntervalSince1970)")
+            if let mapSelection = mapSelection {
+                mapItemSelected = true
+                print("map Item Selected is true")
+                //dataModel.results = []
+                if let mapFeature = mapSelection.feature {
+                    print(mapSelection.feature?.coordinate ?? "no title")
+                    // Get Feature address info from coordinates
+                    Task {
+                        try await dataModel.getLocationPlacemark(location: CLLocation(latitude: mapFeature.coordinate.latitude, longitude: mapFeature.coordinate.longitude))
+                        if let mapAnnotation = dataModel.mapAnnotation {
+                            let title = mapAnnotation.item.placemark.title
+                            let subtitle = mapAnnotation.item.placemark.subtitle
+                            print("selectedLocation from MapFeature")
+                            selectedLocation = LocationSetUp(from: mapFeature, title: title ?? "" , subtitle: subtitle ?? "" )
+                        }
+                    }
+                } else if let  mapItem = mapSelection.value {
+                    selectedLocation = LocationSetUp(from: mapItem)
+                    print("selectedLocation from MapItem")
+                } else {
+                    mapItemSelected = false
+                }
+                
+            } else {
+                mapItemSelected = false
+                print("mapSelection is nil")
+            }
+        }
+        .onChange(of: selectedLocation) {
+            print(" selected location Changed")
+            if let selectedLocation = selectedLocation {
+                dataModel.coordinateRange = CoordinateRange(selectedLocation: selectedLocation)
+                globalVars.showLocationSetUpView = true
+            }
+        }
+        .onChange(of: dataModel.coordinateRange) {oldValue, newValue in
+            if let coordinateRange = newValue {
+                viewModel.cameraPosition(coordinateRange: coordinateRange)
+            }
+            print("************ coordinateRange changed ************")
+            print(oldValue)
+            print("")
+            print(newValue)
+        }
+        .onChange(of: viewModel.sheetDetent) {
+            print("detent Changed")
+            if let coordinateRange = dataModel.coordinateRange {
+                viewModel.cameraPosition(coordinateRange: coordinateRange)
+            }
+        }
+        //        .onChange(of: globalVars.selectedDetent) {
+        //            selectedDetent = globalVars.selectedDetent
+        //            viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+        //            print("detent Changed")
+        //        }
+        .onChange(of: globalVars.selectedTabIndex) {
+            Task {
+                print("tab Changed")
+                dataModel.results = []
+                dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
+            }
+        }
+        //            .onChange(of: globalVars.showSearchLocationSheet) {
+        //                if globalVars.showSearchLocationSheet {
+        //                    selectedDetent = .fraction(0.12)
+        //                }
+        //            }
+        .onChange(of: globalVars.comprehensiveAndDailySegments) {
+            Task {
+                print("segment size: \(globalVars.comprehensiveAndDailySegments.count)")
+                dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
+            }
+        }
+        //            .onChange(of: dataModel.results) {
+        //                searchResults = dataModel.results
+        //                viewModel.updateMapCameraPosition(dataModel: dataModel, globalVars: globalVars)
+        //            }
+        //            .onChange(of: viewModel.position) {
+        //                print("position Changed")
+        //                dataModel.mapCameraRegion = viewModel.position.region ?? MKCoordinateRegion()
+        //            }
+        .sheet(isPresented: $showSheet) {
+            TripSetUpView()
+                .interactiveDismissDisabled()
+            // Bug if the detent is < 0.12 that cause the the tabview to reset to tabSelected = 0
+                .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $viewModel.sheetDetent)
+                .presentationBackgroundInteraction(.enabled)
+                .sheet(isPresented: Binding(
+                    get: { globalVars.showSearchLocationSheet },
+                    set: { globalVars.showSearchLocationSheet = $0}
+                )) {
+                    SearchDestinationView()
+                        .presentationBackgroundInteraction(.enabled)
+                        .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $viewModel.sheetDetent)
+                        .onDisappear(perform: {
+                            print("searchDestinationView dissappears")
+                            globalVars.showSearchLocationSheet = false
+                            dataModel.results = []
+                        })
+                        .sheet(isPresented: Binding(
+                            get: { globalVars.showLocationSetUpView },
+                            set: { globalVars.showLocationSetUpView = $0 }
+                        )) {
+                            if let trip = globalVars.selectedTrip {
+                                if let location = selectedLocation {
+                                    LocationSetUpView(locationSetUp: location, trip: trip)
+                                        .environment(LocationEditModel(locationSetUp: location, trip: trip))
+                                        .presentationBackgroundInteraction(.enabled)
+                                        .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large],
+                                                             selection: $viewModel.sheetDetent)
+                                        .onDisappear(perform: {
+                                            print("locationSetUpView Dissapeared")
+                                            mapSelection = nil
+                                            selectedLocation = nil
+                                            globalVars.showLocationSetUpView = false
+                                            markerFromScreenTap = nil
+                                        })
+                                }
+                            }
+                        }
+                }
+        }
+    }
+}
 }
 
 #Preview {

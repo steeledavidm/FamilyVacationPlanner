@@ -63,13 +63,15 @@ struct CoordinateRange: Hashable {
             self.focusLatitude = segments[0].startLocation?.latitude ?? 100
             self.focusLongitude = segments[0].startLocation?.longitude ?? 100
         } else {
+            print("************* Segments ***************")
             for segment in segments {
-                if segment.segmentComplete {
+                if segment.segmentComplete && !segment.placeholder {
                     latitudes.append(segment.startLocation?.latitude ?? 100)
                     latitudes.append(segment.endLocation?.latitude ?? 100)
                     longitudes.append(segment.startLocation?.longitude ?? 100)
                     longitudes.append(segment.endLocation?.longitude ?? 100)
                 }
+                print(segment)
             }
             let maxLat = latitudes.max() ?? 100
             let maxLon = longitudes.max() ?? 100

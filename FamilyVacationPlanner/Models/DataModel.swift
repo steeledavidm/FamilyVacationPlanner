@@ -26,7 +26,6 @@ import SwiftUI
     var recentList: [Location] = []
     var mapAnnotation: AnnotatedMapItem?
     var coordinateRange: CoordinateRange?
-    var mapCameraRegion: MKCoordinateRegion = MKCoordinateRegion()
     
     func getMapInfo(selectedTabIndex: Int, comprehensiveAndDailySegments: [DaySegments]) {
         print("Function 2")
@@ -56,6 +55,7 @@ import SwiftUI
                 allMapInfo.append(MapInfo(markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation, startIcon: startIcon, endIcon: endIcon, route: route))
             }
         }
+        coordinateRange = CoordinateRange(segments: daySegmentsForFunction)
     }
     
     func getCurrentLocation(locationManager: LocationManager) async throws {
@@ -123,31 +123,31 @@ import SwiftUI
 //            }
         }
     }
+
     
     func getPlace(from address: AddressResult) async throws {
         let request = MKLocalSearch.Request()
-        let title = address.title
-        let subtitle = address.subtitle
-        results = []
-        request.region = MKCoordinateRegion(center: mapCameraRegion.center, span: MKCoordinateSpan(latitudeDelta: 0.7, longitudeDelta: 0.7))
-        print("in getPlace")
+        
+        // Simplify query for global chains
+        request.naturalLanguageQuery = address.title
+        
+        // Use a wider region for global searches
+        request.region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: coordinateRange?.focusLatitude ?? 100, longitude: coordinateRange?.focusLongitude ?? 100),
+            span: MKCoordinateSpan(latitudeDelta: coordinateRange?.spanLat ?? 1.0, longitudeDelta: coordinateRange?.spanLon ?? 1.0)
+        )
         print(request.region)
-        request.naturalLanguageQuery = subtitle.contains(title)
-        ? subtitle : title + ", " + subtitle
-        Task {
-            let search = MKLocalSearch(request: request)
-            let response = try? await search.start()
-            let resultsMKMapItems = response?.mapItems
-            if let resultsMKMapItems = resultsMKMapItems {
-                for result in resultsMKMapItems {
-                    results.append(AnnotatedMapItem(item: result))
-                }
-            }
-            print("number of results: \(results.count)")
-            if results.count > 0 {
-                coordinateRange = CoordinateRange(searchResults: results)
-            }
-            print(coordinateRange)
+        
+        let search = MKLocalSearch(request: request)
+        let response = try await search.start()
+        
+        results = response.mapItems.map { AnnotatedMapItem(item: $0) }
+        
+        if !results.isEmpty {
+            coordinateRange = CoordinateRange(searchResults: results)
         }
+        
+        print("Number of results: \(results.count)")
     }
 }
+
