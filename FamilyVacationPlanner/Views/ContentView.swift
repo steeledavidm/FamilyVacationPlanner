@@ -182,9 +182,6 @@ struct ContentView: View {
                 viewModel.cameraPosition(coordinateRange: coordinateRange)
             }
             print("************ coordinateRange changed ************")
-            print(oldValue)
-            print("")
-            print(newValue)
         }
         .onChange(of: viewModel.sheetDetent) {
             print("detent Changed")
@@ -227,7 +224,7 @@ struct ContentView: View {
             TripSetUpView()
                 .interactiveDismissDisabled()
             // Bug if the detent is < 0.12 that cause the the tabview to reset to tabSelected = 0
-                .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $viewModel.sheetDetent)
+                .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.98)], selection: $viewModel.sheetDetent)
                 .presentationBackgroundInteraction(.enabled)
                 .sheet(isPresented: Binding(
                     get: { globalVars.showSearchLocationSheet },
@@ -235,7 +232,7 @@ struct ContentView: View {
                 )) {
                     SearchDestinationView()
                         .presentationBackgroundInteraction(.enabled)
-                        .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large], selection: $viewModel.sheetDetent)
+                        .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.98)], selection: $viewModel.sheetDetent)
                         .onDisappear(perform: {
                             print("searchDestinationView dissappears")
                             globalVars.showSearchLocationSheet = false
@@ -248,9 +245,8 @@ struct ContentView: View {
                             if let trip = globalVars.selectedTrip {
                                 if let location = selectedLocation {
                                     LocationSetUpView(locationSetUp: location, trip: trip)
-                                        .environment(LocationEditModel(locationSetUp: location, trip: trip))
                                         .presentationBackgroundInteraction(.enabled)
-                                        .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.9), .large],
+                                        .presentationDetents([.fraction(0.12), .fraction(0.5), .fraction(0.98)],
                                                              selection: $viewModel.sheetDetent)
                                         .onDisappear(perform: {
                                             print("locationSetUpView Dissapeared")

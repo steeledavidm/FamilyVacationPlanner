@@ -15,7 +15,6 @@ class GlobalVariables {
     var selectedTrip: Trip?
     var locationFromMap: AnnotationItem?
     var locationType: LocationType?
-    var selectedDetent: PresentationDetent = .fraction(0.5)
     var selectedTabIndex: Int = 0
     var showSearchLocationSheet: Bool = false
     var markerSelected: Bool = false

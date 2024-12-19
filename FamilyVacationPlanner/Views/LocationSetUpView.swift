@@ -31,6 +31,13 @@ struct LocationSetUpView: View {
     @State private var localName: String
     
     // Init for editing
+    
+    init(locationEditModel: LocationEditModel) {
+        self._locationEditModel = Bindable(locationEditModel)
+        self._leaveDate = State(initialValue: locationEditModel.dateLeave)
+        self._localName = State(initialValue: locationEditModel.name)
+    }
+    
     init(location: Location) {
         print("in the Location initializer")
         let editModel = LocationEditModel(location: location)
@@ -117,7 +124,6 @@ struct LocationSetUpView: View {
             Button("Save") {
                 guard let trip = globalVars.selectedTrip else { return }
                 globalVars.locationFromMap = nil
-                globalVars.selectedDetent = .fraction(0.5)
                 locationEditModel.name = localName
                 if let poiCategory = locationEditModel.locationPOI?.poiCategory {
                     locationEditModel.poiCategory = poiCategory
@@ -181,7 +187,6 @@ struct LocationSetUpView: View {
             if locationEditModel.startLocation {
                 locationType = LocationType.startLocation
             }
-            globalVars.selectedDetent = .fraction(0.5)
             if globalVars.locationIndex != -99 {
                 locationIndex = globalVars.locationIndex
             } else {

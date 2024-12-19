@@ -45,9 +45,6 @@ class LocationEditModel {
         loadFromLocation(location)
         print("in LocationEditModel Location initializer")
     }
-    
-    
-        
         // Init for creating new from map item
     init(locationSetUp: LocationSetUp, context: NSManagedObjectContext = DataController.shared.container.viewContext, trip: Trip) {
         self.trip = trip

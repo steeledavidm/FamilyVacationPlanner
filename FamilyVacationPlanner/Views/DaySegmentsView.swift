@@ -264,7 +264,6 @@ struct DaySegmentsView: View {
             }
             .sheet(item: $selectedLocation) { location in
                 LocationSetUpView(location: location)
-                    .environment(LocationEditModel(location: location))
             }
         }
     }

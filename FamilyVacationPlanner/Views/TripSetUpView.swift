@@ -55,15 +55,12 @@ struct TripSetUpView: View {
                         path.append(tripTemplate)
                         editMode = true
                         newTrip = true
-                        globalVars.selectedDetent = .large
-                        globalVars.selectedDetent = .fraction(0.5)
                     }, label: {
                         Text("New Trip")
                     })
                 }
                 .onAppear {
                     editMode = false
-                    globalVars.selectedDetent = .fraction(0.5)
                 }
                 
                 Button(action: {
