@@ -57,6 +57,7 @@ struct CoordinateRange: Hashable {
     init(segments: [Segment]) {
         var latitudes: [Double] = []
         var longitudes: [Double] = []
+        var envelope: PolyLineEnvelope = PolyLineEnvelope(NEPointCoordinate: CLLocationCoordinate2D(latitude: 100, longitude: 100), SWPointCoordinate: CLLocationCoordinate2D(latitude: 100, longitude: 100))
         if segments.count == 1 && segments[0].startLocation == segments[0].endLocation {
             self.spanLat = minSpan
             self.spanLon = minSpan
@@ -66,12 +67,12 @@ struct CoordinateRange: Hashable {
             print("************* Segments ***************")
             for segment in segments {
                 if segment.segmentComplete && !segment.placeholder {
-                    latitudes.append(segment.startLocation?.latitude ?? 100)
-                    latitudes.append(segment.endLocation?.latitude ?? 100)
-                    longitudes.append(segment.startLocation?.longitude ?? 100)
-                    longitudes.append(segment.endLocation?.longitude ?? 100)
+                    envelope = getPolyLineEnvelope(polyline: segment.polyline ?? MKPolyline())
+                    latitudes.append(envelope.NEPointCoordinate.latitude)
+                    latitudes.append(envelope.SWPointCoordinate.latitude)
+                    longitudes.append(envelope.NEPointCoordinate.longitude)
+                    longitudes.append(envelope.SWPointCoordinate.longitude)
                 }
-                print(segment)
             }
             let maxLat = latitudes.max() ?? 100
             let maxLon = longitudes.max() ?? 100
@@ -83,4 +84,23 @@ struct CoordinateRange: Hashable {
             self.focusLongitude = (maxLon - minLon)/2 + minLon
         }
     }
+}
+
+struct PolyLineEnvelope {
+    let NEPointCoordinate: CLLocationCoordinate2D
+    let SWPointCoordinate: CLLocationCoordinate2D
+}
+
+
+func getPolyLineEnvelope(polyline: MKPolyline) -> (PolyLineEnvelope) {
+    let boundingRect = polyline.boundingMapRect
+    
+    let NEPoint = MKMapPoint(x: boundingRect.maxX, y: boundingRect.maxY)
+    let NEPointCoordinate = NEPoint.coordinate
+    let SWPoint = MKMapPoint(x: boundingRect.minX, y: boundingRect.minY)
+    let SWPointCoordinate = SWPoint.coordinate
+    
+    print("NEPointCoordinate: \(NEPointCoordinate)")
+    print("SWPointCoordinate: \(SWPointCoordinate)")
+    return PolyLineEnvelope(NEPointCoordinate: NEPointCoordinate, SWPointCoordinate: SWPointCoordinate)
 }
