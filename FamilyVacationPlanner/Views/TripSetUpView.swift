@@ -12,12 +12,14 @@ import SwiftUI
 struct TripSetUpView: View {
     
     @State private var viewModel: ViewModel = ViewModel()
-
+    
     @Environment(DataModel.self) private var dataModel
     @Environment(GlobalVariables.self) private var globalVars
     let routeManager: RouteManager = RouteManager()
     @FetchRequest(sortDescriptors: [SortDescriptor(\.tripName)])
     var trips: FetchedResults<Trip>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.dateLeave)])
+        var locations: FetchedResults<Location>
     @State private var dateArrive: Date = Date()
     @State private var dateLeave: Date = Date()
     @State private var editMode: Bool = false
@@ -26,7 +28,7 @@ struct TripSetUpView: View {
     @State private var path: NavigationPath = NavigationPath()
     @State private var startLocation: Location?
     @State private var tripName: String = ""
-
+    
     var body: some View {
         NavigationStack(path: $path) {
             VStack(alignment: .leading) {
@@ -87,9 +89,26 @@ struct TripSetUpView: View {
                     EditTripView(editMode: $editMode, newTrip: $newTrip, path: $path, trip: trip)
                 } else {
                     DaySegmentsView(trip: trip)
-                        //.toolbar(.hidden, for: .navigationBar)
+                    //.toolbar(.hidden, for: .navigationBar)
                 }
             })
+        }
+    
+        .onAppear {
+            
+            dataModel.locations = Array(locations)
+
+            for trip in trips {
+                globalVars.selectTrip(trip)
+                dataModel.setup(trip: trip)
+                globalVars.selectedTabIndex = 0
+                Task {
+                    await dataModel.updateLocations()
+                    globalVars.comprehensiveAndDailySegments = dataModel.comprehensiveAndDailySegments
+                }
+                dataModel.results = []
+                dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
+            }
         }
     }
     

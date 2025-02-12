@@ -28,7 +28,7 @@ struct DaySegmentsView: View {
     
     var body: some View {
         TabView(selection: $selectedTabIndex) {
-            ForEach(viewModel.comprehensiveAndDailySegments, id: \.id) { contentForTabView in
+            ForEach(dataModel.comprehensiveAndDailySegments, id: \.id) { contentForTabView in
                 VStack {
                     Section(header:
                         VStack {
@@ -180,12 +180,12 @@ struct DaySegmentsView: View {
                                         .moveDisabled(segment.endLocation?.overNightStop ?? false || segment.placeholder)
                                     }
                                 }
-                                //.onDelete(perform: viewModel.removeSegment)
+                                .onDelete(perform: viewModel.removeSegment)
                                     .onMove { indices, newOffset in
                                         var startLocation: Location?
-                                        if var segments = viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments {
+                                        if var segments = dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments {
                                             // Get start location
-                                            if viewModel.comprehensiveAndDailySegments[selectedTabIndex].startLocationSet {
+                                            if dataModel.comprehensiveAndDailySegments[selectedTabIndex].startLocationSet {
                                                 startLocation = segments[0].startLocation
                                             }
                                             
@@ -197,7 +197,7 @@ struct DaySegmentsView: View {
                                                 if let startLocation = startLocation {
                                                     segments[0].startLocation = startLocation
                                                 }
-                                                viewModel.comprehensiveAndDailySegments[selectedTabIndex].segments = segments
+                                                dataModel.comprehensiveAndDailySegments[selectedTabIndex].segments = segments
                                                 Task {
                                                     try? await viewModel.saveLocationIndex(segments: segments, dayIndex: selectedTabIndex, trip: trip)
                                                 }
@@ -227,7 +227,7 @@ struct DaySegmentsView: View {
                             }
                         }
 //                        .environment(\.editMode, .constant(.active))
-                        .animation(.easeInOut, value: viewModel.comprehensiveAndDailySegments)
+                        .animation(.easeInOut, value: dataModel.comprehensiveAndDailySegments)
                         })
                     }
                     .tag(contentForTabView.dayIndex)
@@ -236,27 +236,27 @@ struct DaySegmentsView: View {
             .tabViewStyle(.page)
             .onAppear() {
                 print("Number of Locations: \(locations.count)")
-                viewModel.locations = Array(locations)
-                if viewModel.locations.isEmpty {
+                dataModel.locations = Array(locations)
+                if dataModel.locations.isEmpty {
                     selectedTabIndex = 1
                 }
                 globalVars.selectTrip(trip)
-                viewModel.setup(trip: trip)
+                dataModel.setup(trip: trip)
                 globalVars.selectedTabIndex = selectedTabIndex
                 Task {
-                    await viewModel.updateLocations()
-                    globalVars.comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
-                    if viewModel.comprehensiveAndDailySegments.count == 2 {
+                    await dataModel.updateLocations()
+                    globalVars.comprehensiveAndDailySegments = dataModel.comprehensiveAndDailySegments
+                    if dataModel.comprehensiveAndDailySegments.count == 2 {
                         selectedTabIndex = 1
                     }
                 }
             }
             .onChange(of: globalVars.locationUpdated) {
                 print("updating locations")
-                viewModel.locations = Array(locations)
+                dataModel.locations = Array(locations)
                 Task {
-                    await viewModel.updateLocations()
-                    globalVars.comprehensiveAndDailySegments = viewModel.comprehensiveAndDailySegments
+                    await dataModel.updateLocations()
+                    globalVars.comprehensiveAndDailySegments = dataModel.comprehensiveAndDailySegments
                 }
             }
             .onChange(of: selectedTabIndex) {
