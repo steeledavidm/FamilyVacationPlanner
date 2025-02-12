@@ -54,11 +54,11 @@ struct CoordinateRange: Hashable {
         }
     }
     
-    init(segments: [Segment]) {
+    init(segments: [Segment], currentLocation: CLLocation) {
         var latitudes: [Double] = []
         var longitudes: [Double] = []
         var envelope: PolyLineEnvelope = PolyLineEnvelope(NEPointCoordinate: CLLocationCoordinate2D(latitude: 100, longitude: 100), SWPointCoordinate: CLLocationCoordinate2D(latitude: 100, longitude: 100))
-        if segments.count == 1 && segments[0].startLocation == segments[0].endLocation {
+        if segments.count == 2 && segments[0].startLocation == segments[0].endLocation {
             self.spanLat = minSpan
             self.spanLon = minSpan
             self.focusLatitude = segments[0].startLocation?.latitude ?? 100
@@ -78,10 +78,17 @@ struct CoordinateRange: Hashable {
             let maxLon = longitudes.max() ?? 100
             let minLat = latitudes.min() ?? 100
             let minLon = longitudes.min() ?? 100
-            self.spanLat = .maximum(abs(maxLat - minLat), minSpan)
-            self.spanLon = .maximum(abs(maxLon - minLon), minSpan)
-            self.focusLatitude = (maxLat - minLat)/2 + minLat
-            self.focusLongitude = (maxLon - minLon)/2 + minLon
+            if maxLat != minLat && maxLon != minLon {
+                self.spanLat = abs(maxLat - minLat)
+                self.spanLon = abs(maxLon - minLon)
+                self.focusLatitude = (maxLat - minLat)/2 + minLat
+                self.focusLongitude = (maxLon - minLon)/2 + minLon
+            } else {
+                self.spanLat = 5.0
+                self.spanLon = 5.0
+                self.focusLatitude = currentLocation.coordinate.latitude
+                self.focusLongitude = currentLocation.coordinate.longitude
+            }
         }
     }
 }

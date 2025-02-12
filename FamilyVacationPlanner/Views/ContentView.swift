@@ -131,11 +131,13 @@ struct ContentView: View {
         }
         .onAppear {
             print("on Appear")
-            viewModel.safeAreaTop = safeAreaTop
+            viewModel.safeAreaTop = safeAreaTop * 0.5
             Task {
                 try await dataModel.getCurrentLocation(locationManager: locationManager)
                 print(dataModel.currentLocation)
             }
+            dataModel.results = []
+            dataModel.getMapInfo(selectedTabIndex: globalVars.selectedTabIndex, comprehensiveAndDailySegments: globalVars.comprehensiveAndDailySegments)
         }
         // This captures when a MapFeature(Apple built in markers shown on map)
         // or a MKMapItem (Markers from search results and converted from the onTapGesture)

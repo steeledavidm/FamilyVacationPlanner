@@ -55,7 +55,7 @@ import SwiftUI
                 allMapInfo.append(MapInfo(markerLabelStart: markerLabelStart, markerLabelEnd: markerLabelEnd, startingPoint: startLocation, endingPoint: endLocation, startIcon: startIcon, endIcon: endIcon, route: route))
             }
         }
-        coordinateRange = CoordinateRange(segments: daySegmentsForFunction)
+        coordinateRange = CoordinateRange(segments: daySegmentsForFunction, currentLocation: currentLocation)
     }
     
     func getCurrentLocation(locationManager: LocationManager) async throws {

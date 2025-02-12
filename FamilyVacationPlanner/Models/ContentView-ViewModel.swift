@@ -23,8 +23,8 @@ extension ContentView {
             let paddingPoints = 40.0
             var centerLatAdjustment: Double = 0.0
             var newCenterLat = 0.0
-            var newSpanLat = 0.0
-            var newSpanLon = 0.0
+            var newSpanLat = 1.0
+            var newSpanLon = 1.0
             var detent = 0.0
             var topLatitude: Double = 0.0
             var bottomLatitude: Double = 0.0
@@ -51,13 +51,17 @@ extension ContentView {
                 centerLatAdjustment = (adjustedScreenCenter * coordinateRange.spanLon / screenWidthDivHeight) / screenHeight
                 newCenterLat = coordinateRange.focusLatitude - 2 * centerLatAdjustment
                 newSpanLon = coordinateRange.spanLon * screenWidth / adjustedScreenWidth
-                //newSpanLat = coordinateRange.spanLat * screenHeight / adjustedScreenHeight
-                } else {
-                    print("Taller than Wide")
-                    topLatitude = (coordinateRange.focusLatitude + coordinateRange.spanLat/2) + (safeAreaTop + paddingPoints) * coordinateRange.spanLat / adjustedScreenHeight
-                    bottomLatitude = (coordinateRange.focusLatitude - coordinateRange.spanLat/2) - ((screenHeight - safeAreaTop) * detent + paddingPoints) * coordinateRange.spanLat / adjustedScreenHeight
+                newSpanLat = coordinateRange.spanLat * screenHeight / adjustedScreenHeight
+            } else {
+                print("Taller than Wide")
+                topLatitude = (coordinateRange.focusLatitude + coordinateRange.spanLat/2) + (safeAreaTop + paddingPoints) * coordinateRange.spanLat / adjustedScreenHeight
+                bottomLatitude = (coordinateRange.focusLatitude - coordinateRange.spanLat/2) - ((screenHeight - safeAreaTop) * detent + paddingPoints) * coordinateRange.spanLat / adjustedScreenHeight
+                if topLatitude != bottomLatitude {
                     newSpanLat = topLatitude - bottomLatitude
-                    newCenterLat = (topLatitude + bottomLatitude) / 2
+                } else {
+                    newSpanLat = 1.0
+                }
+                newCenterLat = (topLatitude + bottomLatitude) / 2
                     
 //                    centerLatAdjustment = coordinateRange.spanLat / screenHeight * adjustedScreenCenter
 //                    newCenterLat = coordinateRange.focusLatitude - centerLatAdjustment

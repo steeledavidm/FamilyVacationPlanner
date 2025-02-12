@@ -20,6 +20,7 @@ extension DaySegmentsView {
         var comprehensiveAndDailySegments: [DaySegments] = []
         var daySummary: [Segment] = []
         var tripStartLocation: Location?
+        var allTripsSegments: [DaySegments] = []
         
         func setup(trip: Trip) {
             self.trip = trip
@@ -193,6 +194,11 @@ extension DaySegmentsView {
              comprehensiveAndDailySegments.append(contentsOf: tripSegments)
             routeManager.cleanCache(trip: trip, activeSegments: daySegmentsAccumulator, tripDeleted: false)
          }
+        
+        func setUpAllTrips() {
+            print("setUp all trip view")
+            //var tripAccumulator: 
+        }
         
         func saveLocationIndex(segments: [Segment], dayIndex: Int, trip: Trip) async throws {
             for (index, segment) in segments.enumerated() {

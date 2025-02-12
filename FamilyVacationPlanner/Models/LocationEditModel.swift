@@ -33,6 +33,7 @@ class LocationEditModel {
     var poiColor: Color?
     var locationPOI: LocationIcon?
     
+    var poiUIImageString: String?
     
     init() {
         self.location = nil
@@ -67,12 +68,34 @@ class LocationEditModel {
         self.latitude = location.latitude
         self.longitude = location.longitude
         self.locationPOI = LocationIcon(poiCategory: poiCategory)
+        self.poiImage = convertToImage(poiImageString: location.poiImageString ?? "")
+            .renderingMode(.original)
         
         print("LoadFromLocationItem:")
         print("Name: \(self.name)")
         print("Title: \(self.title)")
         print("POI Category: \(self.poiCategory)")
         print("Dates: \(self.dateArrive) - \(self.dateLeave)")
+    }
+    
+    func convertToImage(poiImageString: String) -> Image {
+        if let imageData = Data(base64Encoded: poiImageString),
+           let uiImage = UIImage(data: imageData)?.withRenderingMode(.alwaysOriginal) {
+            return Image(uiImage: uiImage)
+                .interpolation(.high)
+                .renderingMode(.original)
+        }
+        return Image(systemName: "photo")
+    }
+    
+    func convertImageToString(image: Image) -> String? {
+        let renderer = ImageRenderer(content: image)
+        renderer.scale = UIScreen.main.scale
+        
+        guard let uiImage = renderer.uiImage else { return nil }
+        guard let imageData = uiImage.pngData() else { return nil }
+        
+        return imageData.base64EncodedString()
     }
     
     func loadFromMapItem(_ locationSetUp: LocationSetUp, _ trip: Trip) {
@@ -132,6 +155,11 @@ class LocationEditModel {
         location.startLocation = startLocation
         location.latitude = latitude
         location.longitude = longitude
+        
+        if let poiImage = poiImage {
+            self.poiUIImageString = convertImageToString(image: poiImage)
+        }
+        location.poiImageString = poiUIImageString
         
         if let trip = trip {
             trip.addToLocation(location)

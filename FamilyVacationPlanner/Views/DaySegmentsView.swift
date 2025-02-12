@@ -225,8 +225,8 @@ struct DaySegmentsView: View {
                                     globalVars.showSearchLocationSheet = true
                                 }
                             }
-                            }
-                                //.environment(\.editMode, .constant(.active))
+                        }
+//                        .environment(\.editMode, .constant(.active))
                         .animation(.easeInOut, value: viewModel.comprehensiveAndDailySegments)
                         })
                     }

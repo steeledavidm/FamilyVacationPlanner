@@ -54,131 +54,136 @@ struct LocationSetUpView: View {
     }
     
     var body: some View {
-        Form {
-            Section("Location Name"){
-                TextField("Location name", text: $localName)
-            }
-            Section("Address"){
-                Text(locationEditModel.title)
-            }
-            if viewModel.numberOfNightsLeft > 0 {
-                Toggle("Overnight Stop", isOn: $overNightStop)
-                    .toggleStyle(.switch)
-                if overNightStop {
-                    Picker("Leave", selection: $numberOfNights, content: {
-                        ForEach(1..<viewModel.numberOfNightsLeft + 1, id: \.self) {
-                            if $0 != 1 {
-                                Text("\($0) Nights - \(viewModel.dayFromDayIndex + TimeInterval(($0 + 1) * 60 * 60 * 24))")
-                            } else {
-                                Text("\($0) Night - \(viewModel.dayFromDayIndex + TimeInterval(($0 + 1) * 60 * 60 * 24))")
-                            }
-                        }
-                    })
-                    .pickerStyle(.menu)
-                    .onChange(of: numberOfNights) {
-                        leaveDate = viewModel.dayFromDayIndex + TimeInterval((numberOfNights + 1) * 60 * 60 * 24)
-                    }
+        VStack {
+            if let image = locationEditModel.poiImage {
+                VStack {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 200, height: 200)
+                        //.background(locationEditModel.poiColor ?? .)
+                        //.foregroundColor(.blue)
+                        //.background(Color.red)
+                        .clipShape(Circle())
+                        .shadow(radius: 5) // Optional: adds a subtle shadow
+
+                    Text("color: \(String(describing: locationEditModel.poiColor))")
+                    Text("category: \(String(describing: locationEditModel.poiCategory))")
                 }
             }
-            
-            Section("Notes") {
-                TextField("Notes", text: $locationEditModel.notes )
-            }
-            
-            Section("Location Category") {
-                if !startLocation {
-                    Button(action: {
-                        showPOISheet = true
+            Form {
+                Section("Location Name"){
+                    TextField("Location name", text: $localName)
+                }
+                Section("Address"){
+                    Text(locationEditModel.title)
+                }
+                if viewModel.numberOfNightsLeft > 0 {
+                    Toggle("Overnight Stop", isOn: $overNightStop)
+                        .toggleStyle(.switch)
+                    if overNightStop {
+                        Picker("Leave", selection: $numberOfNights, content: {
+                            ForEach(1..<viewModel.numberOfNightsLeft + 1, id: \.self) {
+                                if $0 != 1 {
+                                    Text("\($0) Nights - \(viewModel.dayFromDayIndex + TimeInterval(($0 + 1) * 60 * 60 * 24))")
+                                } else {
+                                    Text("\($0) Night - \(viewModel.dayFromDayIndex + TimeInterval(($0 + 1) * 60 * 60 * 24))")
+                                }
+                            }
+                        })
+                        .pickerStyle(.menu)
+                        .onChange(of: numberOfNights) {
+                            leaveDate = viewModel.dayFromDayIndex + TimeInterval((numberOfNights + 1) * 60 * 60 * 24)
+                        }
                     }
-                    ) {
+                }
+                
+                Section("Notes") {
+                    TextField("Notes", text: $locationEditModel.notes )
+                }
+                
+                Section("Location Category") {
+                    if !startLocation {
+                        Button(action: {
+                            showPOISheet = true
+                        }
+                        ) {
+                            HStack {
+                                Image(systemName: locationEditModel.locationPOI?.poiSymbol ?? "map.marker")
+                                    .foregroundStyle(locationEditModel.locationPOI?.poiColor ?? .black)
+                                Text(locationEditModel.locationPOI?.poiDisplayName ?? "No Location")
+                                    .foregroundStyle(.black)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        }
+                    } else {
                         HStack {
-                            Image(systemName: locationEditModel.locationPOI?.poiSymbol ?? "map.marker")
+                            Image(systemName: "arrow.up.circle.fill")
                                 .foregroundStyle(locationEditModel.locationPOI?.poiColor ?? .black)
-                            Text(locationEditModel.locationPOI?.poiDisplayName ?? "No Location")
+                            Text("Start Location")
                                 .foregroundStyle(.black)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
-                } else {
-                    HStack {
-                        Image(systemName: "arrow.up.circle.fill")
-                            .foregroundStyle(locationEditModel.locationPOI?.poiColor ?? .black)
-                        Text("Start Location")
-                            .foregroundStyle(.black)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
                 }
-            }
-            
-            Section("Date Arrive") {
-                Text("\(viewModel.dayFromDayIndex)")
-            }
-            Section("Date Leave") {
-                DatePicker("Date Leave", selection: $leaveDate, displayedComponents: [.date])
-            }
-            
-            Section("Location Index") {
-                Text("\(locationEditModel.locationIndex)")
-            }
-            Button("Save") {
-                guard let trip = globalVars.selectedTrip else { return }
-                globalVars.locationFromMap = nil
-                locationEditModel.name = localName
-                if let poiCategory = locationEditModel.locationPOI?.poiCategory {
-                    locationEditModel.poiCategory = poiCategory
+                
+                Section("Date Arrive") {
+                    Text("\(viewModel.dayFromDayIndex)")
                 }
-                if locationType == LocationType.startLocation {
-                    locationEditModel.startLocation = true
-                    if let startDate = trip.startDate {
-                        locationEditModel.dateLeave = startDate
+                Section("Date Leave") {
+                    DatePicker("Date Leave", selection: $leaveDate, displayedComponents: [.date])
+                }
+                
+                Section("Location Index") {
+                    Text("\(locationEditModel.locationIndex)")
+                }
+                Button("Save") {
+                    guard let trip = globalVars.selectedTrip else { return }
+                    globalVars.locationFromMap = nil
+                    locationEditModel.name = localName
+                    if let poiCategory = locationEditModel.locationPOI?.poiCategory {
+                        locationEditModel.poiCategory = poiCategory
                     }
-                    if !trip.oneWay {
-                        if let endDate = trip.endDate {
-                            locationEditModel.dateArrive = endDate
+                    if locationType == LocationType.startLocation {
+                        locationEditModel.startLocation = true
+                        if let startDate = trip.startDate {
+                            locationEditModel.dateLeave = startDate
+                        }
+                        if !trip.oneWay {
+                            if let endDate = trip.endDate {
+                                locationEditModel.dateArrive = endDate
+                            }
                         }
                     }
+                    if overNightStop {
+                        locationType = LocationType.overNightStop
+                    }
+                    if locationType == LocationType.overNightStop {
+                        locationEditModel.overNightStop = true
+                        locationEditModel.dateArrive = viewModel.dayFromDayIndex
+                        locationEditModel.numberOfNights = Int16(numberOfNights)
+                        locationEditModel.dateLeave = leaveDate
+                    }
+                    if locationType == LocationType.pointOfInterest {
+                        locationEditModel.dateArrive = viewModel.dayFromDayIndex
+                        locationEditModel.dateLeave = viewModel.dayFromDayIndex
+                    }
+                    locationEditModel.locationIndex = viewModel.getLocationIndex(startLocation: startLocation, overNightStop: overNightStop, dayIndex: dayIndex, locationIndex: locationIndex)
+                    globalVars.showSearchLocationSheet = false
+                    do {
+                        try locationEditModel.save()
+                        print("Save try complete")
+                        globalVars.locationUpdated.toggle()
+                        print("globalVars toggled")
+                        dismiss()
+                    } catch {
+                        print("error saving location: \(error)")
+                    }
+                    globalVars.showLocationSetUpView = false
                 }
-                if overNightStop {
-                    locationType = LocationType.overNightStop
-                }
-                if locationType == LocationType.overNightStop {
-                    locationEditModel.overNightStop = true
-                    locationEditModel.dateArrive = viewModel.dayFromDayIndex
-                    locationEditModel.numberOfNights = Int16(numberOfNights)
-                    locationEditModel.dateLeave = leaveDate
-                }
-                if locationType == LocationType.pointOfInterest {
-                    locationEditModel.dateArrive = viewModel.dayFromDayIndex
-                    locationEditModel.dateLeave = viewModel.dayFromDayIndex
-                }
-                locationEditModel.locationIndex = viewModel.getLocationIndex(startLocation: startLocation, overNightStop: overNightStop, dayIndex: dayIndex, locationIndex: locationIndex)
-                globalVars.showSearchLocationSheet = false
-                do {
-                    try locationEditModel.save()
-                    print("Save try complete")
-                    globalVars.locationUpdated.toggle()
-                    print("globalVars toggled")
-                    dismiss()
-                } catch {
-                    print("error saving location: \(error)")
-                }
-                globalVars.showLocationSetUpView = false
             }
         }
-        //                            if let image = location.poiImage {
-        //                                VStack {
-        //                                    image
-        //                                        .resizable()
-        //                                        .aspectRatio(contentMode: .fit)
-        //                                        .frame(width: 200, height: 200)
-        //                                        .background(location.poiColor ?? .white)
-        //                                        .clipShape(RoundedRectangle(cornerRadius: 10)) // Rounded rectangle with 10-point corners
-        //                                        .shadow(radius: 5) // Optional: adds a subtle shadow
-        //
-        //                                    Text("color: \(String(describing: location.poiColor))")
-        //                                    Text("category: \(String(describing: location.poiCategory))")
-        //                                }
-        //                            }
+
  
 
         .onAppear() {
